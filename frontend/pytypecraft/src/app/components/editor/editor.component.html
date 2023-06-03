@@ -1,0 +1,15 @@
+<!--<div #contenedor class="display-false">-->
+<div #contenedor>
+  <div class="container contenedor-editor">
+    <br>
+    <div>
+      <button class="btn btn-descargar" (click)="descargarCodigoEditor()">Descargar Codigo {{codigoRef}}
+      </button>
+      <div #ubicacion class="btn tab-ubicacion">
+        {{ubicacionEditor}}
+      </div>
+    </div>
+    <div class="app-ace-editor" #editor style="width: 100%;height: 500px;"></div>
+    <br>
+  </div>
+</div>
