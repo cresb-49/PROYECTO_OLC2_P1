@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import * as ace from "ace-builds";
 
 @Component({
@@ -11,10 +11,13 @@ export class EditorComponent implements AfterViewInit {
   @ViewChild("textbox") private textbox!: ElementRef<HTMLInputElement>;
   @ViewChild("contenedor") private contenedor!: ElementRef<HTMLElement>;
 
+  @Input() isEditable: boolean = true;
+  @Input() nombreBoton: string = 'button';
+  @Input() isLoadFile: boolean = false;
 
-  codigoRef: string = '';
-  mostrar: boolean = true;
-  codeCRL: string = "";
+
+  nombreArchivo: string = 'Codigo_PyTypeCraft';
+  codigo: string = "";
   ubicacionEditor: string = "Linea: 1, Columna: 1";
 
 
@@ -44,10 +47,11 @@ export class EditorComponent implements AfterViewInit {
     aceEditor.setOption("useSoftTabs", false);
     aceEditor.setOption("tabSize", 4);
     aceEditor.setTheme('ace/theme/twilight');
-    aceEditor.session.setMode('ace/mode/python');
-    aceEditor.setValue(this.codeCRL);
+    aceEditor.session.setMode('ace/mode/typescript');
+    aceEditor.setReadOnly(!this.isEditable)
+    aceEditor.setValue(this.codigo);
     aceEditor.on("change", () => {
-      this.codeCRL = aceEditor.getValue();
+      this.codigo = aceEditor.getValue();
     });
     aceEditor.session.selection.on('changeCursor', () => {
       this.mostrarUbicacion(aceEditor.selection.getCursor().row, aceEditor.selection.getCursor().column)
@@ -55,21 +59,25 @@ export class EditorComponent implements AfterViewInit {
   }
 
   descargarCodigoEditor() {
-    var blob = new Blob([this.codeCRL], { type: 'text/plain' });
+    var blob = new Blob([this.codigo], { type: 'text/plain' });
     var url = window.URL.createObjectURL(blob);
     var anchor = document.createElement("a");
-    anchor.download = this.codigoRef;
+    if (this.isEditable) {
+      anchor.download = this.nombreArchivo + '.ts';
+    } else {
+      anchor.download = 'resultado_' + this.nombreArchivo + '.txt';
+    }
     anchor.href = url;
     anchor.click();
   }
 
   public getCodeCRL() {
     let temp = '';
-    if (this.codeCRL.slice(-1) != '\n') {
-      temp = this.codeCRL + "\n";
-      this.codeCRL = temp;
+    if (this.codigo.slice(-1) != '\n') {
+      temp = this.codigo + "\n";
+      this.codigo = temp;
     } else {
-      temp = this.codeCRL;
+      temp = this.codigo;
     }
     return temp;
   }
@@ -83,10 +91,14 @@ export class EditorComponent implements AfterViewInit {
   }
 
   public setCodeRef(nombre: string) {
-    this.codigoRef = nombre;
+    this.nombreArchivo = nombre;
   }
 
   public setCode(code: string) {
-    this.codeCRL = code;
+    this.codigo = code;
+  }
+
+  public cargarCodigo(){
+    
   }
 }

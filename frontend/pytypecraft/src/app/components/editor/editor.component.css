@@ -1,31 +1,44 @@
 .app-ace-editor {
-  border: 2px solid #f8f9fa;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
   padding: 10px, 10px;
 }
 
+.contenedor-herramientas {
+  margin-top: 10px;
+}
+
 .btn-descargar {
-  background-color: white;
+  background-color: #48b258;
   padding-bottom: 1px;
   padding-top: 1px;
-  border-radius: 7px 7px 0px 0px;
-  color: darkcyan;
+  color: white;
+}
+
+.btn-descargar:hover {
+  background-color: #59c268;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
+}
+.btn-upload {
+  background-color: #7220b9;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
+}
+
+.btn-upload:hover {
+  background-color: #8e2de2;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
 }
 
 .tab-ubicacion {
   background-color: orange;
   padding-bottom: 1px;
   padding-top: 1px;
-  border-radius: 7px 7px 0px 0px;
   transform: translate(4px, 0px);
-  color: white;
-}
-
-.btn-descargar:hover {
-  background-color: darkcyan;
-  padding-bottom: 1px;
-  padding-top: 1px;
-  border-radius: 7px 7px 0px 0px;
   color: white;
 }
 
@@ -33,13 +46,8 @@
   display: none;
 }
 
-.estilos-editor {
-  border: 2px solid #f8f9fa;
-  background-color: #383838;
-  color: greenyellow;
-  overflow-y: scroll;
-  width: 100%;
-  height: 500px;
-  resize: none;
-  font-size: 2;
+.contenedor-editor {
+  padding: 10px;
+  background-color: #232323;
+  border-radius: 10px;
 }

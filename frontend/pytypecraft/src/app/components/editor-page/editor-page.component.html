@@ -1,18 +1,17 @@
-<div class="editors-container">
-
-    <div class="editor-container">
-        <app-editor></app-editor>
-    </div>
-    <div class="editor-container">
-        <app-editor></app-editor>
-    </div>
+<div class="row editors-container">
+  <div class="col">
+    <app-editor [nombreBoton]="'Descargar Codigo'" [isLoadFile]="true"></app-editor>
+  </div>
+  <div class="col">
+    <app-editor [nombreBoton]="'Descargar Resultado'" [isEditable]="false"></app-editor>
+  </div>
 </div>
 
 <div class="button-container">
-    <button class="cssbuttons-io">
-        <span>
-            <img src="../../../assets/coding-sign.png" alt="">
-            Analizar
-        </span>
-    </button>
+  <button class="cssbuttons-io">
+    <span>
+      <img src="../../../assets/coding-sign.png" alt="">
+      Analizar
+    </span>
+  </button>
 </div>
