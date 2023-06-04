@@ -2,6 +2,7 @@ import ply.lex as lex
 
 # Definicion de tokens
 reservadas = {
+    "let": "LET",
     "for": "FOR",
     "if": "IF",
     "else": "ELSE",
@@ -12,7 +13,6 @@ reservadas = {
     "return": "RETURN",
     "function": "FUNCTION",
     "interface": "INTERFACE",
-    "let": "LET",
     "number": "NUMBER",
     "any": "ANY",
     "boolean": "BOOLEAN",
@@ -20,17 +20,19 @@ reservadas = {
     "null": "NULL",
     "true": "TRUE",
     "false": "FALSE",
-    "console.log": "LOG",
+    "console": "CONSOLE"
 }
 
-tokens = (
-    'NAME',  # Identificador
+tokens = [
+    'ID',  # Identificador
     'STR',  # Cadena string
     'NUM',  # Valor numerico
     'LPAR',  # (
     'RPAR',  # )
     'LBRA',  # [
     'RBRA',  # ]
+    'LKEY',  # {
+    'RKEY',  # }
     'COLON',  # :
     'EQ',  # ===
     'NEQ',  # !==
@@ -51,7 +53,12 @@ tokens = (
     'COMMA',  # ,
     'DOT',  # .
     'SEMICOLON',  # ;
-)+list(reservadas.values())
+]+list(reservadas.values())
+
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    return t
 
 
 def t_STR(t):
@@ -69,6 +76,13 @@ def t_NUM(t):
         t.value = 0
     return t
 
+
+t_LPAR = r'\('
+t_RPAR = r'\)'
+t_LBRA = r'\['
+t_RBRA = r'\]'
+t_LKEY = r'\{'
+t_RKEY = r'\}'
 t_COLON = r':'
 t_MEIQ = r'<='
 t_MAIQ = r'>='
@@ -91,22 +105,32 @@ t_DOT = r'\.'
 t_SEMICOLON = r';'
 
 # Comentario de múltiples líneas /* .. */
+
+
 def t_COMENTARIO_MULTILINEA(t):
     r'/\*(.|\n)*?\*/'
     t.lexer.lineno += t.value.count('\n')
 
 # Comentario simple // ...
+
+
 def t_COMENTARIO_SIMPLE(t):
     r'//.*\n'
+    print('Comentario encontrado')
     t.lexer.lineno += 1
 
-# Caracteres ignorados
+
+# Caracteres ignorados space,tabulador,retorno de carro(windows)
 t_ignore = " \t\r"
+
+# Aumento para el conteo de lineas en la lectura de archivos
 
 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
+
+# Control de errores de analizador lexico
 
 
 def t_error(t):
@@ -117,9 +141,12 @@ def t_error(t):
 # Construcion del Lexer
 lexer = lex.lex()
 
-data = "//Comentario de prueba"
+# Apertura y lectura del archivo de entrada
+archivo = open(
+    "/home/ben/Documents/GitHub/PROYECTO_OLC2_P1/backend/entrada.ts", "r")
+input = archivo.read()
 
-lexer.input(data)
+lexer.input(input)
 
 while True:
     tok = lexer.token()
