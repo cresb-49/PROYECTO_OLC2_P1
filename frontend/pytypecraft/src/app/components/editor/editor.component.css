@@ -20,6 +20,7 @@
   padding-top: 1px;
   color: white;
 }
+
 .btn-upload {
   background-color: #7220b9;
   padding-bottom: 1px;
@@ -50,4 +51,10 @@
   padding: 10px;
   background-color: #232323;
   border-radius: 10px;
+}
+
+.tag-editor {
+  color: orange;
+  margin-bottom: 12px;
+  font-size: 17px;
 }
