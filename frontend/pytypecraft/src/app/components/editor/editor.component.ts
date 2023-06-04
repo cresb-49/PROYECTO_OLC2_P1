@@ -14,6 +14,7 @@ export class EditorComponent implements AfterViewInit {
   @Input() isEditable: boolean = true;
   @Input() nombreBoton: string = 'button';
   @Input() isLoadFile: boolean = false;
+  @Input() resultConsole!: EditorComponent;
 
 
   nombreArchivo: string = 'Codigo_PyTypeCraft';
@@ -47,7 +48,11 @@ export class EditorComponent implements AfterViewInit {
     aceEditor.setOption("useSoftTabs", false);
     aceEditor.setOption("tabSize", 4);
     aceEditor.setTheme('ace/theme/twilight');
-    aceEditor.session.setMode('ace/mode/typescript');
+    if (this.isEditable) {
+      aceEditor.session.setMode('ace/mode/typescript');
+    } else {
+      aceEditor.session.setMode('ace/mode/plaintext');
+    }
     aceEditor.setReadOnly(!this.isEditable)
     aceEditor.setValue(this.codigo);
     aceEditor.on("change", () => {
@@ -90,15 +95,47 @@ export class EditorComponent implements AfterViewInit {
     }
   }
 
-  public setCodeRef(nombre: string) {
-    this.nombreArchivo = nombre;
+  public setNombreArchivo(nombre: string) {
+    let split = nombre.split('.');
+    this.nombreArchivo = split[0];
+    this.setNameResultConsole(this.nombreArchivo)
   }
 
   public setCode(code: string) {
     this.codigo = code;
+    const aceEditor = ace.edit(this.editor.nativeElement);
+    aceEditor.setValue(this.codigo);
   }
 
-  public cargarCodigo(){
-    
+  public cargarCodigo() {
+    let input: HTMLInputElement = document.createElement('input');
+    input.type = 'file';
+    let self = this;
+    input.onchange = _ => {
+      if (input.files) {
+        let files = Array.from(input.files);
+        self.handleFile(files);
+      }
+    };
+    input.click();
+  }
+  public handleFile(fileList: any): void {
+    let file = fileList[0];
+    let fileReader: FileReader = new FileReader();
+    let self = this;
+    fileReader.onloadend = function (x) {
+      let code: any = fileReader.result;
+      self.setCode(code);
+      self.setNombreArchivo(file.name);
+    };
+    fileReader.readAsText(file);
+  }
+
+  public setNameResultConsole(nombre: string) {
+    this.resultConsole.setNombreArchivo(nombre);
+  }
+
+  public setCodeResultConsole(code: string) {
+    this.resultConsole.setCode(code);
   }
 }

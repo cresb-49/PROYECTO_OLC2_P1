@@ -1,9 +1,9 @@
 <div class="row editors-container">
   <div class="col">
-    <app-editor [nombreBoton]="'Descargar Codigo'" [isLoadFile]="true"></app-editor>
+    <app-editor [nombreBoton]="'Descargar Codigo'" [isLoadFile]="true" [resultConsole]="resultConsole"></app-editor>
   </div>
   <div class="col">
-    <app-editor [nombreBoton]="'Descargar Resultado'" [isEditable]="false"></app-editor>
+    <app-editor #consoleResult [nombreBoton]="'Descargar Resultado'" [isEditable]="false"></app-editor>
   </div>
 </div>
 

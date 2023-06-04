@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { EditorComponent } from '../editor/editor.component';
 
 @Component({
   selector: 'app-editor-page',
@@ -6,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./editor-page.component.css']
 })
 export class EditorPageComponent {
+  @ViewChild('consoleResult') resultConsole!:EditorComponent;
 
 }
