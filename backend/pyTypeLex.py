@@ -25,6 +25,8 @@ reservadas = {
 
 tokens = (
     'NAME',  # Identificador
+    'STR',  # Cadena string
+    'NUM',  # Valor numerico
     'LPAR',  # (
     'RPAR',  # )
     'LBRA',  # [
@@ -51,6 +53,22 @@ tokens = (
     'SEMICOLON',  # ;
 )+list(reservadas.values())
 
+
+def t_STR(t):
+    r'\".*?\"'
+    t.value = t.value[1:-1].encode().decode("unicode_escape")
+    return t
+
+
+def t_NUM(t):
+    r'(\d+|\d+\.\d+)'
+    try:
+        t.value = float(t.value)
+    except ValueError:
+        print("Float value too large %d", t.value)
+        t.value = 0
+    return t
+
 t_COLON = r':'
 t_MEIQ = r'<='
 t_MAIQ = r'>='
@@ -71,6 +89,16 @@ t_MOD = r'\%'
 t_COMMA = r','
 t_DOT = r'\.'
 t_SEMICOLON = r';'
+
+# Comentario de múltiples líneas /* .. */
+def t_COMENTARIO_MULTILINEA(t):
+    r'/\*(.|\n)*?\*/'
+    t.lexer.lineno += t.value.count('\n')
+
+# Comentario simple // ...
+def t_COMENTARIO_SIMPLE(t):
+    r'//.*\n'
+    t.lexer.lineno += 1
 
 # Caracteres ignorados
 t_ignore = " \t\r"
