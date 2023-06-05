@@ -3,7 +3,7 @@ from Abstracto.Exprecion import Expresion
 from Abstracto.Tipo import TipoEnum
 from Abstracto.Tipo import Tipo
 from Abstracto.Retorno import Retorno
-
+from Simbolo.Scope import Scope
 
 class ObtenerValFuncion(Expresion):
 
@@ -12,7 +12,7 @@ class ObtenerValFuncion(Expresion):
         self.identificador = identificador
         self.parametros = parametros
 
-    def ejecutar(self, scope) -> Retorno:
+    def ejecutar(self, scope: Scope) -> Retorno:
         return Retorno(None,Tipo(TipoEnum.ERROR,None))
 
     def graficar(self, scope, graphviz, padre):

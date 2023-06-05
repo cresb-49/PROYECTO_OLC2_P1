@@ -1,10 +1,12 @@
+from Simbolo.Scope import Scope
+
 class Instruccion:
     def __init__(self, linea, columna):
         self.linea = linea
         self.columna = columna
 
     # Funcion base se debe de sobreescibir para las demas clases heredadas
-    def ejecutar(self, scope) -> any:
+    def ejecutar(self, scope: Scope) -> any:
         print(scope)
         return None
 

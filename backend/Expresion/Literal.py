@@ -1,6 +1,7 @@
 from Abstracto.Exprecion import Expresion
 from Abstracto.Retorno import Retorno
 from Abstracto.Tipo import Tipo
+from Simbolo.Scope import Scope
 
 
 class Literal(Expresion):
@@ -9,7 +10,7 @@ class Literal(Expresion):
         self.valor = valor
         self.tipo = tipo
 
-    def ejecutar(self, scope) -> Retorno:
+    def ejecutar(self, scope: Scope) -> Retorno:
         return Retorno(self.valor, self.tipo)
 
     def graficar(self, scope, graphviz, padre):

@@ -1,12 +1,13 @@
 import Abstracto.Exprecion as Exprecion
 import Abstracto.Retorno as Retorno
+from Simbolo.Scope import Scope
 
 class Acceder(Exprecion):
     def __init__(self, linea, columna, identificador):
         super().__init__(linea, columna)
         self.identificador = identificador
 
-    def ejecutar(self, scope) -> Retorno:
+    def ejecutar(self, scope: Scope) -> Retorno:
         recuperacion = scope.obtenerVariable(self.identificador);
         if (recuperacion == None):
             raise ValueError("La variable \"" + self.identificador + "\" no existe, Linea: " + self.linea + " ,Columna: " + self.columna);

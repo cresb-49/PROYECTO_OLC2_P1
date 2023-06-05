@@ -3,7 +3,7 @@ from Abstracto.Exprecion import Expresion
 from Abstracto.Tipo import TipoEnum
 from Abstracto.Tipo import Tipo
 from Abstracto.Retorno import Retorno
-
+from Simbolo.Scope import Scope
 
 class OpcionRelacional(Enum):
     IGUAL = 0
@@ -22,7 +22,7 @@ class Relacional(Expresion):
         self.derecha = derecha
         self.tipo = tipo
 
-    def ejecutar(self, scope) -> Retorno:
+    def ejecutar(self, scope: Scope) -> Retorno:
         valor_izquierda = self.izquierda.ejecutar(scope)
         valor_derecha = self.derecha.ejecutar(scope)
 

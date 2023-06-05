@@ -1,6 +1,7 @@
 from enum import Enum
 from Abstracto.Exprecion import Expresion
 from Abstracto.Retorno import Retorno
+from Simbolo.Scope import Scope
 
 """
 Enum del tipo de operaciones artimeticas
@@ -30,7 +31,7 @@ class Operacion(Expresion):
         self.derecha = derecha
         self.tipo = tipo
 
-    def ejecutar(self, scope) -> Retorno:
+    def ejecutar(self, scope: Scope) -> Retorno:
         result = None
         val_izquierdo = self.izquierda.ejecutar(scope)
         val_derecho = self.derecha.ejecutar(scope)

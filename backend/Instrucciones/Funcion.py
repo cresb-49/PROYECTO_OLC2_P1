@@ -1,5 +1,5 @@
 import Abstracto.Instruccion as Instruccion
-
+from Simbolo.Scope import Scope
 
 class Funcion(Instruccion):
     def ejecutar(self, scope) -> None:
