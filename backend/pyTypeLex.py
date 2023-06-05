@@ -24,7 +24,6 @@ reservadas = {
 }
 
 tokens = [
-    'ID',  # Identificador
     'STR',  # Cadena string
     'NUM',  # Valor numerico
     'LPAR',  # (
@@ -53,11 +52,14 @@ tokens = [
     'COMMA',  # ,
     'DOT',  # .
     'SEMICOLON',  # ;
+    'ID',  # Identificador
 ]+list(reservadas.values())
 
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
+    # Verifica en las palabras reservadas
+    t.type = reservadas.get(t.value.lower(), 'ID')
     return t
 
 
@@ -129,6 +131,7 @@ t_ignore = " \t\r"
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
+    pass
 
 # Control de errores de analizador lexico
 
@@ -142,8 +145,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Apertura y lectura del archivo de entrada
-archivo = open(
-    "/home/ben/Documents/GitHub/PROYECTO_OLC2_P1/backend/entrada.ts", "r")
+archivo = open("backend/entrada.ts", "r")
 input = archivo.read()
 
 lexer.input(input)
