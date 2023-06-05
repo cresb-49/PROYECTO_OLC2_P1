@@ -3,10 +3,10 @@ class Expresion:
         self.linea = linea
         self.columna = columna
 
-    def ejecutar(self, scope) -> None:
+    def ejecutar(self, scope):
         print(scope)
         return None
 
-    def graficar(self, scope, graphviz, padre) -> None:
+    def graficar(self, scope, graphviz, padre):
         print(scope, graphviz, padre)
         return None
