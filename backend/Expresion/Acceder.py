@@ -6,7 +6,7 @@ class Acceder(Exprecion):
         super().__init__(linea, columna)
         self.identificador = identificador
 
-    def ejecutar(self, scope):
+    def ejecutar(self, scope) -> Retorno:
         recuperacion = scope.obtenerVariable(self.identificador);
         if (recuperacion == None):
             raise ValueError("La variable \"" + self.identificador + "\" no existe, Linea: " + self.linea + " ,Columna: " + self.columna);

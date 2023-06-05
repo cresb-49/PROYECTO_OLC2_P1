@@ -1,5 +1,6 @@
 from enum import Enum
-import Abstracto.Exprecion as Exprecion
+from Abstracto.Exprecion import Expresion
+from Abstracto.Retorno import Retorno
 
 """
 Enum del tipo de operaciones artimeticas
@@ -20,16 +21,16 @@ Raises:
     ValueError: El valor del hijo izquierdo de la operacion es None
     ValueError: El valor del hijo derecho de la operacion es None
 """
-class Operacion(Exprecion):
+class Operacion(Expresion):
 
-    def __init__(self, linea, columna, izquierda: Exprecion, derecha: Exprecion, tipo: OpcionOperacion):
+    def __init__(self, linea, columna, izquierda: Expresion, derecha: Expresion, tipo: OpcionOperacion):
         super().__init__(linea, columna)
         self.TipoOperacion = ['+', '-', '*', '/', '%', '^']
         self.izquierda = izquierda
         self.derecha = derecha
         self.tipo = tipo
 
-    def ejecutar(self, scope):
+    def ejecutar(self, scope) -> Retorno:
         result = None
         val_izquierdo = self.izquierda.ejecutar(scope)
         val_derecho = self.derecha.ejecutar(scope)

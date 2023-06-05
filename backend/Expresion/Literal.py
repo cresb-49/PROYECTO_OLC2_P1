@@ -9,7 +9,7 @@ class Literal(Expresion):
         self.valor = valor
         self.tipo = tipo
 
-    def ejecutar(self, scope):
+    def ejecutar(self, scope) -> Retorno:
         return Retorno(self.valor, self.tipo)
 
     def graficar(self, scope, graphviz, padre):
