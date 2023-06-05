@@ -4,7 +4,7 @@ class Instruccion:
         self.columna = columna
 
     # Funcion base se debe de sobreescibir para las demas clases heredadas
-    def ejecutar(self, scope) -> None:
+    def ejecutar(self, scope) -> any:
         print(scope)
         return None
 
