@@ -9,7 +9,6 @@ class Expresion:
 
     def ejecutar(self, scope: Scope) -> Retorno:
         print(scope)
-        return None
 
     def graficar(self, scope, graphviz, padre):
         print(scope, graphviz, padre)

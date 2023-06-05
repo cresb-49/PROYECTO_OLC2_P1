@@ -13,4 +13,5 @@ class Asignacion(Instruccion):
 
     def ejecutar(self, scope: Scope) -> any:
         result = self.valor.ejecutar(scope)
-        scope
+        scope.modificar_variable(self.id,result.value,result.tipo)
+        

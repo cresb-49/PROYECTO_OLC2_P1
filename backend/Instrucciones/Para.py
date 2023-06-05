@@ -4,7 +4,7 @@ from Abstracto.Tipo import TipoEnum
 from Simbolo.Scope import Scope
 
 class Para(Instruccion):
-    def __init__(self, linea, columna):
+    def __init__(self, linea, columna,):
         super().__init__(linea, columna)
         
     def ejecutar(self, scope: Scope) -> any:

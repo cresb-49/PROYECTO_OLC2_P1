@@ -8,5 +8,5 @@ class Declaracion(Instruccion):
         super().__init__(linea, columna)
         
     def ejecutar(self, scope: Scope) -> any:
-        print(scope)
-        return None
+        result = self.valor.ejecutar(scope)
+        scope.declarar_variable(self.id,result.value,result.tipo)

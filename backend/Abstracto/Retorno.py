@@ -1,4 +1,4 @@
-import Tipo as Tipo
+from Tipo import Tipo
 
 
 class Retorno():
