@@ -4,7 +4,9 @@ class Expresion:
         self.columna = columna
 
     def ejecutar(self, scope) -> None:
-        pass
+        print(scope)
+        return None
 
     def graficar(self, scope, graphviz, padre) -> None:
-        pass
+        print(scope, graphviz, padre)
+        return None
