@@ -118,7 +118,6 @@ def t_COMENTARIO_MULTILINEA(t):
 
 def t_COMENTARIO_SIMPLE(t):
     r'//.*\n'
-    print('Comentario encontrado')
     t.lexer.lineno += 1
 
 
