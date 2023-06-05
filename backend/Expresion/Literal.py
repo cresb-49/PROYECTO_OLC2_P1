@@ -1,33 +1,23 @@
-import Abstracto.Exprecion as Exprecion
-import Abstracto.Retorno as Retorno
-import Abstracto.Tipo as Tipo
+from Abstracto.Exprecion import Expresion
+from Abstracto.Retorno import Retorno
+from Abstracto.Tipo import Tipo
 
-class Literal(Exprecion):
-    def __init__(self, linea, columna, valor, tipo):
+
+class Literal(Expresion):
+    def __init__(self, linea, columna, valor, tipo: Tipo):
         super().__init__(linea, columna)
         self.valor = valor
         self.tipo = tipo
 
     def ejecutar(self, scope):
-        if (self.tipo == Tipo.NUMBER):
-            return Retorno(self.valor,Tipo.NUMBER)
-        elif (self.tipo == Tipo.BOOLEAN):
-            return Retorno(self.valor,Tipo.BOOLEAN)
-        elif (self.tipo == Tipo.STRING):
-            return Retorno(self.valor,Tipo.STRING)
-        elif (self.tipo == Tipo.ANY):
-            return Retorno(self.valor,Tipo.ANY)
-        elif (self.tipo == Tipo.STRUCT):
-            return Retorno(self.valor,Tipo.STRUCT)
-        elif (self.tipo == Tipo.ERROR):
-            return Retorno(self.valor,Tipo.ERROR)
+        return Retorno(self.valor, self.tipo)
 
     def graficar(self, scope, graphviz, padre):
-        num = graphviz.declaraciones.length + 1;
-        node = "nodo" + num + ' [label="<f0> '+Retorno.tipo_string[self.tipo]+' |<f1> ' + self.valor + '"];'
-        graphviz.declaraciones.push(node);
+        num = graphviz.declaraciones.length + 1
+        node = "nodo" + num + \
+            ' [label="<f0> ' + Tipo.get_tipo_string() + \
+            ' |<f1> ' + self.valor + '"];'
+        graphviz.declaraciones.push(node)
         if (padre.length != 0):
             relacion = padre + ' -> ' + "nodo" + num
-            graphviz.relaciones.push(relacion);
-        
-        
+            graphviz.relaciones.push(relacion)
