@@ -1,4 +1,9 @@
-import ply.lex as lex
+import ply.lex as lex #Import del lex para la generacion del analizadoz lexico
+
+#Import de las clases auxiliares
+from Errores.Errores import TablaErrores
+
+tabla_errores = TablaErrores();
 
 # Definicion de tokens
 reservadas = {

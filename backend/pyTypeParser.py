@@ -1,32 +1,47 @@
-import ply.yacc as yacc
-from pyTypeLex import lexer  # Import del lexer
+import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
+from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
 from pyTypeLex import tokens
+
+# Seccion para importar las abstracciones y ED para verificar la infomacion
+from ED.Pila import Pila
+from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
+
+# Clases referentes a la tabla de simbolos
 
 # Inicio de la gramatica
 
 
-#def p_init(p):
-#    """init : instrucciones_globales"""
-
-# Definicion de el uso de todas las intrucciones
-
-
-#def instrucciones_globales(p):
-#    """instrucciones_globales : instruccion 
-#                              | instrucciones_globales instruccion
-#                              | instrucciones_globales funcion
-#                              | funcion"""
-
-# Lista de Intrucciones
 def p_init(p):
-    """instrucciones : instrucciones instruccion
-                     | instruccion"""
+    """init : limit_intrucciones"""
+
+# Intrucciones limitadas solo al ambito global
+
+
+def p_limit_intrucciones(p):
+    """limit_intrucciones : limit_intrucciones limit_intruccion
+                          | limit_intruccion"""
+    # TODO: Aqui es donde se inicializa el scope global, este es el scope 0
+
+
+def p_limit_intruccion(p):
+    """limit_intruccion : instruccion
+                        | funcion"""
 
 # Intrucciones que pueden estar dentro de sentencias de control, no podemos
 # declarar funciones dentro de las sentencias de control
 
+
 def p_instrucciones(p):
+    """instrucciones : instrucciones instruccion"""
+
+
+def p_instrucciones_2(p):
+    """instrucciones : instruccion"""
+    # TODO: Aqui es donde se inicializa un scope local, crear una pila para numerar los scopes
+
+
+def p_instruccion(p):
     """instruccion : print
                    | ciclo_for
                    | ciclo_while
@@ -36,7 +51,6 @@ def p_instrucciones(p):
                    | declaracion
                    | asignacion
                    | continuar
-                   | funcion
                    | romper
                    | retorno"""
 
@@ -70,10 +84,16 @@ def p_retorno(p):
 
 
 def p_ciclo_for(p):
-    """ciclo_for : FOR LPAR declaracion SEMICOLON exprecion SEMICOLON sumador RPAR LKEY RKEY
-                 | FOR LPAR declaracion SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY
+    """ciclo_for : FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY RKEY
+                 | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
+
+
+def p_declaracion_for(p):
+    """declaracion_for : LET ID COLON tipo IGUAL exprecion
+                       | LET ID IGUAL exprecion
+    """
 
 
 def p_sumador(p):
@@ -141,6 +161,9 @@ def p_funcion(p):
                | FUNCTION ID LPAR RPAR LKEY instrucciones RKEY
                | FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
 
+    # TODO: Eliminar prueba de codigo de funciones
+    print("Funcion encontrada", p[2])
+
 # Seccion de declaracion de parametros de una funcion
 
 
@@ -153,7 +176,11 @@ def p_lista_parametros(p):
 
 def p_declaracion(p):
     """declaracion : LET ID COLON tipo IGUAL exprecion SEMICOLON
-                   | LET ID IGUAL exprecion SEMICOLON"""
+                   | LET ID IGUAL exprecion SEMICOLON
+                   | LET ID COLON tipo SEMICOLON
+                   | LET ID SEMICOLON"""
+
+    print("Declaracion de variable", p[2])
 
 # Instruccion de asignacion
 
@@ -250,6 +277,9 @@ def p_sub_exprecion(p):
 def p_error(t):
     print(t)
     print("Error sintáctico en '%s'" % t.value)
+    # TODO: Realizar implementacion para recuperar numero de linea y columna en error sintactico
+    tabla_errores.addError(
+        'Sintactico', "Error sintáctico en '%s'" % t.value, 0, 0)
 
 
 # Declaracion de inicio del parser
