@@ -6,6 +6,7 @@ from pyTypeLex import tokens
 # Seccion para importar las abstracciones y ED para verificar la infomacion
 from ED.Pila import Pila
 from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
+from Models.resultado import Resultado
 
 # Clases referentes a la tabla de simbolos
 from logica import Scope
@@ -50,7 +51,7 @@ def decla_variable(declaracion: Declaracion, tipo: Tipo):
 def p_init(p):
     """init : limit_intrucciones"""
     memoria.desapilar()
-    p[0] = p[1]
+    p[0] = Resultado(p[1],tabla_errores,registro)
 
 # Intrucciones limitadas solo al ambito global
 
