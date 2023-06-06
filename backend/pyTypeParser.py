@@ -1,24 +1,30 @@
 import ply.yacc as yacc
-import pyTypeLex as lex
+from pyTypeLex import lexer  # Import del lexer
+# Import de los tokens del lexer, es necesario por tenerlo en archivos separados
+from pyTypeLex import tokens
 
 # Inicio de la gramatica
 
 
-def p_init(p):
-    """init : instrucciones_globales"""
+#def p_init(p):
+#    """init : instrucciones_globales"""
 
 # Definicion de el uso de todas las intrucciones
 
 
-def instrucciones_globales(p):
-    """instrucciones_globales : instruccion 
-                              | instrucciones_globales instruccion
-                              | instrucciones_globales funcion
-                              | funcion"""
+#def instrucciones_globales(p):
+#    """instrucciones_globales : instruccion 
+#                              | instrucciones_globales instruccion
+#                              | instrucciones_globales funcion
+#                              | funcion"""
+
+# Lista de Intrucciones
+def p_init(p):
+    """instrucciones : instrucciones instruccion
+                     | instruccion"""
 
 # Intrucciones que pueden estar dentro de sentencias de control, no podemos
 # declarar funciones dentro de las sentencias de control
-
 
 def p_instrucciones(p):
     """instruccion : print
@@ -30,16 +36,9 @@ def p_instrucciones(p):
                    | declaracion
                    | asignacion
                    | continuar
+                   | funcion
                    | romper
                    | retorno"""
-
-
-# Intrucion console.log
-
-
-def p_instrucciones(p):
-    """instrucciones : instrucciones instruccion
-                     | instruccion"""
 
 # Intrucion console.log
 
@@ -77,7 +76,7 @@ def p_ciclo_for(p):
                  | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
 
 
-def sumador(p):
+def p_sumador(p):
     """sumador : ID SUM
                | ID RES"""
 
@@ -178,16 +177,30 @@ def p_base(p):
             | ID"""
 
 
+# Asociación de operadores y precedencia anterior
+# precedence = (
+#    ('left', 'OR'),
+#    ('left', 'AND'),
+#    ('left', 'NOT'),
+#    ('nonassoc', 'MAQ', 'MEQ', 'MAIQ', 'MEIQ', 'EQ', 'NEQ'),
+#    ('left', 'MAS', 'MENOS'),
+#    ('left', 'MULT', 'DIV', 'MOD'),
+#    ('right', 'UMINUS'),  # Operador unario
+#    ('right', 'POTENCIA'),
+# )
+
 # Asociación de operadores y precedencia
 precedence = (
     ('left', 'OR'),
     ('left', 'AND'),
-    ('left', 'NOT'),
-    ('nonassoc', 'MAQ', 'MEQ', 'MAIQ', 'MEIQ', 'EQ', 'NEQ'),
+    ('right', 'NOT'),
+    ('left', 'EQ', 'NEQ'),
+    ('left', 'MAQ', 'MEQ', 'MAIQ', 'MEIQ'),
     ('left', 'MAS', 'MENOS'),
     ('left', 'MULT', 'DIV', 'MOD'),
-    ('right', 'UMINUS'),  # Operador unario
     ('right', 'POTENCIA'),
+    # ('left', 'LPAR', 'RPAR'), #Precedencia de parentesis
+    ('right', 'UMINUS'),  # Operador unario
 )
 
 # Expreciones -> operaciones entre variables, constantes, funciones y metodos
@@ -218,6 +231,7 @@ def p_exprecion(p):
 
 def p_sub_exprecion(p):
     """sub_exprecion : LPAR exprecion RPAR
+                     | NULL
                      | NUM
                      | STR
                      | TRUE
@@ -241,6 +255,13 @@ def p_error(t):
 # Declaracion de inicio del parser
 parser = yacc.yacc()
 
+# Apertura y lectura del archivo de entrada
+archivo = open("backend/entrada.ts", "r")
+input = archivo.read()
+
 
 def parse(input):
     return parser.parse(input)
+
+
+parse(input)

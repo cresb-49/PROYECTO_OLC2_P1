@@ -44,8 +44,8 @@ tokens = [
     'OR',  # ||
     'AND',  # $$
     'POTENCIA',  # ^
-    'SUM', #++
-    'RES', #--
+    'SUM',  # ++
+    'RES',  # --
     'MAS',  # +
     'MENOS',  # -
     'MULT',  # *
@@ -144,17 +144,23 @@ def t_error(t):
     t.lexer.skip(1)
 
 
+def find_column(input, token):
+    line_start = input.rfind('\n', 0, token.lexpos)+1
+    return (token.lexpos - line_start) + 1
+
+
 # Construcion del Lexer
 lexer = lex.lex()
+# lexer = lex.lex(reflags=re.IGNORECASE) #TODO: tomar en si no funciona
 
 # Apertura y lectura del archivo de entrada
-archivo = open("backend/entrada.ts", "r")
-input = archivo.read()
+#archivo = open("backend/entrada.ts", "r")
+#input = archivo.read()
 
-lexer.input(input)
+#lexer.input(input)
 
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    print(tok)
+#while True:
+    #tok = lexer.token()
+    #if not tok:
+        #break
+    #print(tok)
