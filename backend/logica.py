@@ -25,6 +25,8 @@ class TipoEnum(Enum):
     ANY = 3
     STRUCT = 4
     ERROR = 5
+    NULL = 6
+    ARRAY = 7
 
 
 class OpcionRelacional(Enum):
@@ -447,9 +449,9 @@ class Detener(Instruccion):
 
 
 class Sentencias(Instruccion):
-    def __init__(self, linea, columna, intrucciones: list):
+    def __init__(self, linea, columna, intrucciones:list):
         super().__init__(linea, columna)
-        self.intrucciones = Instruccion
+        self.intrucciones = intrucciones
 
     def ejecutar(self, scope: Scope) -> Retorno:
 

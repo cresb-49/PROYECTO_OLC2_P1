@@ -11,9 +11,30 @@ from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
 from logica import Scope
 from logica import Literal
 from logica import Acceder
+from logica import CallFuncion
 from logica import Declaracion
 from logica import Tipo
 from logica import TipoEnum
+
+from logica import Operacion
+from logica import OpcionOperacion
+from logica import Relacional
+from logica import OpcionRelacional
+from logica import Logica
+from logica import OpcionLogica
+
+from logica import Asignacion
+from logica import Funcion
+from logica import Si
+from logica import Para
+from logica import Mientras
+from logica import PrintPy
+from logica import Retornar
+from logica import Continuar
+from logica import Detener
+
+from logica import Sentencias
+
 # Inicio de la gramatica
 
 memoria = Pila()
@@ -29,22 +50,27 @@ def decla_variable(declaracion: Declaracion, tipo: Tipo):
 def p_init(p):
     """init : limit_intrucciones"""
     memoria.desapilar()
-    p[0] = registro
+    p[0] = p[1]
 
 # Intrucciones limitadas solo al ambito global
 
 
 def p_limit_intrucciones(p):
     """limit_intrucciones : limit_intrucciones limit_intruccion"""
+    sentencias: Sentencias = p[1]
+    sentencias.intrucciones.append(p[2])
+    p[0] = sentencias
 
 
 def p_limit_intrucciones_2(p):
     """limit_intrucciones : limit_intruccion"""
+    sentencias = Sentencias(0, 0, [])
+    sentencias.intrucciones.append(p[1])
+    p[0] = sentencias
     print('Generacion Entorno Global')
     entorno = Scope(memoria.obtener_tope())
     memoria.apilar(entorno)
     registro.append(entorno)
-    print(p[1])
     # TODO: Aqui es donde se inicializa el scope global, este es el scope 0
 
 
@@ -59,10 +85,16 @@ def p_limit_intruccion(p):
 
 def p_instrucciones(p):
     """instrucciones : instrucciones instruccion"""
+    sentencias: Sentencias = p[1]
+    sentencias.intrucciones.append(p[2])
+    p[0] = sentencias
 
 
 def p_instrucciones_2(p):
     """instrucciones : instruccion"""
+    sentencias = Sentencias(0, 0, [])
+    sentencias.intrucciones.append(p[1])
+    p[0] = sentencias
     print('Generacion Entorno Local')
     entorno = Scope(memoria.obtener_tope())
     memoria.apilar(entorno)
@@ -89,19 +121,20 @@ def p_instruccion(p):
 
 def p_print(p):
     """print : CONSOLE DOT ID LPAR exprecion RPAR SEMICOLON"""
-
+    p[0] = PrintPy(0, 0)
 
 # Instruccion continue
 
 
 def p_continuar(p):
     """continuar : CONTINUE SEMICOLON"""
-
+    p[0] = Continuar(0, 0)
 # Instruccion break
 
 
 def p_romper(p):
     """romper : BREAK SEMICOLON"""
+    p[0] = Detener(0, 0)
 
 # Instruccion return
 
@@ -109,7 +142,10 @@ def p_romper(p):
 def p_retorno(p):
     """retorno : RETURN SEMICOLON
                | RETURN exprecion SEMICOLON"""
-
+    if len(p) == 3:
+        p[0] = Retornar(0, 0, None)
+    else:
+        p[0] = Retornar(0, 0, p[2])
 # Producciones de la intruccion for
 
 
@@ -119,6 +155,7 @@ def p_ciclo_for(p):
                  | FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
+    p[0] = Para(0, 0, -1, None, 'none', None, None)
 
 
 def p_declaracion_for(p):
@@ -140,6 +177,7 @@ def p_condicional_if(p):
                       | IF LPAR exprecion RPAR LKEY instrucciones RKEY continuacion_if
                       | IF LPAR exprecion RPAR LKEY RKEY continuacion_if"""
     memoria.desapilar()
+    p[0] = Si(0, 0, p[3], None)
 
 
 def p_continuacion_if(p):
@@ -170,6 +208,7 @@ def p_valores(p):
 def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
+    p[0] = CallFuncion(0, 0, p[1], None)
 
 # Parametros de llamado de funcion o metodo
 
@@ -185,6 +224,7 @@ def p_ciclo_while(p):
     """ciclo_while : WHILE LPAR exprecion RPAR LKEY RKEY
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
+    p[0] = Mientras(0, 0, p[3], None)
 
 # Declaracion de una funcion
 
@@ -195,8 +235,7 @@ def p_funcion(p):
                | FUNCTION ID LPAR RPAR LKEY instrucciones RKEY
                | FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
-    # TODO: Eliminar prueba de codigo de funciones
-    print("Funcion encontrada", p[2])
+    p[0] = Funcion(0, 0, p[2], None, None)
 
 # Seccion de declaracion de parametros de una funcion
 
@@ -214,15 +253,18 @@ def p_declaracion(p):
                    | LET ID COLON tipo SEMICOLON
                    | LET ID SEMICOLON"""
     if (p[3] == ':'):
-        p[0] = Declaracion(0, 0, p[2], p[4], Literal(0, 0, None, Tipo(TipoEnum.ANY, None)))
+        p[0] = Declaracion(0, 0, p[2], p[4], Literal(
+            0, 0, None, Tipo(TipoEnum.ANY, None)))
     else:
-        p[0] = Declaracion(0, 0, p[2], Tipo(TipoEnum.ANY, None), Literal(0, 0, None, Tipo(TipoEnum.ANY, None)))
+        p[0] = Declaracion(0, 0, p[2], Tipo(TipoEnum.ANY, None), Literal(
+            0, 0, None, Tipo(TipoEnum.ANY, None)))
 
 # Instruccion de asignacion
 
 
 def p_asignacion(p):
     """asignacion : ID IGUAL exprecion SEMICOLON"""
+    p[0] = Asignacion(0, 0, p[1], p[3])
 
 # Producciones referentes al tipo de dato
 
@@ -230,6 +272,13 @@ def p_asignacion(p):
 def p_tipo(p):
     """tipo : base
             | base LBRA RBRA"""
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        tipo: Tipo = p[1]
+        tipo.tipo_secundario = tipo.get_tipo_string()
+        tipo.type = TipoEnum.ARRAY
+        p[0] = tipo
 
 
 def p_base(p):
@@ -273,16 +322,19 @@ precedence = (
     ('left', 'MAS', 'MENOS'),
     ('left', 'MULT', 'DIV', 'MOD'),
     ('right', 'POTENCIA'),
-    # ('left', 'LPAR', 'RPAR'), #Precedencia de parentesis
     ('right', 'UMINUS'),  # Operador unario
 )
+# ('left', 'LPAR', 'RPAR'), #Precedencia de parentesis
 
 # Expreciones -> operaciones entre variables, constantes, funciones y metodos
 
 
 def p_exprecion(p):
-    """exprecion : MENOS exprecion %prec UMINUS
-                 | exprecion MAS exprecion
+    """exprecion : MENOS exprecion %prec UMINUS"""
+
+
+def p_exprecion_2(p):
+    """exprecion : exprecion MAS exprecion
                  | exprecion MENOS exprecion
                  | exprecion MULT exprecion
                  | exprecion DIV exprecion
@@ -295,28 +347,90 @@ def p_exprecion(p):
                  | exprecion NEQ exprecion
                  | exprecion EQ exprecion
                  | exprecion OR exprecion
-                 | exprecion AND exprecion
-                 | NOT exprecion
-                 | sub_exprecion"""
+                 | exprecion AND exprecion"""
+    if p[2] == '+':
+        p[0] = Operacion(0, 0, p[1], p[3], OpcionOperacion.SUMA)
+    elif p[2] == '-':
+        p[0] = Operacion(0, 0, p[1], p[3], OpcionOperacion.RESTA)
+    elif p[2] == '*':
+        p[0] = Operacion(0, 0, p[1], p[3], OpcionOperacion.MUL)
+    elif p[2] == '/':
+        p[0] = Operacion(0, 0, p[1], p[3], OpcionOperacion.DIV)
+    elif p[2] == '^':
+        p[0] = Operacion(0, 0, p[1], p[3], OpcionOperacion.POT)
+    elif p[2] == '%':
+        p[0] = Operacion(0, 0, p[1], p[3], OpcionOperacion.MOD)
+    elif p[2] == '>':
+        p[0] = Relacional(0, 0, p[1], p[3], OpcionRelacional.MAYOR)
+    elif p[2] == '<':
+        p[0] = Relacional(0, 0, p[1], p[3], OpcionRelacional.MENOR)
+    elif p[2] == '>=':
+        p[0] = Relacional(0, 0, p[1], p[3], OpcionRelacional.MAYOR_IGUAL)
+    elif p[2] == '<=':
+        p[0] = Relacional(0, 0, p[1], p[3], OpcionRelacional.MENOR_IGUAL)
+    elif p[2] == '<!==':
+        p[0] = Relacional(0, 0, p[1], p[3], OpcionRelacional.DIFERENTE)
+    elif p[2] == '===':
+        p[0] = Relacional(0, 0, p[1], p[3], OpcionRelacional.IGUAL)
+    elif p[2] == '||':
+        p[0] = Logica(0, 0, p[1], p[3], OpcionLogica.OR)
+    elif p[2] == '&&':
+        p[0] = Logica(0, 0, p[1], p[3], OpcionLogica.AND)
+
+
+def p_exprecion_3(p):
+    """exprecion : NOT exprecion"""
+    p[0] = Logica(0, 0, None, p[2], OpcionLogica.NOT)
+
+
+def p_exprecion_4(p):
+    """exprecion : sub_exprecion"""
+    p[0] = p[1]
 
 # Valores atomicos es decir, el valor de una variable, constante o resultado de una
 # funcion o metodo
 
 
 def p_sub_exprecion(p):
-    """sub_exprecion : LPAR exprecion RPAR
-                     | NULL
+    """sub_exprecion : LPAR exprecion RPAR"""
+    p[0] = p[2]
+
+
+def p_sub_exprecion_2(p):
+    """sub_exprecion : NULL
                      | NUM
                      | STR
                      | TRUE
-                     | FALSE
-                     | ID
-                     | ID LPAR RPAR
+                     | FALSE"""
+
+    if (p[1] == None):
+        p[0] = Literal(0, 0, p[1], Tipo(TipoEnum.NULL, None))
+    elif isinstance(p[1], float):
+        p[0] = Literal(0, 0, p[1], Tipo(TipoEnum.NUMBER, None))
+    elif isinstance(p[1], str):
+        p[0] = Literal(0, 0, p[1], Tipo(TipoEnum.STRING, None))
+    elif isinstance(p[1], bool):
+        p[0] = Literal(0, 0, p[1], Tipo(TipoEnum.BOOLEAN, None))
+
+
+def p_sub_exprecion_3(p):
+    """sub_exprecion : ID"""
+    p[0] = Acceder(0, 0, p[1])
+
+
+def p_sub_exprecion_4(p):
+    """sub_exprecion : ID LPAR RPAR
                      | ID LPAR parametros RPAR
                      | ID DOT ID
                      | ID DOT ID LPAR RPAR
                      | ID DOT ID LPAR exprecion RPAR"""
-
+    if (p[2] == '('):
+        if isinstance(p[3], str):
+            p[0] = CallFuncion(0, 0, p[1], [])
+        else:
+            p[0] = CallFuncion(0, 0, p[1], p[3])
+    elif (p[2] == '.'):
+        print('Acceso a struct o funcion nativa')
 
 # Definicion de error del analisis sintactico
 
