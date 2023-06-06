@@ -1,10 +1,10 @@
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Abstracto.Retorno import Retorno
 from Abstracto.Tipo import Tipo
 from Simbolo.Scope import Scope
 
 
-class Literal(Expresion):
+class Literal(Exprecion):
     def __init__(self, linea, columna, valor, tipo: Tipo):
         super().__init__(linea, columna)
         self.valor = valor

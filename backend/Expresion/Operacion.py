@@ -1,5 +1,5 @@
 from enum import Enum
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Abstracto.Retorno import Retorno
 from Simbolo.Scope import Scope
 
@@ -22,9 +22,9 @@ Raises:
     ValueError: El valor del hijo izquierdo de la operacion es None
     ValueError: El valor del hijo derecho de la operacion es None
 """
-class Operacion(Expresion):
+class Operacion(Exprecion):
 
-    def __init__(self, linea, columna, izquierda: Expresion, derecha: Expresion, tipo: OpcionOperacion):
+    def __init__(self, linea, columna, izquierda: Exprecion, derecha: Exprecion, tipo: OpcionOperacion):
         super().__init__(linea, columna)
         self.TipoOperacion = ['+', '-', '*', '/', '%', '^']
         self.izquierda = izquierda

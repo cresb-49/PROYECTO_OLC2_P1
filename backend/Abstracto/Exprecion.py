@@ -2,7 +2,7 @@ from Retorno import Retorno
 from Simbolo.Scope import Scope
 
 
-class Expresion:
+class Exprecion:
     def __init__(self, linea, columna):
         self.linea = linea
         self.columna = columna

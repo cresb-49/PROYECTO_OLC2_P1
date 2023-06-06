@@ -8,9 +8,9 @@ class Acceder(Exprecion):
         self.identificador = identificador
 
     def ejecutar(self, scope: Scope) -> Retorno:
-        recuperacion = scope.obtenerVariable(self.identificador);
+        recuperacion = scope.obtenerVariable(self.identificador)
         if (recuperacion == None):
-            raise ValueError("La variable \"" + self.identificador + "\" no existe, Linea: " + self.linea + " ,Columna: " + self.columna);
+            raise ValueError("La variable \"" + self.identificador + "\" no existe, Linea: " + self.linea + " ,Columna: " + self.columna)
         
         #TODO:establecer el tipo de retorno logica no hecha
         return Retorno(recuperacion.valor,None)

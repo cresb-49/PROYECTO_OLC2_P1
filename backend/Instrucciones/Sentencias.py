@@ -7,7 +7,7 @@ from Simbolo.Scope import Scope
 from Detener import Detener
 from Continuar import Continuar
 from Retornar import Retornar
-from Expresion.Literal import Literal
+from Exprecion.Literal import Literal
 
 
 class Sentencias(Instruccion):
@@ -35,3 +35,9 @@ class Sentencias(Instruccion):
                     elif isinstance(elemento, Retornar):
                         ele = elemento.ejecutar(scope)
                         return Retornar(Literal(ele.value, instr.linea, instr.columna, ele.tipo), instr.linea, instr.columna)
+
+
+    def graficar(self, scope, graphviz, subNameNode, padre):
+        #iteramos en cada una de las instrucciones de la lista y ejecutamos su metodo graficar
+        for intructions in self.intrucciones:
+            intructions.graficar(scope, graphviz, subNameNode, padre)

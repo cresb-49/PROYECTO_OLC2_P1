@@ -1,11 +1,11 @@
 from enum import Enum
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Abstracto.Tipo import TipoEnum
 from Abstracto.Tipo import Tipo
 from Abstracto.Retorno import Retorno
 from Simbolo.Scope import Scope
 
-class ObtenerValFuncion(Expresion):
+class ObtenerValFuncion(Exprecion):
 
     def __init__(self, linea, columna, identificador, parametros):
         super().__init__(linea, columna)

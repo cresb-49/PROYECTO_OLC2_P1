@@ -1,5 +1,5 @@
 from Abstracto.Instruccion import Instruccion
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Abstracto.Tipo import Tipo
 from Abstracto.Tipo import TipoEnum
 from Simbolo.Scope import Scope
@@ -11,7 +11,7 @@ from Instrucciones.Retornar import Retornar
 
 
 class Mientras(Instruccion):
-    def __init__(self, linea, columna, condicion: Expresion, sentencias: Sentencias | None):
+    def __init__(self, linea, columna, condicion: Exprecion, sentencias: Sentencias | None):
         super().__init__(linea, columna)
         self.condicion = condicion
         self.sentencias = sentencias

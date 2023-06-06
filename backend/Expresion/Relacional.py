@@ -1,5 +1,5 @@
 from enum import Enum
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Abstracto.Tipo import TipoEnum
 from Abstracto.Tipo import Tipo
 from Abstracto.Retorno import Retorno
@@ -14,8 +14,8 @@ class OpcionRelacional(Enum):
     MAYOR_IGUAL = 5
 
 
-class Relacional(Expresion):
-    def __init__(self, linea, columna, izquierda: Expresion, derecha: Expresion, tipo: OpcionRelacional):
+class Relacional(Exprecion):
+    def __init__(self, linea, columna, izquierda: Exprecion, derecha: Exprecion, tipo: OpcionRelacional):
         super().__init__(linea, columna)
         self.TipoRelacional = ['==', '!=', '<', '>', '<=', '>=']
         self.izquierda = izquierda

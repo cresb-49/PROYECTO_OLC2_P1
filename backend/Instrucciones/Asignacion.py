@@ -1,12 +1,12 @@
 from Abstracto.Instruccion import Instruccion
 from Abstracto.Tipo import Tipo
 from Abstracto.Tipo import TipoEnum
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Simbolo.Scope import Scope
 
 
 class Asignacion(Instruccion):
-    def __init__(self, linea, columna, identificador: str, valor: Expresion):
+    def __init__(self, linea, columna, identificador: str, valor: Exprecion):
         super().__init__(linea, columna)
         self.id= identificador
         self.valor = valor

@@ -1,5 +1,5 @@
 from enum import Enum
-from Abstracto.Exprecion import Expresion
+from Abstracto.Exprecion import Exprecion
 from Abstracto.Tipo import TipoEnum
 from Abstracto.Tipo import Tipo
 from Abstracto.Retorno import Retorno
@@ -12,8 +12,8 @@ class OpcionLogica(Enum):
     NOT = 2
 
 
-class Logica(Expresion):
-    def __init__(self, linea, columna, izquierda: Expresion, derecha: Expresion, tipo: OpcionLogica):
+class Logica(Exprecion):
+    def __init__(self, linea, columna, izquierda: Exprecion, derecha: Exprecion, tipo: OpcionLogica):
         super().__init__(linea, columna)
         self.valOperacion = ['&&', '||', '!']
         self.izquierda = izquierda
