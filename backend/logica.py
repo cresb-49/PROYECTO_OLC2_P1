@@ -427,8 +427,11 @@ class Continuar(Instruccion):
 
 
 class Declaracion(Instruccion):
-    def __init__(self, linea, columna):
+    def __init__(self, linea, columna, identificador, tipo: Tipo, exprecion: Exprecion):
         super().__init__(linea, columna)
+        self.id = identificador
+        self.valor = exprecion
+        self.tipo = tipo
 
     def ejecutar(self, scope: Scope) -> any:
         result = self.valor.ejecutar(scope)

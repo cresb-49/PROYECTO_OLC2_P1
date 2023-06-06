@@ -13,6 +13,10 @@ function ejemplos() {
     console.log(x);//0 --> La variable nunca fue modificada
 }
 
+function ejemplo2(){
+    let x = 0;
+}
+
 ejemplos();
 console.log(x); //15
 console.log(str);//Ejemplo --> Modificada dentro de ejemplo()

@@ -11,25 +11,47 @@ from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
 from logica import Scope
 from logica import Literal
 from logica import Acceder
-from logica import Acceder
+from logica import Declaracion
+from logica import Tipo
+from logica import TipoEnum
 # Inicio de la gramatica
+
+memoria = Pila()
+contador = 0
+registro = []
+
+
+def decla_variable(declaracion: Declaracion, tipo: Tipo):
+    scope: Scope = memoria.obtener_tope()
+    scope.declarar_variable(declaracion.id, None, tipo, 0, 0)
 
 
 def p_init(p):
     """init : limit_intrucciones"""
+    memoria.desapilar()
+    p[0] = registro
 
 # Intrucciones limitadas solo al ambito global
 
 
 def p_limit_intrucciones(p):
-    """limit_intrucciones : limit_intrucciones limit_intruccion
-                          | limit_intruccion"""
+    """limit_intrucciones : limit_intrucciones limit_intruccion"""
+
+
+def p_limit_intrucciones_2(p):
+    """limit_intrucciones : limit_intruccion"""
+    print('Generacion Entorno Global')
+    entorno = Scope(memoria.obtener_tope())
+    memoria.apilar(entorno)
+    registro.append(entorno)
+    print(p[1])
     # TODO: Aqui es donde se inicializa el scope global, este es el scope 0
 
 
 def p_limit_intruccion(p):
     """limit_intruccion : instruccion
                         | funcion"""
+    p[0] = p[1]
 
 # Intrucciones que pueden estar dentro de sentencias de control, no podemos
 # declarar funciones dentro de las sentencias de control
@@ -41,6 +63,10 @@ def p_instrucciones(p):
 
 def p_instrucciones_2(p):
     """instrucciones : instruccion"""
+    print('Generacion Entorno Local')
+    entorno = Scope(memoria.obtener_tope())
+    memoria.apilar(entorno)
+    registro.append(entorno)
     # TODO: Aqui es donde se inicializa un scope local, crear una pila para numerar los scopes
 
 
@@ -56,6 +82,7 @@ def p_instruccion(p):
                    | continuar
                    | romper
                    | retorno"""
+    p[0] = p[1]
 
 # Intrucion console.log
 
@@ -91,6 +118,7 @@ def p_ciclo_for(p):
                  | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
+    memoria.desapilar()
 
 
 def p_declaracion_for(p):
@@ -111,6 +139,7 @@ def p_condicional_if(p):
                       | IF LPAR exprecion RPAR LKEY instrucciones RKEY
                       | IF LPAR exprecion RPAR LKEY instrucciones RKEY continuacion_if
                       | IF LPAR exprecion RPAR LKEY RKEY continuacion_if"""
+    memoria.desapilar()
 
 
 def p_continuacion_if(p):
@@ -120,6 +149,7 @@ def p_continuacion_if(p):
                        | ELSE IF LPAR exprecion RPAR LKEY RKEY
                        | ELSE IF LPAR exprecion RPAR LKEY instrucciones RKEY continuacion_if
                        | ELSE IF LPAR exprecion RPAR LKEY RKEY continuacion_if"""
+    memoria.desapilar()
 
 # Declaracion de un struct
 
@@ -154,6 +184,7 @@ def p_parametros(p):
 def p_ciclo_while(p):
     """ciclo_while : WHILE LPAR exprecion RPAR LKEY RKEY
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
+    memoria.desapilar()
 
 # Declaracion de una funcion
 
@@ -163,7 +194,7 @@ def p_funcion(p):
                | FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY
                | FUNCTION ID LPAR RPAR LKEY instrucciones RKEY
                | FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
-
+    memoria.desapilar()
     # TODO: Eliminar prueba de codigo de funciones
     print("Funcion encontrada", p[2])
 
@@ -182,8 +213,10 @@ def p_declaracion(p):
                    | LET ID IGUAL exprecion SEMICOLON
                    | LET ID COLON tipo SEMICOLON
                    | LET ID SEMICOLON"""
-
-    print("Declaracion de variable", p[2])
+    if (p[3] == ':'):
+        p[0] = Declaracion(0, 0, p[2], p[4], Literal(0, 0, None, Tipo(TipoEnum.ANY, None)))
+    else:
+        p[0] = Declaracion(0, 0, p[2], Tipo(TipoEnum.ANY, None), Literal(0, 0, None, Tipo(TipoEnum.ANY, None)))
 
 # Instruccion de asignacion
 
@@ -205,6 +238,17 @@ def p_base(p):
             | BOOLEAN
             | STRING
             | ID"""
+
+    if (p[1] == 'number'):
+        p[0] = Tipo(TipoEnum.NUMBER, None)
+    elif (p[1] == 'any'):
+        p[0] = Tipo(TipoEnum.ANY, None)
+    elif (p[1] == 'boolean'):
+        p[0] = Tipo(TipoEnum.BOOLEAN, None)
+    elif (p[1] == 'string'):
+        p[0] = Tipo(TipoEnum.STRING, None)
+    else:
+        p[0] = Tipo(TipoEnum.STRUCT, p[1])
 
 
 # Asociación de operadores y precedencia anterior
@@ -287,6 +331,7 @@ def p_error(t):
 
 # Declaracion de inicio del parser
 parser = yacc.yacc()
+
 
 def parse(input):
     return parser.parse(input)
