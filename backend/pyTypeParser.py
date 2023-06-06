@@ -8,7 +8,10 @@ from ED.Pila import Pila
 from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
 
 # Clases referentes a la tabla de simbolos
-
+from logica import Scope
+from logica import Literal
+from logica import Acceder
+from logica import Acceder
 # Inicio de la gramatica
 
 
