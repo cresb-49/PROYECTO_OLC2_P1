@@ -288,13 +288,5 @@ def p_error(t):
 # Declaracion de inicio del parser
 parser = yacc.yacc()
 
-# Apertura y lectura del archivo de entrada
-archivo = open("backend/entrada.ts", "r")
-input = archivo.read()
-
-
 def parse(input):
     return parser.parse(input)
-
-
-parse(input)

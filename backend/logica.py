@@ -35,6 +35,11 @@ class OpcionRelacional(Enum):
     MENOR_IGUAL = 4
     MAYOR_IGUAL = 5
 
+
+class OpcionPara(Enum):
+    SUM_PARA = 0
+    RES_PARA = 1
+
 ##### CLASE TIPO ######
 
 
@@ -516,59 +521,54 @@ class Mientras(Instruccion):
                     "La condicion de Mientras no es de tipo Boolean Linea: "+self.linea+" ,Columna: "+self.columna)
 
 
-class OpcionPara(Enum):
-    SUM_PARA = 0
-    RES_PARA = 1
-
-
 class Para(Instruccion):
-    def __init__(self, linea, columna, opPara: int, valVar: Exprecion, varIterator: str, sentencias: Sentencias, expr: Exprecion):
+    def __init__(self, linea, columna, op_para: int, val_var: Exprecion, var_iterator: str, sentencias: Sentencias, expr: Exprecion):
         super().__init__(linea, columna)
-        self.opPara = opPara
-        self.valVar = valVar
-        self.varIterator = varIterator
+        self.op_para = op_para
+        self.val_var = val_var
+        self.var_iterator = var_iterator
         self.sentencias = sentencias
         self.expr = expr
 
     def ejecutar(self, scope: Scope) -> any:
-        newScope = Scope
+        new_scope = Scope
         paso = 0
-        if (self.opPara == OpcionPara.SUM_PARA):
+        if (self.op_para == OpcionPara.SUM_PARA):
             paso = 1
         else:
             paso = -1
 
-        exp1 = Acceder(self.varIterator, self.linea, self.columna)
+        exp1 = Acceder(self.var_iterator, self.linea, self.columna)
         exp2 = Literal(paso, self.linea, self.columna, Tipo.INT)
 
-        value = self.valVar.ejecutar(newScope)
-        newScope.declararVariable(
-            self.varIterator, value.value, Tipo.INT, self.linea, self.columna)
+        value = self.val_var.ejecutar(new_scope)
+        new_scope.declararVariable(
+            self.var_iterator, value.value, Tipo.INT, self.linea, self.columna)
 
-        newVal = Operacion(exp1, exp2, OpcionOperacion.SUMA,
-                           self.linea, self.columna)
-        asignar = Asignacion(self.varIterator, newVal,
+        new_val = Operacion(exp1, exp2, OpcionOperacion.SUMA,
+                            self.linea, self.columna)
+        asignar = Asignacion(self.var_iterator, new_val,
                              self.linea, self.columna)
 
-        condicion = self.expr.ejecutar(newScope)
+        condicion = self.expr.ejecutar(new_scope)
 
         if (condicion.tipo != Tipo.BOOLEAN):
             raise ValueError(
                 "La condicion de Para no es Boolean Linea: "+self.linea+" ,Columna: "+self.columna)
 
         while (condicion.value):
-            result = self.sentencias.ejecutarPara(newScope)
+            result = self.sentencias.ejecutarPara(new_scope)
             if (isinstance(Detener, result)):
                 break
             elif (isinstance(Continuar, result)):
-                asignar.ejecutar(newScope)
-                condicion = self.expr.ejecutar(newScope)
+                asignar.ejecutar(new_scope)
+                condicion = self.expr.ejecutar(new_scope)
                 continue
             elif (isinstance(Retornar, result)):
                 return result
 
-            asignar.ejecutar(newScope)
-            condicion = self.expr.ejecutar(newScope)
+            asignar.ejecutar(new_scope)
+            condicion = self.expr.ejecutar(new_scope)
             if (condicion.tipo != Tipo.BOOLEAN):
                 raise ValueError(
                     "La condicion de Para no es Boolean Linea: "+self.linea+" ,Columna: "+self.columna)
@@ -645,6 +645,8 @@ class Si(Instruccion):
             self.code_false.graficar(
                 scope, graphviz, self.code_true, self.sub_name_node, node_sino)
 
+
+#### Diccionario Tabla de Simbolos ####
 
 class Funciones:
     def __init__(self):
