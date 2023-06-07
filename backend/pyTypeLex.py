@@ -83,11 +83,6 @@ def t_STRCS(t):
 
 def t_NUM(t):
     r'(\d+|\d+\.\d+)'
-    try:
-        t.value = float(t.value)
-    except ValueError:
-        print("Float value too large %d", t.value)
-        t.value = 0
     return t
 
 

@@ -13,17 +13,23 @@ class Relacional(Abstract):
         val_derecho = self.expresion_derecha.ejecutar(scope)
 
         if (self.tipo == "==="):
-            return val_izquierdo == val_derecho
+            result = val_izquierdo['value'] == val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == "!=="):
-            return val_izquierdo != val_derecho
+            result = val_izquierdo['value'] != val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == "<"):
-            return val_izquierdo < val_derecho
+            result = val_izquierdo['value'] < val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == ">"):
-            return val_izquierdo > val_derecho
+            result = val_izquierdo['value'] > val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == "<="):
-            return val_izquierdo <= val_derecho
+            result = val_izquierdo['value'] <= val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == ">="):
-            return val_izquierdo >= val_derecho
+            result = val_izquierdo['value'] >= val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         num = graphviz.declaraciones.length + 1

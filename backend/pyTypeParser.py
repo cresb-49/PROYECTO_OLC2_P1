@@ -458,33 +458,41 @@ def p_sub_exprecion(p):
 
 
 def p_sub_exprecion_2(p):
-    """sub_exprecion : NULL
-                     | NUM
-                     | STR
-                     | STRCS
-                     | TRUE
-                     | FALSE"""
-
-    if (p[1] == None):
-        p[0] = Primitivo(p.lineno(1), find_column(
-            input, p.slice[1]), 'null', p[1])
-    elif isinstance(p[1], float):
-        p[0] = Primitivo(p.lineno(1), find_column(
-            input, p.slice[1]), 'number', p[1])
-    elif isinstance(p[1], str):
-        p[0] = Primitivo(p.lineno(1), find_column(
-            input, p.slice[1]), 'string', p[1])
-    elif isinstance(p[1], bool):
-        p[0] = Primitivo(p.lineno(1), find_column(
-            input, p.slice[1]), 'boolean', p[1])
-
+    """sub_exprecion : NULL"""
+    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'null', None)
 
 def p_sub_exprecion_3(p):
+    """sub_exprecion : NUM"""
+    result = 0
+    try:
+        result = float(p[1])
+    except ValueError:
+        print("Float value too large %d", p[1])
+    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'number', result)
+
+
+def p_sub_exprecion_4(p):
+    """sub_exprecion : STR"""
+    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'string', p[1])
+
+def p_sub_exprecion_5(p):
+    """sub_exprecion : STRCS"""
+    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'string', p[1])
+
+def p_sub_exprecion_6(p):
+    """sub_exprecion : TRUE"""
+    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'boolean', True)
+
+def p_sub_exprecion_7(p):
+    """sub_exprecion : FALSE"""
+    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'boolean', False)
+
+def p_sub_exprecion_8(p):
     """sub_exprecion : ID"""
     p[0] = Acceder(p.lineno(1), find_column(input, p.slice[1]), p[1])
 
 
-def p_sub_exprecion_4(p):
+def p_sub_exprecion_9(p):
     """sub_exprecion : ID LPAR RPAR
                      | ID LPAR parametros RPAR
                      | ID DOT ID

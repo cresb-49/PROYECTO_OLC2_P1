@@ -13,13 +13,15 @@ class Logico(Abstract):
 
         if (self.tipo_operacion == "&&"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-            return val_izquierdo == val_derecho
+            result = val_izquierdo['value'] and val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "||"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-            return val_izquierdo != val_derecho
+            result = val_izquierdo['value'] or val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "!"):
-            val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-            return val_izquierdo < val_derecho
+            result = not val_derecho['value']
+            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         num = graphviz.declaraciones.length + 1
