@@ -278,28 +278,28 @@ def p_funcion(p):
     """funcion : FUNCTION ID LPAR RPAR LKEY RKEY"""
     memoria.desapilar()
     p[0] = Funcion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], 'any', None, None)
+        input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
 
 
 def p_funcion_2(p):
     """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY"""
     memoria.desapilar()
     p[0] = Funcion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], 'any', p[4], None)
+        input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
 
 
 def p_funcion_3(p):
     """funcion : FUNCTION ID LPAR RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
     p[0] = Funcion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], 'any', None, p[6])
+        input, p.slice[1]), p[2], TipoEnum.ANY, None, p[6])
 
 
 def p_funcion_4(p):
     """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], 'any', p[4], p[7])
+    p[0] = Funcion(p.lineno(1), find_column(input, p.slice[1]),
+                   p[2], TipoEnum.ANY, p[4], p[7])
 
 # Seccion de declaracion de parametros de una funcion
 
@@ -320,7 +320,7 @@ def p_declaracion(p):
 def p_declaracion_2(p):
     """declaracion : LET ID IGUAL exprecion SEMICOLON"""
     p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], 'any', p[4])
+        input, p.slice[1]), p[2], None, p[4])
 
 
 def p_declaracion_3(p):
@@ -332,7 +332,7 @@ def p_declaracion_3(p):
 def p_declaracion_4(p):
     """declaracion : LET ID SEMICOLON"""
     p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], 'any', None)
+        input, p.slice[1]), p[2], TipoEnum.ANY, None)
 
 # Instruccion de asignacion
 
@@ -526,8 +526,8 @@ def p_error(t):
     print(t)
     print("Error sintáctico en '%s'" % t.value)
     # TODO: Realizar implementacion para recuperar numero de linea y columna en error sintactico
-    tabla_errores.addError(
-        'Sintactico', "Error sintáctico en '%s'" % t.value, t.lineno(1), find_column(input, t.slice[1]))
+    tabla_errores.addError('Sintactico', "Error sintáctico en '%s'" %
+                           t.value, t.lineno(1), find_column(input, t.slice[1]))
 
 
 # Declaracion de inicio del parser
