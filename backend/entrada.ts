@@ -1,6 +1,7 @@
 //Ejemplo 1: Entornos. Variables globales y locales
 let x: number = (3 * 5);//15
 let str = "Saludo";
+let str2 = 'Saludo';
 
 function ejemplos() {
     str = "Ejemplo";

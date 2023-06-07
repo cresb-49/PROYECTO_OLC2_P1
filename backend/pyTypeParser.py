@@ -49,8 +49,8 @@ registro = []
 def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
         scope: Scope = memoria.obtener_tope()
-        scope.declarar_variable(
-            instruccion.id, None, instruccion.tipo, instruccion.linea, instruccion.columna)
+        tipo_secundario = None
+        scope.declarar_variable(instruccion.id, None, instruccion.tipo,tipo_secundario, instruccion.linea, instruccion.columna)
     if isinstance(instruccion, Funcion):
         scope: Scope = memoria.obtener_tope()
         scope.declarar_funcion(instruccion.id, instruccion)

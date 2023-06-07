@@ -1,13 +1,14 @@
 class Simbolo:
-    def __init__(self, valor, id_, tipo, linea, columna):
+    def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna):
         self.valor = valor
         self.id = id_
         self.tipo = tipo
+        self.tipo_secundario = tipo_secundario
         self.linea = linea
         self.columna = columna
-        
+
     def __str__(self) -> str:
-        return f"Variable: {self.id}, Tipo: {self.tipo}, Valor: {self.valor}, Línea: {self.linea}, Columna: {self.columna}"
+        return f"Variable: {self.id}, Tipo: {self.tipo}, Tipo_Secundario: {self.tipo_secundario}, Valor: {self.valor}, Línea: {self.linea}, Columna: {self.columna}"
 
 
 class Scope:
@@ -17,18 +18,17 @@ class Scope:
         self.funciones = Funciones()
         self.nombre = id(self)
         self.tipo = ''
-    
-    def identificar(self,nombre,tipo):
+
+    def identificar(self, nombre, tipo):
         self.tipo = tipo
         self.nombre = nombre
 
     def __str__(self) -> str:
         return f"Nombre: {self.nombre}, Tipo: {self.tipo}"
 
-
-    def declarar_variable(self, id: str, valor: any, tipo, linea, columna):
+    def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario, linea, columna):
         try:
-            self.variables.add(id, Simbolo(valor, id, tipo, linea, columna))
+            self.variables.add(id, Simbolo(valor, id, tipo, tipo_secundario, linea, columna))
         except ValueError as error:
             print(f"Se produjo un error: {str(error)}")
 
