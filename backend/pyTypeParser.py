@@ -70,6 +70,7 @@ def p_limit_intrucciones_2(p):
     p[0] = sentencias
     print('Generacion Entorno Global')
     entorno = Scope(memoria.obtener_tope())
+    entorno.tipo = 'Global'
     memoria.apilar(entorno)
     registro.append(entorno)
     decla_var_fun(p[1])
@@ -100,6 +101,7 @@ def p_instrucciones_2(p):
     p[0] = sentencias
     print('Generacion Entorno Local')
     entorno = Scope(memoria.obtener_tope())
+    entorno.tipo = 'Local'
     memoria.apilar(entorno)
     registro.append(entorno)
     decla_var_fun(p[1])
@@ -161,6 +163,7 @@ def p_ciclo_for(p):
     scope: Scope = memoria.desapilar()
     anterior = scope.anterior
     scope_interior_for: Scope = Scope(anterior)
+    scope_interior_for.tipo = 'Local'
     registro.pop()
     registro.append(scope_interior_for)
     registro.append(scope)

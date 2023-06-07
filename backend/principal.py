@@ -17,6 +17,6 @@ for n in result.sentencias.intrucciones:
 print('#### ENTORNOS GENERADOS')
 for n in result.tabla_simbolos:
     if isinstance(n,Scope):
-        print('Actual',n,'Anterior',n.anterior)
+        print('Scope ->',n,", Anterior ->",n.anterior)
         for x in n.variables.get_diccionario():
-            print(x)
+            print('  ',n.variables.get_diccionario()[x])

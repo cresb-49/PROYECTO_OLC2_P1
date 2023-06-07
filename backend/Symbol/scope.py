@@ -5,6 +5,9 @@ class Simbolo:
         self.tipo = tipo
         self.linea = linea
         self.columna = columna
+        
+    def __str__(self) -> str:
+        return f"Variable: {self.id}, Tipo: {self.tipo}, Valor: {self.valor}, Línea: {self.linea}, Columna: {self.columna}"
 
 
 class Scope:
@@ -12,6 +15,16 @@ class Scope:
         self.anterior = anterior
         self.variables = Variables()
         self.funciones = Funciones()
+        self.nombre = id(self)
+        self.tipo = ''
+    
+    def identificar(self,nombre,tipo):
+        self.tipo = tipo
+        self.nombre = nombre
+
+    def __str__(self) -> str:
+        return f"Nombre: {self.nombre}, Tipo: {self.tipo}"
+
 
     def declarar_variable(self, id: str, valor: any, tipo, linea, columna):
         try:
