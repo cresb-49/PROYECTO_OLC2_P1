@@ -1,6 +1,4 @@
 from Abstract.abstract import Abstract
-from Instrucciones.funcion import Funcion
-
 
 class Entorno(Abstract):
     def __init__(self, linea, columna, scope_global, intrucciones):
