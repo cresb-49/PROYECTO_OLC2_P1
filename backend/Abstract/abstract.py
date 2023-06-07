@@ -12,5 +12,5 @@ class Abstract(ABC):
         pass
 
     @abstractclassmethod
-    def grficar(self, scope, graphviz, subNameNode, padre):
+    def graficar(self, scope, graphviz, subNameNode, padre):
         pass
