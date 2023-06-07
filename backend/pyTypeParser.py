@@ -8,34 +8,28 @@ from ED.Pila import Pila
 from pyTypeLex import find_column
 from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
 from Models.resultado import Resultado
+from Symbol.scope import Scope
 
-# Clases referentes a la tabla de simbolos
-from logica import Scope
-from logica import Literal
-from logica import Acceder
-from logica import CallFuncion
-from logica import Declaracion
-from logica import Tipo
-from logica import TipoEnum
+# Clases referentes a las expreciones
+from Expresiones.acceder import Acceder
+from Expresiones.aritmetica import Aritmetica
+from Expresiones.logico import Logico
+from Expresiones.primitivo import Primitivo
+from Expresiones.relacional import Relacional
 
-from logica import Operacion
-from logica import OpcionOperacion
-from logica import Relacional
-from logica import OpcionRelacional
-from logica import Logica
-from logica import OpcionLogica
-
-from logica import Asignacion
-from logica import Funcion
-from logica import Si
-from logica import Para
-from logica import Mientras
-from logica import PrintPy
-from logica import Retornar
-from logica import Continuar
-from logica import Detener
-
-from logica import Sentencias
+# Clases referentes a las intrucciones
+from Instrucciones.asignacion import Asignacion
+from Instrucciones.callFuncion import CallFuncion
+from Instrucciones.continuar import Continuar
+from Instrucciones.declaracion import Declaracion
+from Instrucciones.detener import Detener
+from Instrucciones.retornar import Retornar
+from Instrucciones.funcion import Funcion
+from Instrucciones.imprimir import Imprimir
+from Instrucciones.mientras import Mientras
+from Instrucciones.para import Para
+from Instrucciones.sentencias import Sentencias
+from Instrucciones.si import Si
 
 # Inicio de la gramatica
 
@@ -131,20 +125,20 @@ def p_instruccion(p):
 
 def p_print(p):
     """print : CONSOLE DOT ID LPAR exprecion RPAR SEMICOLON"""
-    p[0] = PrintPy(p.lineno(1), find_column(input,p.slice[1]))
+    p[0] = Imprimir(p.lineno(1), find_column(input, p.slice[1]),p[5])
 
 # Instruccion continue
 
 
 def p_continuar(p):
     """continuar : CONTINUE SEMICOLON"""
-    p[0] = Continuar(p.lineno(1), find_column(input,p.slice[1]))
+    p[0] = Continuar(p.lineno(1), find_column(input, p.slice[1]))
 # Instruccion break
 
 
 def p_romper(p):
     """romper : BREAK SEMICOLON"""
-    p[0] = Detener(p.lineno(1), find_column(input,p.slice[1]))
+    p[0] = Detener(p.lineno(1), find_column(input, p.slice[1]))
 
 # Instruccion return
 
@@ -153,9 +147,9 @@ def p_retorno(p):
     """retorno : RETURN SEMICOLON
                | RETURN exprecion SEMICOLON"""
     if len(p) == 3:
-        p[0] = Retornar(p.lineno(1), find_column(input,p.slice[1]), None)
+        p[0] = Retornar(p.lineno(1), find_column(input, p.slice[1]), None)
     else:
-        p[0] = Retornar(p.lineno(1), find_column(input,p.slice[1]), p[2])
+        p[0] = Retornar(p.lineno(1), find_column(input, p.slice[1]), p[2])
 # Producciones de la intruccion for
 
 
@@ -174,7 +168,8 @@ def p_ciclo_for(p):
     memoria.apilar(scope_interior_for)
     decla_var_fun(p[3])
     memoria.desapilar()
-    p[0] = Para(p.lineno(1), find_column(input,p.slice[1]), -1, None, 'none', None, None)
+    p[0] = Para(p.lineno(1), find_column(
+        input, p.slice[1]), 1, p[3], p[5], p[7])
 
 
 def p_declaracion_for(p):
@@ -182,11 +177,11 @@ def p_declaracion_for(p):
                        | LET ID IGUAL exprecion 
     """
     if (p[3] == ':'):
-        p[0] = Declaracion(p.lineno(1), find_column(input,p.slice[1]), p[2], p[4], Literal(
-            0, 0, None, Tipo(TipoEnum.ANY, None)))
+        p[0] = Declaracion(p.lineno(1), find_column(
+            input, p.slice[1]), p[2], p[4], p[6])
     else:
-        p[0] = Declaracion(p.lineno(1), find_column(input,p.slice[1]), p[2], Tipo(TipoEnum.ANY, None), Literal(
-            0, 0, None, Tipo(TipoEnum.ANY, None)))
+        p[0] = Declaracion(p.lineno(1), find_column(
+            input, p.slice[1]), p[2], 'any', p[4])
 
 
 def p_sumador(p):
@@ -202,7 +197,7 @@ def p_condicional_if(p):
                       | IF LPAR exprecion RPAR LKEY instrucciones RKEY continuacion_if
                       | IF LPAR exprecion RPAR LKEY RKEY continuacion_if"""
     memoria.desapilar()
-    p[0] = Si(p.lineno(1), find_column(input,p.slice[1]), p[3], None)
+    p[0] = Si(p.lineno(1), find_column(input, p.slice[1]), p[3], None, None)
 
 
 def p_continuacion_if(p):
@@ -233,7 +228,12 @@ def p_valores(p):
 def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
-    p[0] = CallFuncion(p.lineno(1), find_column(input,p.slice[1]), p[1], None)
+    if len(p) == 5:
+        p[0] = CallFuncion(p.lineno(1), find_column(
+            input, p.slice[1]), p[1], None)
+    else:
+        p[0] = CallFuncion(p.lineno(1), find_column(
+            input, p.slice[1]), p[1], p[3])
 
 # Parametros de llamado de funcion o metodo
 
@@ -249,18 +249,40 @@ def p_ciclo_while(p):
     """ciclo_while : WHILE LPAR exprecion RPAR LKEY RKEY
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
-    p[0] = Mientras(p.lineno(1), find_column(input,p.slice[1]), p[3], None)
+    if len(p) == 7:
+        p[0] = Mientras(0, 0, p[3], None)
+    else:
+        p[0] = Mientras(0, 0, p[3], p[6])
 
 # Declaracion de una funcion
 
 
 def p_funcion(p):
-    """funcion : FUNCTION ID LPAR RPAR LKEY RKEY
-               | FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY
-               | FUNCTION ID LPAR RPAR LKEY instrucciones RKEY
-               | FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
+    """funcion : FUNCTION ID LPAR RPAR LKEY RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(p.lineno(1), find_column(input,p.slice[1]), p[2], None, None)
+    p[0] = Funcion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], 'any', None, None)
+
+
+def p_funcion_2(p):
+    """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY"""
+    memoria.desapilar()
+    p[0] = Funcion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], 'any', p[4], None)
+
+
+def p_funcion_3(p):
+    """funcion : FUNCTION ID LPAR RPAR LKEY instrucciones RKEY"""
+    memoria.desapilar()
+    p[0] = Funcion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], 'any', None, p[6])
+
+
+def p_funcion_4(p):
+    """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
+    memoria.desapilar()
+    p[0] = Funcion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], 'any', p[4], p[7])
 
 # Seccion de declaracion de parametros de una funcion
 
@@ -273,23 +295,34 @@ def p_lista_parametros(p):
 
 
 def p_declaracion(p):
-    """declaracion : LET ID COLON tipo IGUAL exprecion SEMICOLON
-                   | LET ID IGUAL exprecion SEMICOLON
-                   | LET ID COLON tipo SEMICOLON
-                   | LET ID SEMICOLON"""
-    if (p[3] == ':'):
-        p[0] = Declaracion(p.lineno(1), find_column(input,p.slice[1]), p[2], p[4], Literal(
-            0, 0, None, Tipo(TipoEnum.ANY, None)))
-    else:
-        p[0] = Declaracion(p.lineno(1), find_column(input,p.slice[1]), p[2], Tipo(TipoEnum.ANY, None), Literal(
-            0, 0, None, Tipo(TipoEnum.ANY, None)))
+    """declaracion : LET ID COLON tipo IGUAL exprecion SEMICOLON"""
+    p[0] = Declaracion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], p[4], p[6])
+
+
+def p_declaracion_2(p):
+    """declaracion : LET ID IGUAL exprecion SEMICOLON"""
+    p[0] = Declaracion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], 'any', p[4])
+
+
+def p_declaracion_3(p):
+    """declaracion : LET ID COLON tipo SEMICOLON"""
+    p[0] = Declaracion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], p[4], None)
+
+
+def p_declaracion_4(p):
+    """declaracion : LET ID SEMICOLON"""
+    p[0] = Declaracion(p.lineno(1), find_column(
+        input, p.slice[1]), p[2], 'any', None)
 
 # Instruccion de asignacion
 
 
 def p_asignacion(p):
     """asignacion : ID IGUAL exprecion SEMICOLON"""
-    p[0] = Asignacion(p.lineno(1), find_column(input,p.slice[1]), p[1], p[3])
+    p[0] = Asignacion(p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
 
 # Producciones referentes al tipo de dato
 
@@ -300,10 +333,7 @@ def p_tipo(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        tipo: Tipo = p[1]
-        tipo.tipo_secundario = tipo.get_tipo_string()
-        tipo.type = TipoEnum.ARRAY
-        p[0] = tipo
+        p[0] = 'array'
 
 
 def p_base(p):
@@ -314,15 +344,15 @@ def p_base(p):
             | ID"""
 
     if (p[1] == 'number'):
-        p[0] = Tipo(TipoEnum.NUMBER, None)
+        p[0] = p[1]
     elif (p[1] == 'any'):
-        p[0] = Tipo(TipoEnum.ANY, None)
+        p[0] = p[1]
     elif (p[1] == 'boolean'):
-        p[0] = Tipo(TipoEnum.BOOLEAN, None)
+        p[0] = p[1]
     elif (p[1] == 'string'):
-        p[0] = Tipo(TipoEnum.STRING, None)
+        p[0] = p[1]
     else:
-        p[0] = Tipo(TipoEnum.STRUCT, p[1])
+        p[0] = 'struct'
 
 
 # Asociación de operadores y precedencia anterior
@@ -356,6 +386,10 @@ precedence = (
 
 def p_exprecion(p):
     """exprecion : MENOS exprecion %prec UMINUS"""
+    izquiera = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]), 'number', -1)
+    p[0] = Aritmetica(p.lineno(1), find_column(
+        input, p.slice[1]), izquiera, p[2], '*')
 
 
 def p_exprecion_2(p):
@@ -364,51 +398,36 @@ def p_exprecion_2(p):
                  | exprecion MULT exprecion
                  | exprecion DIV exprecion
                  | exprecion POTENCIA exprecion
-                 | exprecion MOD exprecion
-                 | exprecion MAQ exprecion
+                 | exprecion MOD exprecion"""
+    p[0] = Aritmetica(p.lineno(2), find_column(
+        input, p.slice[2]), p[1], p[3], p[1])
+
+
+def p_exprecion_3(p):
+    """exprecion : exprecion MAQ exprecion
                  | exprecion MEQ exprecion
                  | exprecion MAIQ exprecion
                  | exprecion MEIQ exprecion
                  | exprecion NEQ exprecion
-                 | exprecion EQ exprecion
-                 | exprecion OR exprecion
-                 | exprecion AND exprecion"""
-    if p[2] == '+':
-        p[0] = Operacion(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionOperacion.SUMA)
-    elif p[2] == '-':
-        p[0] = Operacion(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionOperacion.RESTA)
-    elif p[2] == '*':
-        p[0] = Operacion(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionOperacion.MUL)
-    elif p[2] == '/':
-        p[0] = Operacion(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionOperacion.DIV)
-    elif p[2] == '^':
-        p[0] = Operacion(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionOperacion.POT)
-    elif p[2] == '%':
-        p[0] = Operacion(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionOperacion.MOD)
-    elif p[2] == '>':
-        p[0] = Relacional(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionRelacional.MAYOR)
-    elif p[2] == '<':
-        p[0] = Relacional(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionRelacional.MENOR)
-    elif p[2] == '>=':
-        p[0] = Relacional(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionRelacional.MAYOR_IGUAL)
-    elif p[2] == '<=':
-        p[0] = Relacional(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionRelacional.MENOR_IGUAL)
-    elif p[2] == '<!==':
-        p[0] = Relacional(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionRelacional.DIFERENTE)
-    elif p[2] == '===':
-        p[0] = Relacional(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionRelacional.IGUAL)
-    elif p[2] == '||':
-        p[0] = Logica(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionLogica.OR)
-    elif p[2] == '&&':
-        p[0] = Logica(p.lineno(2), find_column(input,p.slice[2]), p[1], p[3], OpcionLogica.AND)
-
-
-def p_exprecion_3(p):
-    """exprecion : NOT exprecion"""
-    p[0] = Logica(0, 0, None, p[2], OpcionLogica.NOT)
+                 | exprecion EQ exprecion"""
+    p[0] = Relacional(p.lineno(2), find_column(
+        input, p.slice[2]), p[1], p[3], p[1])
 
 
 def p_exprecion_4(p):
+    """exprecion : exprecion OR exprecion
+                 | exprecion AND exprecion"""
+    p[0] = Logico(p.lineno(2), find_column(
+        input, p.slice[2]), p[1], p[3], p[1])
+
+
+def p_exprecion_5(p):
+    """exprecion : NOT exprecion"""
+    p[0] = Logico(p.lineno(1), find_column(
+        input, p.slice[1]), None, p[2], p[1])
+
+
+def p_exprecion_6(p):
     """exprecion : sub_exprecion"""
     p[0] = p[1]
 
@@ -429,13 +448,17 @@ def p_sub_exprecion_2(p):
                      | FALSE"""
 
     if (p[1] == None):
-        p[0] = Literal(p.lineno(1), find_column(input,p.slice[1]), p[1], Tipo(TipoEnum.NULL, None))
+        p[0] = Primitivo(p.lineno(1), find_column(
+            input, p.slice[1]), 'null', p[1])
     elif isinstance(p[1], float):
-        p[0] = Literal(p.lineno(1), find_column(input,p.slice[1]), p[1], Tipo(TipoEnum.NUMBER, None))
+        p[0] = Primitivo(p.lineno(1), find_column(
+            input, p.slice[1]), 'number', p[1])
     elif isinstance(p[1], str):
-        p[0] = Literal(p.lineno(1), find_column(input,p.slice[1]), p[1], Tipo(TipoEnum.STRING, None))
+        p[0] = Primitivo(p.lineno(1), find_column(
+            input, p.slice[1]), 'string', p[1])
     elif isinstance(p[1], bool):
-        p[0] = Literal(p.lineno(1), find_column(input,p.slice[1]), p[1], Tipo(TipoEnum.BOOLEAN, None))
+        p[0] = Primitivo(p.lineno(1), find_column(
+            input, p.slice[1]), 'boolean', p[1])
 
 
 def p_sub_exprecion_3(p):
@@ -451,9 +474,11 @@ def p_sub_exprecion_4(p):
                      | ID DOT ID LPAR exprecion RPAR"""
     if (p[2] == '('):
         if isinstance(p[3], str):
-            p[0] = CallFuncion(p.lineno(1), find_column(input,p.slice[1]), p[1], [])
+            p[0] = CallFuncion(p.lineno(1), find_column(
+                input, p.slice[1]), p[1], [])
         else:
-            p[0] = CallFuncion(p.lineno(1), find_column(input,p.slice[1]), p[1], p[3])
+            p[0] = CallFuncion(p.lineno(1), find_column(
+                input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
         print('Acceso a struct o funcion nativa')
 
