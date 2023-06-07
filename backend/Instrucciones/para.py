@@ -1,4 +1,5 @@
 from Abstract.abstract import Abstract
+from Symbol.scope import Scope
 
 """
 tipo_for = 1 -> for (let i = 0; i < 10; i++) , declaracion, condicion, exprecion

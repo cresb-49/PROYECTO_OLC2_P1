@@ -1,5 +1,5 @@
 from Abstract.abstract import Abstract
-
+from Symbol.scope import Scope
 
 class Sentencias(Abstract):
     def __init__(self, linea, columna, intrucciones:list):
@@ -7,5 +7,6 @@ class Sentencias(Abstract):
         self.intrucciones = intrucciones
 
     def ejecutar(self, scope):
+        scope = Scope(scope)
         for instr in self.intrucciones:
             print(instr)
