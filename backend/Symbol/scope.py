@@ -1,3 +1,5 @@
+from Symbol.tipoEnum import TipoEnum
+
 class Simbolo:
     def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna):
         self.valor = valor

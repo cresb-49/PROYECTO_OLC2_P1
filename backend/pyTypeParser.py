@@ -10,7 +10,7 @@ from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
 from Models.resultado import Resultado
 # from Symbol.scope import Scope
 from Instrucciones.sentencias import Scope
-
+from Symbol.tipoEnum import TipoEnum
 # Clases referentes a las expreciones
 from Expresiones.acceder import Acceder
 from Expresiones.aritmetica import Aritmetica
