@@ -6,15 +6,15 @@ function ejemplos() {
     str = "Ejemplo";
     let x = 0;
     for (let i = 0; i < 10; i++) {
-        let x: number; //Creacion de una variable local
-        x = i * 2;
+        let y: number; //Creacion de una variable local
+        y = i * 2;
         console.log(x);
     }
     console.log(x);//0 --> La variable nunca fue modificada
 }
 
 function ejemplo2(){
-    let x = 0;
+    let z = 0;
 }
 
 ejemplos();
