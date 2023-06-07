@@ -12,4 +12,5 @@ class Asignacion(Abstract):
 
     def ejecutar(self, scope):
         result = self.valor.ejecutar(scope)
-        # scope.modificar_variable(self.id, result.value, result.tipo)
+        #tipo_secundario = None
+        #modificar_variable(self.id, result.value, tipo_secundario):

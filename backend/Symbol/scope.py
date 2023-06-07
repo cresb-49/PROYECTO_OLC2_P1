@@ -32,9 +32,9 @@ class Scope:
         except ValueError as error:
             print(f"Se produjo un error: {str(error)}")
 
-    def modificar_variable(self, id: str, valor: any, tipo):
+    def modificar_variable(self, id: str, valor: any, tipo_secundario):
         if self.variables.has(id):
-            self.variables.update(id, valor, tipo)
+            self.variables.update(id, valor, tipo_secundario)
         else:
             raise ValueError(
                 "No se modificar la variable porque no existe en el scope")
@@ -73,11 +73,11 @@ class Variables:
         else:
             self.diccionario[clave] = valor
 
-    def update(self, clave: str, valor: any, tipo):
+    def update(self, clave: str, valor: any, tipo_secundario):
         if clave in self.diccionario:
             val = self.diccionario[clave]
             val.valor = valor
-            val.tipo = tipo
+            val.tipo_secundario = tipo_secundario
             self.diccionario[clave] = val
         else:
             raise ValueError(
