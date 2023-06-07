@@ -18,7 +18,7 @@ class Si(Abstract):
         else:
             self._else.ejecutar(scope)
 
-    def graficar(self, scope, graphviz, padre):
+    def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1
         nodeSi = "nodo_" + self.subNameNode + "_" + nume
         decl = nodeSi + '[label = "<n>Si"];'
