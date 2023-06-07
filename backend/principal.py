@@ -4,6 +4,7 @@ from pyTypeParser import Scope
 from pyTypeParser import Resultado
 from Instrucciones.entorno import Entorno
 
+import copy
 
 # Apertura y lectura del archivo de entrada
 archivo = open("backend/entrada.ts", "r")
@@ -15,7 +16,11 @@ print('#### PARSER FINALIZADO')
 print('#### INTRUCIONES RECUPERADAS')
 print(result.sentencias)
 
-entorno = Entorno(0, 0, result.tabla_simbolos[0], result.sentencias)
+ambito_global: Scope = copy.deepcopy(result.tabla_simbolos[0])
+
+ambito_global.reboot_variables()
+
+entorno = Entorno(0, 0, ambito_global, result.sentencias)
 
 print('#### ENTORNOS GENERADOS')
 for n in result.tabla_simbolos:
