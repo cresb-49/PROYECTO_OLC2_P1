@@ -7,5 +7,8 @@ class Mientras(Abstract):
         self.condicion = condicion
         self.sentencias = sentencias
 
+    def __str__(self):
+        return f"While -> Condición: {self.condicion}, Sentencias: {self.sentencias}"
+
     def ejecutar(self, scope):
         condicion = self.condicion.ejecutar(scope)

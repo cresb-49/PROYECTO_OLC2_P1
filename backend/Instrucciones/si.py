@@ -8,6 +8,9 @@ class Si(Abstract):
         self.sentencias = sentencias
         self._else = _else
 
+    def __str__(self):
+        return f"If -> Expresión: {self.exprecion}, Sentencias: {self.sentencias}, Else: {self._else}"
+
     def ejecutar(self, scope):
         result = self.exprecion.ejecutar(scope)
         if result:

@@ -20,3 +20,5 @@ for n in result.tabla_simbolos:
         print('Scope ->',n,", Anterior ->",n.anterior)
         for x in n.variables.get_diccionario():
             print('  ',n.variables.get_diccionario()[x])
+        for x in n.funciones.get_diccionario():
+            print('  ',n.funciones.get_diccionario()[x])

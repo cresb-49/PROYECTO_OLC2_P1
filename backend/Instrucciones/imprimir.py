@@ -6,6 +6,9 @@ class Imprimir(Abstract):
         super().__init__(linea, columna)
         self.exprecion = exprecion
 
+    def __str__(self):
+        return f"Print -> Expresión: {self.exprecion}"
+
     def ejecutar(self, scope) -> any:
         resultado = self.exprecion.ejecutar(scope)
         print(resultado)

@@ -7,6 +7,9 @@ class CallFuncion(Abstract):
         self.id = id
         self.parametros = parametros
 
+    def __str__(self):
+        return f"Llamar Funcion: {self.id}, Parámetros: {self.parametros}"
+
     def ejecutar(self, scope):
         fun = scope.obtener_funcion(self.id)
         if (function != None):

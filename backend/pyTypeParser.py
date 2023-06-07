@@ -44,8 +44,9 @@ def decla_var_fun(instruccion):
         scope.declarar_variable(
             instruccion.id, None, instruccion.tipo, instruccion.linea, instruccion.columna)
     if isinstance(instruccion, Funcion):
-        print('Aqui se debe de hacer una declaracion de funcion')
-
+        scope:Scope = memoria.obtener_tope()
+        scope.declarar_funcion(instruccion.id,instruccion)
+       
 
 def p_init(p):
     """init : limit_intrucciones"""
@@ -172,7 +173,7 @@ def p_ciclo_for(p):
     decla_var_fun(p[3])
     memoria.desapilar()
     p[0] = Para(p.lineno(1), find_column(
-        input, p.slice[1]), 1, p[3], p[5], p[7])
+        input, p.slice[1]), 1, p[3], p[5], p[7],None)
 
 
 def p_declaracion_for(p):

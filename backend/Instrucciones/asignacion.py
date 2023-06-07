@@ -7,6 +7,9 @@ class Asignacion(Abstract):
         self.id = id
         self.valor = valor
 
+    def __str__(self):
+        return f"Asignacion: {self.id}, Valor: {self.valor}"
+
     def ejecutar(self, scope):
         result = self.valor.ejecutar(scope)
-        #scope.modificar_variable(self.id, result.value, result.tipo)
+        # scope.modificar_variable(self.id, result.value, result.tipo)
