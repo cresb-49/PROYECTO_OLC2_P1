@@ -11,18 +11,28 @@ class Aritmetica(Abstract):
         val_izquierdo = self.expresion_izquierda.ejecutar(scope)
         val_derecho = self.expresion_derecha.ejecutar(scope)
         
-        if (self.tipo == "+"):
-            return val_izquierdo + val_derecho
-        elif (self.tipo == "-"):
-            return val_izquierdo - val_derecho
-        elif (self.tipo == "*"):
-            return val_izquierdo * val_derecho
-        elif (self.tipo == "/"):
-            return val_izquierdo / val_derecho
-        elif (self.tipo == "%"):
+        #print('Debuj-> Aritmetica -> tipo_operacion: ',self.tipo_operacion)
+        #print('Debuj-> Aritmetica -> Izquierdo: ',val_izquierdo)
+        #print('Debuj-> Aritmetica -> Derecho: ',val_derecho)
+        
+        if (self.tipo_operacion == "+"):
+            result = val_izquierdo['value'] + val_derecho['value']
+            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        elif (self.tipo_operacion == "-"):
+            result = val_izquierdo['value'] - val_derecho['value']
+            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        elif (self.tipo_operacion == "*"):
+            result = val_izquierdo['value'] * val_derecho['value']
+            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        elif (self.tipo_operacion == "/"):
             if val_derecho == 0:
                 raise ValueError ('Error: Divicion entre 0','linea:',self.linea,'columna',self.columna)
-            return val_izquierdo % val_derecho
-        elif (self.tipo == "^"):
-            return val_izquierdo ** val_derecho
+            result = val_izquierdo['value'] / val_derecho['value']
+            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        elif (self.tipo_operacion == "%"):
+            result = val_izquierdo['value'] % val_derecho['value']
+            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        elif (self.tipo_operacion == "^"):
+            result = val_izquierdo['value'] ** val_derecho['value']
+            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         

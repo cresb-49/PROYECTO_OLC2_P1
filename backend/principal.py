@@ -16,7 +16,7 @@ print('#### INTRUCIONES RECUPERADAS')
 for n in result.sentencias.intrucciones:
     print(n)
 
-entorno = Entorno(0,0,result.tabla_simbolos[0],result.sentencias);
+entorno = Entorno(0, 0, result.tabla_simbolos[0], result.sentencias.intrucciones)
 
 print('#### ENTORNOS GENERADOS')
 for n in result.tabla_simbolos:
@@ -28,3 +28,5 @@ for n in result.tabla_simbolos:
             print('  ', n.funciones.get_diccionario()[x])
 
 print(entorno)
+print('#### EJECUCION DEL CODIGO')
+entorno.ejecutar(None)

@@ -412,7 +412,7 @@ def p_exprecion_2(p):
                  | exprecion POTENCIA exprecion
                  | exprecion MOD exprecion"""
     p[0] = Aritmetica(p.lineno(2), find_column(
-        input, p.slice[2]), p[1], p[3], p[1])
+        input, p.slice[2]), p[1], p[3], p[2])
 
 
 def p_exprecion_3(p):
@@ -423,14 +423,14 @@ def p_exprecion_3(p):
                  | exprecion NEQ exprecion
                  | exprecion EQ exprecion"""
     p[0] = Relacional(p.lineno(2), find_column(
-        input, p.slice[2]), p[1], p[3], p[1])
+        input, p.slice[2]), p[1], p[3], p[2])
 
 
 def p_exprecion_4(p):
     """exprecion : exprecion OR exprecion
                  | exprecion AND exprecion"""
     p[0] = Logico(p.lineno(2), find_column(
-        input, p.slice[2]), p[1], p[3], p[1])
+        input, p.slice[2]), p[1], p[3], p[2])
 
 
 def p_exprecion_5(p):

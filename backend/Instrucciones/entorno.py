@@ -6,7 +6,7 @@ class Entorno(Abstract):
     def __init__(self, linea, columna, scope_global, intrucciones: list):
         super().__init__(linea, columna)
         self.scope_global = scope_global
-        self.sentencias = intrucciones
+        self.intrucciones = intrucciones
 
     def __str__(self) -> str:
         return super().__str__()

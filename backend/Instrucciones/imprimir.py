@@ -9,7 +9,6 @@ class Imprimir(Abstract):
     def __str__(self):
         return f"Print -> Expresión: {self.exprecion}"
 
-    def ejecutar(self, scope) -> any:
+    def ejecutar(self, scope):
         resultado = self.exprecion.ejecutar(scope)
         print(resultado)
-        return None
