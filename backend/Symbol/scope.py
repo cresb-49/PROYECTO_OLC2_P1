@@ -39,7 +39,7 @@ class Scope:
             raise ValueError(
                 "No se modificar la variable porque no existe en el scope")
 
-    def obtener_variable(self, id: str) -> Simbolo | None:
+    def obtener_variable(self, id: str) -> any:
         scope = self
         while (scope != None):
             if (scope.variables.has(id)):

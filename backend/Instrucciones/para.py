@@ -30,7 +30,7 @@ class Para(Abstract):
             scope_dentro_for: Scope = Scope(scope)
             self.declaracion.ejecutar(scope_dentro_for)
             self.sentencias.ejecutar(scope_dentro_for)
-            
+
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1
         node = "nodo_" + subNameNode + "_" + nume

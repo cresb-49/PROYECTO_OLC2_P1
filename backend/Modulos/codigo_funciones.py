@@ -15,4 +15,4 @@ class CodigoFunciones():
 
         len(params_entrada)
 
-        return funcion
+        return self.funcion

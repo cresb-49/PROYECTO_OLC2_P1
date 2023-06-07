@@ -14,12 +14,12 @@ class Declaracion(Abstract):
     def ejecutar(self, scope):
         result = self.valor.ejecutar(scope)
         tipo_secundario = None
-        scope.declarar_variable(self.id, result.valor, self.tipo, tipo_secundario, self.linea, self.columna)
+        scope.declarar_variable(
+            self.id, result.valor, self.tipo, tipo_secundario, self.linea, self.columna)
 
-    def graficar(self, scope, graphviz, subNameNode, padre) :
-         nume = graphviz.declaraciones.length + 1
-         node = "nodo_" + subNameNode + "_" + nume
-         decl = node + '[label = "<n>Declaracion"];'
-         graphviz.declaraciones.push(decl)
-         graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
-    
+    def graficar(self, scope, graphviz, subNameNode, padre):
+        nume = graphviz.declaraciones.length + 1
+        node = "nodo_" + subNameNode + "_" + nume
+        decl = node + '[label = "<n>Declaracion"];'
+        graphviz.declaraciones.push(decl)
+        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))

@@ -11,12 +11,24 @@ class Logico(Abstract):
     def ejecutar(self, scope):
         val_derecho = self.expresion_derecha.ejecutar(scope)
 
-        if (self.tipo == "&&"):
+        if (self.tipo_operacion == "&&"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
             return val_izquierdo == val_derecho
-        elif (self.tipo == "||"):
+        elif (self.tipo_operacion == "||"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
             return val_izquierdo != val_derecho
-        elif (self.tipo == "!"):
+        elif (self.tipo_operacion == "!"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
             return val_izquierdo < val_derecho
+
+    def graficar(self, scope, graphviz, subNameNode, padre):
+        num = graphviz.declaraciones.length + 1
+        node = "nodo" + num + \
+            '[label="' + self.tipo_operacion + '",shape="circle"];'
+        graphviz.declaraciones.push(node)
+        if (padre.length != 0):
+            relacion = padre + ' -> ' + "nodo" + num
+            graphviz.relaciones.push(relacion)
+            
+        self.izquierda.graficar(scope, graphviz, ("nodo" + num))
+        self.derecha.graficar(scope, graphviz, ("nodo" + num))
