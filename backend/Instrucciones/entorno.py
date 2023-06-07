@@ -3,7 +3,7 @@ from Instrucciones.funcion import Funcion
 
 
 class Entorno(Abstract):
-    def __init__(self, linea, columna, scope_global, intrucciones: list):
+    def __init__(self, linea, columna, scope_global, intrucciones):
         super().__init__(linea, columna)
         self.scope_global = scope_global
         self.intrucciones = intrucciones
@@ -12,8 +12,4 @@ class Entorno(Abstract):
         return super().__str__()
 
     def ejecutar(self, scope):
-        for instr in self.intrucciones:
-            if isinstance(instr, Funcion):
-                pass
-            else:
-                instr.ejecutar(self.scope_global)
+        self.intrucciones.ejecutar(self.scope_global)

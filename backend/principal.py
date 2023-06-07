@@ -13,10 +13,9 @@ result: Resultado = parser.parse(input)
 print('#### PARSER FINALIZADO')
 
 print('#### INTRUCIONES RECUPERADAS')
-for n in result.sentencias.intrucciones:
-    print(n)
+print(result.sentencias)
 
-entorno = Entorno(0, 0, result.tabla_simbolos[0], result.sentencias.intrucciones)
+entorno = Entorno(0, 0, result.tabla_simbolos[0], result.sentencias)
 
 print('#### ENTORNOS GENERADOS')
 for n in result.tabla_simbolos:

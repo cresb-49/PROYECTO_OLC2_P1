@@ -50,7 +50,8 @@ def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
         scope: Scope = memoria.obtener_tope()
         tipo_secundario = None
-        scope.declarar_variable(instruccion.id, None, instruccion.tipo,tipo_secundario, instruccion.linea, instruccion.columna)
+        scope.declarar_variable(instruccion.id, None, instruccion.tipo,
+                                tipo_secundario, instruccion.linea, instruccion.columna)
     if isinstance(instruccion, Funcion):
         scope: Scope = memoria.obtener_tope()
         scope.declarar_funcion(instruccion.id, instruccion)
@@ -66,16 +67,18 @@ def p_init(p):
 
 def p_limit_intrucciones(p):
     """limit_intrucciones : limit_intrucciones limit_intruccion"""
-    sentencias: Sentencias = p[1]
-    sentencias.intrucciones.append(p[2])
+    sent: Sentencias = p[1]
+    sent.instr_derecha = p[2]
+    sentencias:Sentencias = Sentencias(0, 0, sent, None)
+    # sentencias.intrucciones.append(p[2])
     decla_var_fun(p[2])
     p[0] = sentencias
 
 
 def p_limit_intrucciones_2(p):
     """limit_intrucciones : limit_intruccion"""
-    sentencias = Sentencias(0, 0, [])
-    sentencias.intrucciones.append(p[1])
+    sentencias = Sentencias(0, 0, p[1], None)
+    # sentencias.intrucciones.append(p[1])
     p[0] = sentencias
     print('Generacion Entorno Global')
     entorno = Scope(memoria.obtener_tope())
@@ -97,16 +100,18 @@ def p_limit_intruccion(p):
 
 def p_instrucciones(p):
     """instrucciones : instrucciones instruccion"""
-    sentencias: Sentencias = p[1]
-    sentencias.intrucciones.append(p[2])
+    sent: Sentencias = p[1]
+    sent.instr_derecha = p[2]
+    # sentencias.intrucciones.append(p[2])
+    sentencias: Sentencias = Sentencias(0, 0, sent, None)
     decla_var_fun(p[2])
     p[0] = sentencias
 
 
 def p_instrucciones_2(p):
     """instrucciones : instruccion"""
-    sentencias = Sentencias(0, 0, [])
-    sentencias.intrucciones.append(p[1])
+    sentencias = Sentencias(0, 0, p[1], None)
+    # sentencias.intrucciones.append(p[1])
     p[0] = sentencias
     print('Generacion Entorno Local')
     entorno = Scope(memoria.obtener_tope())
