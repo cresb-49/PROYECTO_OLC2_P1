@@ -1,5 +1,5 @@
 from Abstract.abstract import Abstract
-
+from Symbol.tipoEnum import TipoEnum
 
 class Aritmetica(Abstract):
     def __init__(self, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
@@ -7,6 +7,9 @@ class Aritmetica(Abstract):
         self.expresion_izquierda = expresion_izquierda
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
+
+    def verificarTipos(self):
+        pass
 
     def ejecutar(self, scope):
         val_izquierdo = self.expresion_izquierda.ejecutar(scope)
@@ -18,25 +21,25 @@ class Aritmetica(Abstract):
 
         if (self.tipo_operacion == "+"):
             result = val_izquierdo['value'] + val_derecho['value']
-            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "-"):
             result = val_izquierdo['value'] - val_derecho['value']
-            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "*"):
             result = val_izquierdo['value'] * val_derecho['value']
-            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "/"):
             if val_derecho == 0:
                 raise ValueError('Error: Divicion entre 0',
                                  'linea:', self.linea, 'columna', self.columna)
             result = val_izquierdo['value'] / val_derecho['value']
-            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "%"):
             result = val_izquierdo['value'] % val_derecho['value']
-            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "^"):
             result = val_izquierdo['value'] ** val_derecho['value']
-            return {"value": result, "tipo": "number", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         num = graphviz.declaraciones.length + 1

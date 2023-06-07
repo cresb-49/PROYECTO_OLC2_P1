@@ -1,5 +1,5 @@
 from Abstract.abstract import Abstract
-
+from Symbol.tipoEnum import TipoEnum
 
 class Logico(Abstract):
     def __init__(self, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
@@ -14,14 +14,14 @@ class Logico(Abstract):
         if (self.tipo_operacion == "&&"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
             result = val_izquierdo['value'] and val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "||"):
             val_izquierdo = self.expresion_izquierda.ejecutar(scope)
             result = val_izquierdo['value'] or val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo_operacion == "!"):
             result = not val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         num = graphviz.declaraciones.length + 1

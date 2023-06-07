@@ -1,5 +1,5 @@
 from Abstract.abstract import Abstract
-
+from Symbol.tipoEnum import TipoEnum
 
 class Relacional(Abstract):
     def __init__(self, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
@@ -14,22 +14,22 @@ class Relacional(Abstract):
 
         if (self.tipo == "==="):
             result = val_izquierdo['value'] == val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == "!=="):
             result = val_izquierdo['value'] != val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == "<"):
             result = val_izquierdo['value'] < val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == ">"):
             result = val_izquierdo['value'] > val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == "<="):
             result = val_izquierdo['value'] <= val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         elif (self.tipo == ">="):
             result = val_izquierdo['value'] >= val_derecho['value']
-            return {"value": result, "tipo": "boolean", "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         num = graphviz.declaraciones.length + 1

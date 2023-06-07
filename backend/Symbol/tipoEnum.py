@@ -9,3 +9,4 @@ class TipoEnum(Enum):
     NULL = "null"
     STRUCT = "interface"
     ERROR = "error"
+    ARRAY = "array"

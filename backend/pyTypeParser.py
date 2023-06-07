@@ -69,7 +69,7 @@ def p_limit_intrucciones(p):
     """limit_intrucciones : limit_intrucciones limit_intruccion"""
     sent: Sentencias = p[1]
     sent.instr_derecha = p[2]
-    sentencias:Sentencias = Sentencias(0, 0, sent, None)
+    sentencias: Sentencias = Sentencias(0, 0, sent, None)
     # sentencias.intrucciones.append(p[2])
     decla_var_fun(p[2])
     p[0] = sentencias
@@ -350,7 +350,7 @@ def p_tipo(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = 'array'
+        p[0] = TipoEnum.ARRAY
 
 
 def p_base(p):
@@ -361,15 +361,15 @@ def p_base(p):
             | ID"""
 
     if (p[1] == 'number'):
-        p[0] = p[1]
+        p[0] = TipoEnum.NUMBER
     elif (p[1] == 'any'):
-        p[0] = p[1]
+        p[0] = TipoEnum.ANY
     elif (p[1] == 'boolean'):
-        p[0] = p[1]
+        p[0] = TipoEnum.BOOLEAN
     elif (p[1] == 'string'):
-        p[0] = p[1]
+        p[0] = TipoEnum.STRING
     else:
-        p[0] = 'struct'
+        p[0] = TipoEnum.STRUCT
 
 
 # Asociación de operadores y precedencia anterior
@@ -459,7 +459,9 @@ def p_sub_exprecion(p):
 
 def p_sub_exprecion_2(p):
     """sub_exprecion : NULL"""
-    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'null', None)
+    p[0] = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.NULL, None)
+
 
 def p_sub_exprecion_3(p):
     """sub_exprecion : NUM"""
@@ -468,24 +470,33 @@ def p_sub_exprecion_3(p):
         result = float(p[1])
     except ValueError:
         print("Float value too large %d", p[1])
-    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'number', result)
+    p[0] = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.NUMBER, result)
 
 
 def p_sub_exprecion_4(p):
     """sub_exprecion : STR"""
-    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'string', p[1])
+    p[0] = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]),  TipoEnum.STRING, p[1])
+
 
 def p_sub_exprecion_5(p):
     """sub_exprecion : STRCS"""
-    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'string', p[1])
+    p[0] = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]),  TipoEnum.STRING, p[1])
+
 
 def p_sub_exprecion_6(p):
     """sub_exprecion : TRUE"""
-    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'boolean', True)
+    p[0] = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.BOOLEAN, True)
+
 
 def p_sub_exprecion_7(p):
     """sub_exprecion : FALSE"""
-    p[0] = Primitivo(p.lineno(1), find_column(input, p.slice[1]), 'boolean', False)
+    p[0] = Primitivo(p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.BOOLEAN, False)
+
 
 def p_sub_exprecion_8(p):
     """sub_exprecion : ID"""
