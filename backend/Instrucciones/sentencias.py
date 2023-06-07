@@ -20,3 +20,8 @@ class Sentencias(Abstract):
             self.intr_izquierda.ejecutar(scope)
         if self.instr_derecha != None:
             self.instr_derecha.ejecutar(scope)
+
+    def graficar(self, scope, graphviz, subNameNode, padre):
+        # iteramos en cada una de las instrucciones de la lista y ejecutamos su metodo graficar
+        for intructions in self.intrucciones:
+            intructions.graficar(scope, graphviz, subNameNode, padre)

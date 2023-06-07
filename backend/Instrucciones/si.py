@@ -17,3 +17,19 @@ class Si(Abstract):
             self.sentencias.ejecutar(scope)
         else:
             self._else.ejecutar(scope)
+
+    def graficar(self, scope, graphviz, padre):
+        nume = graphviz.declaraciones.length + 1
+        nodeSi = "nodo_" + self.subNameNode + "_" + nume
+        decl = nodeSi + '[label = "<n>Si"];'
+        graphviz.declaraciones.push(decl)
+        graphviz.relaciones.push((padre + ':n -> ' + nodeSi + ':n'))
+        self.codeTrue.graficar(scope, graphviz, self.subNameNode, nodeSi)
+        if (self.codeFalse != None):
+            nume = graphviz.declaraciones.length + 1
+            nodeSino = "nodo_" + self.subNameNode + "_" + nume
+            decl = nodeSino + '[label = "<n>Sino"];'
+            graphviz.declaraciones.push(decl)
+            graphviz.relaciones.push((nodeSi + ':n -> ' + nodeSino + ':n'))
+            self.codeFalse.graficar(
+                scope, graphviz, self.codeTrue, self.subNameNode, nodeSino)

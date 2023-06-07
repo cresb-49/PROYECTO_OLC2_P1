@@ -11,6 +11,6 @@ class Abstract(ABC):
     def ejecutar(self, scope):
         pass
 
-    #@abstractclassmethod
-    #def grficar(self, scope):
-        #pass
+    @abstractclassmethod
+    def grficar(self, scope, graphviz, subNameNode, padre):
+        pass
