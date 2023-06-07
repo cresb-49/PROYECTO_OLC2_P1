@@ -11,3 +11,7 @@ class Entorno(Abstract):
 
     def ejecutar(self, scope):
         self.intrucciones.ejecutar(self.scope_global)
+
+    #Grafica un entorono enviando instricciones a graphviz, debera implementarse
+    def graficar(self, scope, graphviz, subNameNode, padre):
+        pass
