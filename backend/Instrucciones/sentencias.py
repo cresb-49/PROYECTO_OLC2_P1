@@ -1,6 +1,7 @@
 from Abstract.abstract import Abstract
 from Symbol.scope import Scope
 
+from Instrucciones.funcion import Funcion
 from Instrucciones.continuar import Continuar
 from Instrucciones.detener import Detener
 from Instrucciones.retornar import Retornar
@@ -16,7 +17,10 @@ class Sentencias(Abstract):
         return f"instr: izquierda: {str(self.intr_izquierda)}, derecha: {str(self.instr_derecha)}"
 
     def ejecutar(self, scope):
+        #Verificamos que la instruccion no sea una funcion para no ejecutarla
         if self.intr_izquierda != None:
-            self.intr_izquierda.ejecutar(scope)
+            if not (isinstance(self.intr_izquierda, Funcion)):
+                self.intr_izquierda.ejecutar(scope)
         if self.instr_derecha != None:
-            self.instr_derecha.ejecutar(scope)
+            if not (isinstance(self.instr_derecha, Funcion)):
+                self.instr_derecha.ejecutar(scope)
