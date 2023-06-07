@@ -8,7 +8,7 @@ from ED.Pila import Pila
 from pyTypeLex import find_column
 from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
 from Models.resultado import Resultado
-#from Symbol.scope import Scope
+# from Symbol.scope import Scope
 from Instrucciones.sentencias import Scope
 
 # Clases referentes a las expreciones
@@ -23,9 +23,9 @@ from Instrucciones.asignacion import Asignacion
 from Instrucciones.callFuncion import CallFuncion
 from Instrucciones.declaracion import Declaracion
 
-#from Instrucciones.continuar import Continuar
-#from Instrucciones.detener import Detener
-#from Instrucciones.retornar import Retornar
+# from Instrucciones.continuar import Continuar
+# from Instrucciones.detener import Detener
+# from Instrucciones.retornar import Retornar
 
 from Instrucciones.sentencias import Sentencias
 
@@ -52,9 +52,9 @@ def decla_var_fun(instruccion):
         scope.declarar_variable(
             instruccion.id, None, instruccion.tipo, instruccion.linea, instruccion.columna)
     if isinstance(instruccion, Funcion):
-        scope:Scope = memoria.obtener_tope()
-        scope.declarar_funcion(instruccion.id,instruccion)
-       
+        scope: Scope = memoria.obtener_tope()
+        scope.declarar_funcion(instruccion.id, instruccion)
+
 
 def p_init(p):
     """init : limit_intrucciones"""
@@ -136,7 +136,7 @@ def p_instruccion(p):
 
 def p_print(p):
     """print : CONSOLE DOT ID LPAR exprecion RPAR SEMICOLON"""
-    p[0] = Imprimir(p.lineno(1), find_column(input, p.slice[1]),p[5])
+    p[0] = Imprimir(p.lineno(1), find_column(input, p.slice[1]), p[5])
 
 # Instruccion continue
 
@@ -181,7 +181,7 @@ def p_ciclo_for(p):
     decla_var_fun(p[3])
     memoria.desapilar()
     p[0] = Para(p.lineno(1), find_column(
-        input, p.slice[1]), 1, p[3], p[5], p[7],None)
+        input, p.slice[1]), 1, p[3], p[5], p[7], None)
 
 
 def p_declaracion_for(p):
@@ -456,6 +456,7 @@ def p_sub_exprecion_2(p):
     """sub_exprecion : NULL
                      | NUM
                      | STR
+                     | STRCS
                      | TRUE
                      | FALSE"""
 
@@ -475,7 +476,7 @@ def p_sub_exprecion_2(p):
 
 def p_sub_exprecion_3(p):
     """sub_exprecion : ID"""
-    p[0] = Acceder(0, 0, p[1])
+    p[0] = Acceder(p.lineno(1), find_column(input, p.slice[1]), p[1])
 
 
 def p_sub_exprecion_4(p):

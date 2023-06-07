@@ -29,7 +29,8 @@ reservadas = {
 }
 
 tokens = [
-    'STR',  # Cadena string
+    'STR',  # Cadena string ""
+    'STRCS', # Cadena string ''
     'NUM',  # Valor numerico
     'LPAR',  # (
     'RPAR',  # )
@@ -75,6 +76,10 @@ def t_STR(t):
     t.value = t.value[1:-1].encode().decode("unicode_escape")
     return t
 
+def t_STRCS(t):
+    r'\'.*?\''
+    t.value = t.value[1:-1].encode().decode("unicode_escape")
+    return t
 
 def t_NUM(t):
     r'(\d+|\d+\.\d+)'
