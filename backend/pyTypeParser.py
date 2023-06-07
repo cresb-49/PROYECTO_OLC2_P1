@@ -21,15 +21,22 @@ from Expresiones.relacional import Relacional
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
 from Instrucciones.callFuncion import CallFuncion
-from Instrucciones.continuar import Continuar
 from Instrucciones.declaracion import Declaracion
-from Instrucciones.detener import Detener
-from Instrucciones.retornar import Retornar
+
+#from Instrucciones.continuar import Continuar
+#from Instrucciones.detener import Detener
+#from Instrucciones.retornar import Retornar
+
+from Instrucciones.sentencias import Sentencias
+
+from Instrucciones.sentencias import Continuar
+from Instrucciones.sentencias import Detener
+from Instrucciones.sentencias import Retornar
+
 from Instrucciones.funcion import Funcion
 from Instrucciones.imprimir import Imprimir
 from Instrucciones.mientras import Mientras
 from Instrucciones.para import Para
-from Instrucciones.sentencias import Sentencias
 from Instrucciones.si import Si
 
 # Inicio de la gramatica

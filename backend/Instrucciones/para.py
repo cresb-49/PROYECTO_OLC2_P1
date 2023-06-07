@@ -19,8 +19,14 @@ class Para(Abstract):
     def __str__(self):
         return f"Tipo -> Tipo for: {self.tipo_for}, Declaración: {self.declaracion}, Condición: {self.condicion}, Expresión: {self.expresion}, Sentencias: {self.sentencias}"
 
-    def ejecutar(self):
+    def ejecutar(self, scope):
         if self.tipo_for == 1:
             print('Ejecutamos for tipo 1')
+            scope_dentro_for: Scope = Scope(scope)
+            self.declaracion.ejecutar(scope_dentro_for)
+            self.sentencias.ejecutar(scope_dentro_for)
         else:
             print('Ejecutamos for tipo 2')
+            scope_dentro_for: Scope = Scope(scope)
+            self.declaracion.ejecutar(scope_dentro_for)
+            self.sentencias.ejecutar(scope_dentro_for)

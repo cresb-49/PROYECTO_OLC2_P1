@@ -13,7 +13,7 @@ function ejemplos() {
     console.log(x);//0 --> La variable nunca fue modificada
 }
 
-function ejemplo2(){
+function ejemplo2() {
     let z = 0;
 }
 
