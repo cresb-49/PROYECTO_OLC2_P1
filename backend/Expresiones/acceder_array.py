@@ -18,13 +18,13 @@ class AccederArray(Abstract):
                     try:
                         return array[self.convertir_float_a_int(index['value'])]
                     except Exception:
-                        print('El index debe ser un numero entero')
+                        self.resultado.add_error('Semantico', 'El index debe ser un numero entero', self.linea, self.columna)
                 else:
-                    print('El index es mayor a size del array')
+                    self.resultado.add_error('Semantico', 'El index es mayor a size del array', self.linea, self.columna)
             else:
-                print('El index debe de ser un: number')
+                self.resultado.add_error('Semantico', 'El index debe de ser un: number', self.linea, self.columna)
         else:
-            print('No esta operando un array')
+            self.resultado.add_error('Semantico', 'No esta operando un array', self.linea, self.columna)
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         pass

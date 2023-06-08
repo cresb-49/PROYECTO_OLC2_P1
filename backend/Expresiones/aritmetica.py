@@ -3,8 +3,8 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Aritmetica(Abstract):
-    def __init__(self, resultado,linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
-        super().__init__(resultado,linea, columna)
+    def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
+        super().__init__(resultado, linea, columna)
         self.expresion_izquierda = expresion_izquierda
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
@@ -30,10 +30,9 @@ class Aritmetica(Abstract):
             # si la verificacion se cumple entonces pasamos del metodo
             return True
         else:
-            print('Error: Tipos no coinciden para la operacion ', self.tipo_operacion,
-                  ', Se esperaba number ', self.tipo_operacion, ' number o string ', self.tipo_operacion, ' string y se recibio ', tipo_exprecion_izquierda.value,
-                  ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value,
-                  ' linea:', self.linea, 'columna', self.columna)
+            concat = 'Error: Tipos no coinciden para la operacion ', self.tipo_operacion, ', Se esperaba number ', self.tipo_operacion, ' number o string ', self.tipo_operacion, ' string y se recibio ', tipo_exprecion_izquierda.value, ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
+            self.resultado.add_error(
+                'Semantico', concat, self.linea, self.columna)
             return False
 
     def validar_otrasOperaciones(self, tipo_exprecion_izquierda, tipo_exprecion_der):
@@ -42,10 +41,11 @@ class Aritmetica(Abstract):
             # si la verificacion se cumple entonces pasamos del metodo
             return True
         else:
-            print('Error: Tipos no coinciden para la operacion ', self.tipo_operacion,
-                  ', Se esperaba number ', self.tipo_operacion, ' number y se recibio ', tipo_exprecion_izquierda.value,
-                  ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value,
-                  ' linea:', self.linea, 'columna', self.columna)
+            concat = 'Error: Tipos no coinciden para la operacion ', self.tipo_operacion, ', Se esperaba number ', self.tipo_operacion, ' number y se recibio ', tipo_exprecion_izquierda.value, ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
+
+            self.resultado.add_error(
+                'Semantico', concat, self.linea, self.columna)
+
             return False
 
     def ejecutar(self, scope):

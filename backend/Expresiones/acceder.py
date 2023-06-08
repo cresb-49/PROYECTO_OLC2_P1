@@ -3,15 +3,14 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Acceder(Abstract):
-    def __init__(self, resultado,linea, columna, id):
-        super().__init__(resultado,linea, columna)
+    def __init__(self, resultado, linea, columna, id):
+        super().__init__(resultado, linea, columna)
         self.id = id
 
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)
         if (recuperacion == None):
-            print("La variable", self.id, "no existe, Linea: ",
-                  self.linea, " ,Columna: ", self.columna)
+            self.resultado.add_error('Semantico', "La variable no existe", self.linea, self.columna)
         else:
             if (recuperacion.tipo == TipoEnum.ANY):
                 if recuperacion.tipo_secundario == TipoEnum.NUMBER.value:

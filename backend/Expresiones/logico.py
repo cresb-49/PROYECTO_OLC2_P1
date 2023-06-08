@@ -17,6 +17,9 @@ class Logico(Abstract):
             # si se trata de una suma enviamos a validarla
             return True
         else:
+            concat = 'Error: Tipos no coinciden para la operacion, Se esperaba BOOLEAN y BOOLEAN y se recibio ', tipo_exprecion_izquierda.value, ' y ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
+            self.resultado.add_error(
+                'Semantico', concat, self.linea, self.columna)
             return False
 
     def ejecutar(self, scope):
