@@ -244,11 +244,13 @@ def p_si_continuacion_if(p):
     if len(p) == 10:
         print('Si else con instrucciones')
         memoria.desapilar()
-        heredado = SiContrario(resultado, p.lineno(2), find_column(input, p.slice[2]), p[5], None, None)
+        heredado = SiContrario(resultado, p.lineno(
+            2), find_column(input, p.slice[2]), p[5], None, None)
         p[0] = manejo_if(p, heredado, p[8])
     elif len(p) == 9:
         print('Si else sin instrucciones')
-        heredado = SiContrario(resultado, p.lineno(2), find_column(input, p.slice[2]), p[5], None, None)
+        heredado = SiContrario(resultado, p.lineno(
+            2), find_column(input, p.slice[2]), p[5], None, None)
         p[0] = manejo_if(p, heredado, None)
     else:
         p[0] = {'base': p[1], 'heredado': None}
@@ -272,7 +274,8 @@ def p_base_if(p):
     if len(p) == 8:
         print('Si con instrucciones')
         memoria.desapilar()
-        p[0] = Si(resultado, p.lineno(1), find_column(input, p.slice[1]), p[3], p[6], None)
+        p[0] = Si(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[3], p[6], None)
     else:
         print('Si sin instrucciones')
         p[0] = Si(resultado, p.lineno(1), find_column(
@@ -543,6 +546,8 @@ def p_sub_exprecion_3(p):
         result = float(p[1])
     except ValueError:
         print("Float value too large %d", p[1])
+        resultado.add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(
+            input, p.slice[1]))
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.NUMBER, result)
 
@@ -628,6 +633,8 @@ def p_error(t):
     # TODO: Realizar implementacion para recuperar numero de linea y columna en error sintactico
     tabla_errores.addError('Sintactico', "Error sintáctico en '%s'" %
                            t.value, t.lineno(1), find_column(input, t.slice[1]))
+    resultado.add_error('Sintactico', ('Sintactico', "Error sintáctico en '%s'" %
+                                       t.value),  t.lineno(1), find_column(input, t.slice[1]))
 
 
 # Declaracion de inicio del parser
