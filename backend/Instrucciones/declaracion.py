@@ -34,7 +34,8 @@ class Declaracion(Abstract):
                 scope.declarar_variable(
                     self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
             else:
-                print('No se declaro el array', self.linea, self.columna)
+                self.resultado.add_error(
+                        'Semantico', 'No se declaro el array', self.linea, self.columna)
         else:
             tipo: TipoEnum = result_expresion['tipo']
             scope.declarar_variable(
