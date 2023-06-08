@@ -10,6 +10,9 @@ class SiContrario(Abstract):
         self.sentencias_true = codigo_true
         self.sentencias_false = codigo_false
 
+    def __str__(self):
+        return f"SiContrario: resultado={self.resultado}, linea={self.linea}, columna={self.columna}, exprecion_condicion={self.exprecion_condicion}, sentencias_true={self.sentencias_true}, sentencias_false={self.sentencias_false}"
+
     def ejecutar(self, scope):
         condicion = self.exprecion_condicion.ejecutar(scope)
         if condicion:

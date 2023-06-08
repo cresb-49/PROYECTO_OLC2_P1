@@ -7,6 +7,9 @@ class Contrario(Abstract):
         super().__init__(resultado, linea, columna)
         self.sentencias = sentencias
 
+    def __str__(self):
+        return f"Contrario: resultado={self.resultado}, linea={self.linea}, columna={self.columna}, sentencias={self.sentencias}"
+    
     def ejecutar(self,scope):
         new_scope = Scope(scope)
         result = self.sentencias.ejecutar(new_scope)

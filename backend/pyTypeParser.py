@@ -40,6 +40,8 @@ from Instrucciones.imprimir import Imprimir
 from Instrucciones.mientras import Mientras
 from Instrucciones.para import Para
 from Instrucciones.si import Si
+from Instrucciones.si_contrario import SiContrario
+from Instrucciones.contrario import Contrario
 
 # Inicio de la gramatica
 
@@ -73,7 +75,7 @@ def p_limit_intrucciones(p):
     """limit_intrucciones : limit_intrucciones limit_intruccion"""
     sent: Sentencias = p[1]
     sent.instr_derecha = p[2]
-    sentencias: Sentencias = Sentencias(resultado,0, 0, sent, None)
+    sentencias: Sentencias = Sentencias(resultado, 0, 0, sent, None)
     # sentencias.intrucciones.append(p[2])
     decla_var_fun(p[2])
     p[0] = sentencias
@@ -81,7 +83,7 @@ def p_limit_intrucciones(p):
 
 def p_limit_intrucciones_2(p):
     """limit_intrucciones : limit_intruccion"""
-    sentencias = Sentencias(resultado,0, 0, p[1], None)
+    sentencias = Sentencias(resultado, 0, 0, p[1], None)
     # sentencias.intrucciones.append(p[1])
     p[0] = sentencias
     print('Generacion Entorno Global')
@@ -107,14 +109,14 @@ def p_instrucciones(p):
     sent: Sentencias = p[1]
     sent.instr_derecha = p[2]
     # sentencias.intrucciones.append(p[2])
-    sentencias: Sentencias = Sentencias(resultado,0, 0, sent, None)
+    sentencias: Sentencias = Sentencias(resultado, 0, 0, sent, None)
     decla_var_fun(p[2])
     p[0] = sentencias
 
 
 def p_instrucciones_2(p):
     """instrucciones : instruccion"""
-    sentencias = Sentencias(resultado,0, 0, p[1], None)
+    sentencias = Sentencias(resultado, 0, 0, p[1], None)
     # sentencias.intrucciones.append(p[1])
     p[0] = sentencias
     print('Generacion Entorno Local')
@@ -130,35 +132,41 @@ def p_instruccion(p):
     """instruccion : print
                    | ciclo_for
                    | ciclo_while
-                   | condicional_if
                    | struct
                    | llamar_funcion
                    | declaracion
                    | asignacion
                    | continuar
                    | romper
-                   | retorno"""
+                   | retorno
+                   | error"""  # produccion de error
     p[0] = p[1]
 
+
+def p_instruccion_2(p):
+    """instruccion : condicional_if"""
+    # p[0] = p[1]['principal']
+    p[0] = p[1]
 # Intrucion console.log
 
 
 def p_print(p):
     """print : CONSOLE DOT ID LPAR exprecion RPAR SEMICOLON"""
-    p[0] = Imprimir(resultado,p.lineno(1), find_column(input, p.slice[1]), p[5])
+    p[0] = Imprimir(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[5])
 
 # Instruccion continue
 
 
 def p_continuar(p):
     """continuar : CONTINUE SEMICOLON"""
-    p[0] = Continuar(resultado,p.lineno(1), find_column(input, p.slice[1]))
+    p[0] = Continuar(resultado, p.lineno(1), find_column(input, p.slice[1]))
 # Instruccion break
 
 
 def p_romper(p):
     """romper : BREAK SEMICOLON"""
-    p[0] = Detener(resultado,p.lineno(1), find_column(input, p.slice[1]))
+    p[0] = Detener(resultado, p.lineno(1), find_column(input, p.slice[1]))
 
 # Instruccion return
 
@@ -167,9 +175,11 @@ def p_retorno(p):
     """retorno : RETURN SEMICOLON
                | RETURN exprecion SEMICOLON"""
     if len(p) == 3:
-        p[0] = Retornar(resultado,p.lineno(1), find_column(input, p.slice[1]), None)
+        p[0] = Retornar(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), None)
     else:
-        p[0] = Retornar(resultado,p.lineno(1), find_column(input, p.slice[1]), p[2])
+        p[0] = Retornar(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[2])
 # Producciones de la intruccion for
 
 
@@ -189,7 +199,7 @@ def p_ciclo_for(p):
     memoria.apilar(scope_interior_for)
     decla_var_fun(p[3])
     memoria.desapilar()
-    p[0] = Para(resultado,p.lineno(1), find_column(
+    p[0] = Para(resultado, p.lineno(1), find_column(
         input, p.slice[1]), 1, p[3], p[5], p[7], None)
 
 
@@ -198,10 +208,10 @@ def p_declaracion_for(p):
                        | LET ID IGUAL exprecion 
     """
     if (p[3] == ':'):
-        p[0] = Declaracion(resultado,p.lineno(1), find_column(
+        p[0] = Declaracion(resultado, p.lineno(1), find_column(
             input, p.slice[1]), p[2], p[4], p[6])
     else:
-        p[0] = Declaracion(resultado,p.lineno(1), find_column(
+        p[0] = Declaracion(resultado, p.lineno(1), find_column(
             input, p.slice[1]), p[2], 'any', p[4])
 
 
@@ -213,22 +223,74 @@ def p_sumador(p):
 
 
 def p_condicional_if(p):
-    """condicional_if : IF LPAR exprecion RPAR LKEY RKEY
-                      | IF LPAR exprecion RPAR LKEY instrucciones RKEY
-                      | IF LPAR exprecion RPAR LKEY instrucciones RKEY continuacion_if
-                      | IF LPAR exprecion RPAR LKEY RKEY continuacion_if"""
-    memoria.desapilar()
-    p[0] = Si(resultado,p.lineno(1), find_column(input, p.slice[1]), p[3], None, None)
+    """condicional_if : si_continuacion_if continuacion_if"""
+    print('Si con else')
+    heredado: SiContrario = p[1]['heredado']
+    heredado.sentencias_false = p[2]
+    p[0] = p[1]['base']
+
+
+def p_condicional_if2(p):
+    """condicional_if : si_continuacion_if"""
+    print('Si con else if')
+    print(p[1])
+    p[0] = p[1]['base']
+
+
+def p_si_continuacion_if(p):
+    """si_continuacion_if : si_continuacion_if ELSE IF LPAR exprecion RPAR LKEY instrucciones RKEY
+                          | si_continuacion_if ELSE IF LPAR exprecion RPAR LKEY RKEY
+                          | if_simple"""
+    if len(p) == 10:
+        print('Si else con instrucciones')
+        memoria.desapilar()
+        heredado = SiContrario(resultado, p.lineno(2), find_column(input, p.slice[2]), p[5], None, None)
+        p[0] = manejo_if(p, heredado, p[8])
+    elif len(p) == 9:
+        print('Si else sin instrucciones')
+        heredado = SiContrario(resultado, p.lineno(2), find_column(input, p.slice[2]), p[5], None, None)
+        p[0] = manejo_if(p, heredado, None)
+    else:
+        p[0] = {'base': p[1], 'heredado': None}
+
+
+def manejo_if(p, heredado: SiContrario, instrucciones):
+    heredado.sentencias_true = instrucciones
+    if p[1]['heredado'] == None:
+        base: Si = p[1]['base']
+        base._else = heredado
+        return {'base': p[1]['base'], 'heredado': heredado}
+    else:
+        si_contrario: SiContrario = p[1]['heredado']
+        si_contrario.sentencias_false = heredado
+        return {'base': p[1]['base'], 'heredado': heredado}
+
+
+def p_base_if(p):
+    """if_simple : IF LPAR exprecion RPAR LKEY RKEY
+                 | IF LPAR exprecion RPAR LKEY instrucciones RKEY"""
+    if len(p) == 8:
+        print('Si con instrucciones')
+        memoria.desapilar()
+        p[0] = Si(resultado, p.lineno(1), find_column(input, p.slice[1]), p[3], p[6], None)
+    else:
+        print('Si sin instrucciones')
+        p[0] = Si(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[3], None, None)
 
 
 def p_continuacion_if(p):
     """continuacion_if : ELSE LKEY RKEY
-                       | ELSE LKEY instrucciones RKEY
-                       | ELSE IF LPAR exprecion RPAR LKEY instrucciones RKEY
-                       | ELSE IF LPAR exprecion RPAR LKEY RKEY
-                       | ELSE IF LPAR exprecion RPAR LKEY instrucciones RKEY continuacion_if
-                       | ELSE IF LPAR exprecion RPAR LKEY RKEY continuacion_if"""
-    memoria.desapilar()
+                       | ELSE LKEY instrucciones RKEY"""
+    if len(p) == 5:
+        print('Else con intrucciones')
+        memoria.desapilar()
+        p[0] = Contrario(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[3])
+    else:
+        print('Else sin instrucciones')
+        p[0] = Contrario(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), None)
 
 # Declaracion de un struct
 
@@ -250,10 +312,10 @@ def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
     if len(p) == 5:
-        p[0] = CallFuncion(resultado,p.lineno(1), find_column(
+        p[0] = CallFuncion(resultado, p.lineno(1), find_column(
             input, p.slice[1]), p[1], None)
     else:
-        p[0] = CallFuncion(resultado,p.lineno(1), find_column(
+        p[0] = CallFuncion(resultado, p.lineno(1), find_column(
             input, p.slice[1]), p[1], p[3])
 
 # Parametros de llamado de funcion o metodo
@@ -271,9 +333,9 @@ def p_ciclo_while(p):
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
     if len(p) == 7:
-        p[0] = Mientras(resultado,0, 0, p[3], None)
+        p[0] = Mientras(resultado, 0, 0, p[3], None)
     else:
-        p[0] = Mientras(resultado,0, 0, p[3], p[6])
+        p[0] = Mientras(resultado, 0, 0, p[3], p[6])
 
 # Declaracion de una funcion
 
@@ -281,21 +343,21 @@ def p_ciclo_while(p):
 def p_funcion(p):
     """funcion : FUNCTION ID LPAR RPAR LKEY RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(resultado,p.lineno(1), find_column(
+    p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
 
 
 def p_funcion_2(p):
     """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(resultado,p.lineno(1), find_column(
+    p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
 
 
 def p_funcion_3(p):
     """funcion : FUNCTION ID LPAR RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(resultado,p.lineno(1), find_column(
+    p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, p[6])
 
 
@@ -345,7 +407,8 @@ def p_declaracion_4(p):
 
 def p_asignacion(p):
     """asignacion : ID IGUAL exprecion SEMICOLON"""
-    p[0] = Asignacion(resultado,p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
+    p[0] = Asignacion(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[1], p[3])
 
 # Producciones referentes al tipo de dato
 
@@ -413,9 +476,9 @@ precedence = (
 
 def p_exprecion(p):
     """exprecion : MENOS exprecion %prec UMINUS"""
-    izquiera = Primitivo(resultado,p.lineno(1), find_column(
+    izquiera = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), 'number', -1)
-    p[0] = Aritmetica(resultado,p.lineno(1), find_column(
+    p[0] = Aritmetica(resultado, p.lineno(1), find_column(
         input, p.slice[1]), izquiera, p[2], '*')
 
 
@@ -426,7 +489,7 @@ def p_exprecion_2(p):
                  | exprecion DIV exprecion
                  | exprecion POTENCIA exprecion
                  | exprecion MOD exprecion"""
-    p[0] = Aritmetica(resultado,p.lineno(2), find_column(
+    p[0] = Aritmetica(resultado, p.lineno(2), find_column(
         input, p.slice[2]), p[1], p[3], p[2])
 
 
@@ -437,20 +500,20 @@ def p_exprecion_3(p):
                  | exprecion MEIQ exprecion
                  | exprecion NEQ exprecion
                  | exprecion EQ exprecion"""
-    p[0] = Relacional(resultado,p.lineno(2), find_column(
+    p[0] = Relacional(resultado, p.lineno(2), find_column(
         input, p.slice[2]), p[1], p[3], p[2])
 
 
 def p_exprecion_4(p):
     """exprecion : exprecion OR exprecion
                  | exprecion AND exprecion"""
-    p[0] = Logico(resultado,p.lineno(2), find_column(
+    p[0] = Logico(resultado, p.lineno(2), find_column(
         input, p.slice[2]), p[1], p[3], p[2])
 
 
 def p_exprecion_5(p):
     """exprecion : NOT exprecion"""
-    p[0] = Logico(resultado,p.lineno(1), find_column(
+    p[0] = Logico(resultado, p.lineno(1), find_column(
         input, p.slice[1]), None, p[2], p[1])
 
 
@@ -469,7 +532,7 @@ def p_sub_exprecion(p):
 
 def p_sub_exprecion_2(p):
     """sub_exprecion : NULL"""
-    p[0] = Primitivo(resultado,p.lineno(1), find_column(
+    p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.NULL, None)
 
 
@@ -486,25 +549,25 @@ def p_sub_exprecion_3(p):
 
 def p_sub_exprecion_4(p):
     """sub_exprecion : STR"""
-    p[0] = Primitivo(resultado,p.lineno(1), find_column(
+    p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]),  TipoEnum.STRING, p[1])
 
 
 def p_sub_exprecion_5(p):
     """sub_exprecion : STRCS"""
-    p[0] = Primitivo(resultado,p.lineno(1), find_column(
+    p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]),  TipoEnum.STRING, p[1])
 
 
 def p_sub_exprecion_6(p):
     """sub_exprecion : TRUE"""
-    p[0] = Primitivo(resultado,p.lineno(1), find_column(
+    p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.BOOLEAN, True)
 
 
 def p_sub_exprecion_7(p):
     """sub_exprecion : FALSE"""
-    p[0] = Primitivo(resultado,p.lineno(1), find_column(
+    p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.BOOLEAN, False)
 
 
@@ -530,12 +593,13 @@ def p_exp_array_2(p):
 
 def p_sub_exprecion_9(p):
     """sub_exprecion : ID"""
-    p[0] = Acceder(resultado,p.lineno(1), find_column(input, p.slice[1]), p[1])
+    p[0] = Acceder(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[1])
 
 
 def p_sub_exprecion_10(p):
     """sub_exprecion : exprecion LBRA exprecion RBRA"""
-    p[0] = AccederArray(resultado,p.lineno(2), find_column(
+    p[0] = AccederArray(resultado, p.lineno(2), find_column(
         input, p.slice[2]), p[1], p[3])
 
 
@@ -547,10 +611,10 @@ def p_sub_exprecion_11(p):
                      | ID DOT ID LPAR exprecion RPAR"""
     if (p[2] == '('):
         if isinstance(p[3], str):
-            p[0] = CallFuncion(resultado,p.lineno(1), find_column(
+            p[0] = CallFuncion(resultado, p.lineno(1), find_column(
                 input, p.slice[1]), p[1], [])
         else:
-            p[0] = CallFuncion(resultado,p.lineno(1), find_column(
+            p[0] = CallFuncion(resultado, p.lineno(1), find_column(
                 input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
         print('Acceso a struct o funcion nativa')
