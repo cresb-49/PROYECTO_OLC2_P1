@@ -9,12 +9,13 @@ import copy
 # Apertura y lectura del archivo de entrada
 archivo = open("backend/entrada.ts", "r")
 input = archivo.read()
+input = input + '\n' #Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
 print('#### PARSER EJECUTADO')
 result: Resultado = parser.parse(input)
 print('#### PARSER FINALIZADO')
 
-print('#### INTRUCIONES RECUPERADAS')
-print(result.sentencias)
+#print('#### INTRUCIONES RECUPERADAS')
+#print(result.sentencias)
 
 ambito_global: Scope = copy.deepcopy(result.tabla_simbolos[0])
 

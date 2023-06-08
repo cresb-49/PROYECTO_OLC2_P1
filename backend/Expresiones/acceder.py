@@ -25,7 +25,7 @@ class Acceder(Abstract):
                 elif recuperacion.tipo_secundario == TipoEnum.ARRAY.value:
                     return {"value": recuperacion.valor, "tipo": TipoEnum.ARRAY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (recuperacion.tipo == TipoEnum.ARRAY):
-                return recuperacion.valor
+                return {"value": recuperacion.valor, "tipo": TipoEnum.ARRAY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             else:
                 return {"value": recuperacion.valor, "tipo": recuperacion.tipo, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 

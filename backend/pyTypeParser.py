@@ -316,14 +316,12 @@ def p_lista_parametros(p):
 def p_declaracion(p):
     """declaracion : LET ID COLON tipo IGUAL exprecion SEMICOLON"""
     b: dict = p[4]
-    p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], b['tipo'], b['tipo_secundario'], p[6])
+    p[0] = Declaracion(p.lineno(1), find_column(input, p.slice[1]), p[2], b['tipo'], b['tipo_secundario'], p[6])
 
 
 def p_declaracion_2(p):
     """declaracion : LET ID IGUAL exprecion SEMICOLON"""
-    p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], None, None, p[4])
+    p[0] = Declaracion(p.lineno(1), find_column(input, p.slice[1]), p[2], None, None, p[4])
 
 
 def p_declaracion_3(p):
