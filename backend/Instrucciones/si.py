@@ -1,5 +1,5 @@
 from Abstract.abstract import Abstract
-
+from Symbol.scope import Scope
 
 class Si(Abstract):
     def __init__(self, resultado,linea, columna, exprecion, sentencias, _else):
@@ -14,9 +14,11 @@ class Si(Abstract):
     def ejecutar(self, scope):
         result = self.exprecion.ejecutar(scope)
         if result:
-            self.sentencias.ejecutar(scope)
+            new_scope = Scope(scope)
+            self.sentencias.ejecutar(new_scope)
         else:
-            self._else.ejecutar(scope)
+            new_scope = Scope(scope)
+            self._else.ejecutar(new_scope)
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1

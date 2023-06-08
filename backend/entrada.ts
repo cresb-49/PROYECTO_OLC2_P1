@@ -13,6 +13,6 @@ let palabras: string[] = ["Hola", "Mundo", "en", "TypeScript"];
 let booleanos: boolean[] = [true, false, true];
 let anys: any[] = ["Hola", false, 3];
 
-console.log(palabras);
-console.log(booleanos);
-console.log(anys);
+console.log(palabras[0]);
+console.log(booleanos[0]);
+console.log(anys[0]);
