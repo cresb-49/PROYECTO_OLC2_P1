@@ -3,11 +3,12 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Declaracion(Abstract):
-    def __init__(self, linea, columna, id, tipo, valor):
+    def __init__(self, linea, columna, id, tipo, tipo_secundario, valor):
         super().__init__(linea, columna)
         self.id = id
         self.tipo = tipo
         self.valor = valor
+        self.tipo_secundario = tipo_secundario
 
     def __str__(self):
         return f"Declaracion: {self.id}, Tipo: {self.tipo}, Valor: {self.valor}"
@@ -28,6 +29,11 @@ class Declaracion(Abstract):
             tipo_secundario: TipoEnum = result_expresion['tipo']
             scope.declarar_variable(
                 self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
+        elif self.tipo == TipoEnum.ARRAY:
+            if len(self.valor.arreglo) == len(result_expresion['value']):
+                scope.declarar_variable(self.id, result_expresion, self.tipo, self.tipo_secundario, self.linea, self.columna)
+            else:
+                print('No se declaro el array', self.linea, self.columna)
         else:
             tipo: TipoEnum = result_expresion['tipo']
             scope.declarar_variable(

@@ -10,7 +10,7 @@ class Acceder(Abstract):
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)
         if (recuperacion == None):
-            print("La variable", self.identificador, "no existe, Linea: ",
+            print("La variable", self.id, "no existe, Linea: ",
                   self.linea, " ,Columna: ", self.columna)
         else:
             if (recuperacion.tipo == TipoEnum.ANY):
@@ -24,6 +24,8 @@ class Acceder(Abstract):
                     return {"value": recuperacion.valor, "tipo": TipoEnum.STRUCT, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
                 elif recuperacion.tipo_secundario == TipoEnum.ARRAY.value:
                     return {"value": recuperacion.valor, "tipo": TipoEnum.ARRAY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            elif (recuperacion.tipo == TipoEnum.ARRAY):
+                return recuperacion.valor
             else:
                 return {"value": recuperacion.valor, "tipo": recuperacion.tipo, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 

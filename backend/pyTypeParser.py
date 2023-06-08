@@ -17,6 +17,8 @@ from Expresiones.aritmetica import Aritmetica
 from Expresiones.logico import Logico
 from Expresiones.primitivo import Primitivo
 from Expresiones.relacional import Relacional
+from Expresiones.arreglo import Arreglo
+from Expresiones.acceder_array import AccederArray
 
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
@@ -49,7 +51,7 @@ registro = []
 def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
         scope: Scope = memoria.obtener_tope()
-        tipo_secundario = None
+        tipo_secundario = instruccion.tipo_secundario
         scope.declarar_variable(instruccion.id, None, instruccion.tipo,
                                 tipo_secundario, instruccion.linea, instruccion.columna)
     if isinstance(instruccion, Funcion):
@@ -313,26 +315,28 @@ def p_lista_parametros(p):
 
 def p_declaracion(p):
     """declaracion : LET ID COLON tipo IGUAL exprecion SEMICOLON"""
+    b: dict = p[4]
     p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], p[4], p[6])
+        input, p.slice[1]), p[2], b['tipo'], b['tipo_secundario'], p[6])
 
 
 def p_declaracion_2(p):
     """declaracion : LET ID IGUAL exprecion SEMICOLON"""
     p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], None, p[4])
+        input, p.slice[1]), p[2], None, None, p[4])
 
 
 def p_declaracion_3(p):
     """declaracion : LET ID COLON tipo SEMICOLON"""
+    b: dict = p[4]
     p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], p[4], None)
+        input, p.slice[1]), p[2], b['tipo'], b['tipo_secundario'], None)
 
 
 def p_declaracion_4(p):
     """declaracion : LET ID SEMICOLON"""
     p[0] = Declaracion(p.lineno(1), find_column(
-        input, p.slice[1]), p[2], TipoEnum.ANY, None)
+        input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
 
 # Instruccion de asignacion
 
@@ -350,7 +354,11 @@ def p_tipo(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = TipoEnum.ARRAY
+        b: dict = p[1]
+        tipo_heredado = b['tipo']
+        b['tipo_secundario'] = tipo_heredado.value
+        b['tipo'] = TipoEnum.ARRAY
+        p[0] = b
 
 
 def p_base(p):
@@ -361,15 +369,15 @@ def p_base(p):
             | ID"""
 
     if (p[1] == 'number'):
-        p[0] = TipoEnum.NUMBER
+        p[0] = {"tipo": TipoEnum.NUMBER, "tipo_secundario": None}
     elif (p[1] == 'any'):
-        p[0] = TipoEnum.ANY
+        p[0] = {"tipo": TipoEnum.ANY, "tipo_secundario": None}
     elif (p[1] == 'boolean'):
-        p[0] = TipoEnum.BOOLEAN
+        p[0] = {"tipo": TipoEnum.BOOLEAN, "tipo_secundario": None}
     elif (p[1] == 'string'):
-        p[0] = TipoEnum.STRING
+        p[0] = {"tipo": TipoEnum.STRING, "tipo_secundario": None}
     else:
-        p[0] = TipoEnum.STRUCT
+        p[0] = {"tipo": TipoEnum.STRUCT, "tipo_secundario": p[1]}
 
 
 # Asociación de operadores y precedencia anterior
@@ -499,11 +507,36 @@ def p_sub_exprecion_7(p):
 
 
 def p_sub_exprecion_8(p):
+    """sub_exprecion : LBRA exp_array RBRA"""
+    p[0] = Arreglo(p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.ARRAY, None, p[2])
+
+
+def p_exp_array(p):
+    """exp_array : exp_array COMMA exprecion"""
+    lista: list = p[1]
+    lista.append(p[3])
+    p[0] = lista
+
+
+def p_exp_array_2(p):
+    """exp_array : exprecion"""
+    lista: list = []
+    lista.append(p[1])
+    p[0] = lista
+
+
+def p_sub_exprecion_9(p):
     """sub_exprecion : ID"""
     p[0] = Acceder(p.lineno(1), find_column(input, p.slice[1]), p[1])
 
 
-def p_sub_exprecion_9(p):
+def p_sub_exprecion_10(p):
+    """sub_exprecion : exprecion LBRA exprecion RBRA"""
+    p[0] = AccederArray(p.lineno(2), find_column(input, p.slice[2]), p[1], p[3])
+
+
+def p_sub_exprecion_11(p):
     """sub_exprecion : ID LPAR RPAR
                      | ID LPAR parametros RPAR
                      | ID DOT ID
