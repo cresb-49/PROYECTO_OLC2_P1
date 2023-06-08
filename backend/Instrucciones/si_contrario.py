@@ -2,6 +2,7 @@ from Abstract.abstract import Abstract
 from Symbol.scope import Scope
 from Symbol.tipoEnum import TipoEnum
 
+
 class SiContrario(Abstract):
 
     def __init__(self, resultado, linea, columna, exprecion_condicion, codigo_true, codigo_false):
@@ -28,9 +29,11 @@ class SiContrario(Abstract):
                         new_scope = Scope(scope)
                         return self.sentencias_false.ejecutar(new_scope)
             else:
-                print('Error el else if opera con una exprecion booleana')
+                self.resultado.add_error(
+                    'Semantico', 'Error el else if opera con una exprecion booleana', self.linea, self.columna)
         except Exception:
-            print('No se puede operar la sentencia existe un error anterior')
+            self.resultado.add_error(
+                'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         pass

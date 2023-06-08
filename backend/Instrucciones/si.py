@@ -30,7 +30,8 @@ class Si(Abstract):
             else:
                 print('Error el if opera con una exprecion booleana')
         except Exception:
-            print('No se puede operar la sentencia existe un error anterior')
+            self.resultado.add_error(
+                'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1
