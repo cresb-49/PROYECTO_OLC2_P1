@@ -31,7 +31,8 @@ class Declaracion(Abstract):
                 self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
         elif self.tipo == TipoEnum.ARRAY:
             if len(self.valor.arreglo) == len(result_expresion['value']):
-                scope.declarar_variable(self.id, result_expresion, self.tipo, self.tipo_secundario, self.linea, self.columna)
+                scope.declarar_variable(
+                    self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
             else:
                 print('No se declaro el array', self.linea, self.columna)
         else:
