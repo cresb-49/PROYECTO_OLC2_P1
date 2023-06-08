@@ -3,8 +3,8 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class AccederArray(Abstract):
-    def __init__(self, linea, columna, exprecion, index_exprecion):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, exprecion, index_exprecion):
+        super().__init__(resultado,linea, columna)
         self.exprecion = exprecion
         self.index_exprecion = index_exprecion
 

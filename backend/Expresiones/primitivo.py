@@ -2,8 +2,8 @@ from Abstract.abstract import Abstract
 
 
 class Primitivo(Abstract):
-    def __init__(self, linea, columna, tipo, valor):
-        super().__init__(linea, columna)
+    def __init__(self, resultado, linea, columna, tipo, valor):
+        super().__init__(resultado, linea, columna)
         self.tipo = tipo
         self.valor = valor
 

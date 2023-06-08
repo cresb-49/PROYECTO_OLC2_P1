@@ -8,8 +8,8 @@ tipo_for = 2 -> for (let var of var) , declaracion, exprecion
 
 
 class Para(Abstract):
-    def __init__(self, linea, columna, tipo_for, declaracion, condicion, expresion, sentencias):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, tipo_for, declaracion, condicion, expresion, sentencias):
+        super().__init__(resultado,linea, columna)
         self.tipo_for = tipo_for
         self.declaracion = declaracion
         self.condicion = condicion

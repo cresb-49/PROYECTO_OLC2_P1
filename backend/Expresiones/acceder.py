@@ -3,8 +3,8 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Acceder(Abstract):
-    def __init__(self, linea, columna, id):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, id):
+        super().__init__(resultado,linea, columna)
         self.id = id
 
     def ejecutar(self, scope):

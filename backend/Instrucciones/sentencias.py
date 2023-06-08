@@ -8,8 +8,8 @@ from Instrucciones.retornar import Retornar
 
 
 class Sentencias(Abstract):
-    def __init__(self, linea, columna, intr_izquierda, instr_derecha):
-        super().__init__(linea, columna)
+    def __init__(self, resultado, linea, columna, intr_izquierda, instr_derecha):
+        super().__init__(resultado,linea, columna)
         self.intr_izquierda = intr_izquierda
         self.instr_derecha = instr_derecha
 

@@ -2,8 +2,8 @@ from Abstract.abstract import Abstract
 
 
 class Si(Abstract):
-    def __init__(self, linea, columna, exprecion, sentencias, _else):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, exprecion, sentencias, _else):
+        super().__init__(resultado,linea, columna)
         self.exprecion = exprecion
         self.sentencias = sentencias
         self._else = _else

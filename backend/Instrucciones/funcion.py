@@ -3,8 +3,8 @@ from Abstract.abstract import Abstract
 
 class Funcion(Abstract):
 
-    def __init__(self, linea, columna, id, tipo, parametros, sentancias):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, id, tipo, parametros, sentancias):
+        super().__init__(resultado,linea, columna)
         self.id = id
         self.tipo = tipo
         self.sentencias = sentancias

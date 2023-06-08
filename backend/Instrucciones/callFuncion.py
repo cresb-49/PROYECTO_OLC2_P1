@@ -2,8 +2,8 @@ from Abstract.abstract import Abstract
 
 
 class CallFuncion(Abstract):
-    def __init__(self, linea, columna, id, parametros):
-        super().__init__(linea, columna)
+    def __init__(self,resultado,linea, columna, id, parametros):
+        super().__init__(resultado,linea, columna)
         self.id = id
         self.parametros = parametros
 

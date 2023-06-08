@@ -1,8 +1,8 @@
 from Abstract.abstract import Abstract
 
 class Entorno(Abstract):
-    def __init__(self, linea, columna, scope_global, intrucciones):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, scope_global, intrucciones):
+        super().__init__(resultado,linea, columna)
         self.scope_global = scope_global
         self.intrucciones = intrucciones
 

@@ -3,8 +3,8 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Asignacion(Abstract):
-    def __init__(self, linea, columna, id, valor):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, id, valor):
+        super().__init__(resultado,linea, columna)
         self.id = id
         self.valor = valor
 

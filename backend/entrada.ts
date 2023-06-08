@@ -16,4 +16,3 @@ let anys: any[] = ["Hola", false, 3];
 console.log(palabras);
 console.log(booleanos);
 console.log(anys);
-

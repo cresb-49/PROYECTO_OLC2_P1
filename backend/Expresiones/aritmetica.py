@@ -3,8 +3,8 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Aritmetica(Abstract):
-    def __init__(self, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
+        super().__init__(resultado,linea, columna)
         self.expresion_izquierda = expresion_izquierda
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
@@ -30,8 +30,10 @@ class Aritmetica(Abstract):
             # si la verificacion se cumple entonces pasamos del metodo
             return True
         else:
-            print('Error: Tipos no coinciden para la operacion suma'
-                  'linea:', self.linea, 'columna', self.columna)
+            print('Error: Tipos no coinciden para la operacion ', self.tipo_operacion,
+                  ', Se esperaba number ', self.tipo_operacion, ' number o string ', self.tipo_operacion, ' string y se recibio ', tipo_exprecion_izquierda.value,
+                  ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value,
+                  ' linea:', self.linea, 'columna', self.columna)
             return False
 
     def validar_otrasOperaciones(self, tipo_exprecion_izquierda, tipo_exprecion_der):
@@ -77,6 +79,9 @@ class Aritmetica(Abstract):
             elif (self.tipo_operacion == "^"):
                 result = val_izquierdo['value'] ** val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        else:
+            # print('Debuj-> Primitivo ->', self)
+            return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         num = graphviz.declaraciones.length + 1

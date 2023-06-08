@@ -2,8 +2,8 @@ from Abstract.abstract import Abstract
 
 
 class Retornar(Abstract):
-    def __init__(self, linea, columna, exprecion):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, exprecion):
+        super().__init__(resultado,linea, columna)
         self.exprecion = exprecion
 
     def __str__(self):

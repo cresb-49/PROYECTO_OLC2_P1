@@ -2,8 +2,8 @@ from Abstract.abstract import Abstract
 
 
 class Mientras(Abstract):
-    def __init__(self, linea, columna, condicion, sentencias):
-        super().__init__(linea, columna)
+    def __init__(self, resultado,linea, columna, condicion, sentencias):
+        super().__init__(resultado,linea, columna)
         self.condicion = condicion
         self.sentencias = sentencias
 

@@ -7,11 +7,11 @@ import { Component } from '@angular/core';
 })
 export class ReportesPageComponent {
   displayedColumns: string[] = [
-    'nombreJuego',
-    'tipo',
-    'punteo',
-    'tiempo',
-    'fecha',
+    'numero',
+    'descripcion',
+    'linea',
+    'columna',
+    'fechaHora',
   ];
 
   dataSource = [];

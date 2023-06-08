@@ -3,8 +3,8 @@ from Symbol.tipoEnum import TipoEnum
 
 
 class Arreglo(Abstract):
-    def __init__(self, linea, columna, tipo, tipo_secundario, arreglo):
-        super().__init__(linea, columna)
+    def __init__(self, resultado, linea, columna, tipo, tipo_secundario, arreglo):
+        super().__init__(resultado,linea, columna)
         self.tipo = tipo
         self.tipo_secundario = tipo_secundario
         self.arreglo = arreglo

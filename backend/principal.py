@@ -21,7 +21,7 @@ ambito_global: Scope = copy.deepcopy(result.tabla_simbolos[0])
 
 ambito_global.reboot_variables()
 
-entorno = Entorno(0, 0, ambito_global, result.sentencias)
+entorno = Entorno(result,0, 0, ambito_global, result.sentencias)
 
 print('#### ENTORNOS GENERADOS')
 for n in result.tabla_simbolos:
