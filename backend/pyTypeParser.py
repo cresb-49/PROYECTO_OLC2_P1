@@ -145,7 +145,6 @@ def p_instruccion(p):
 
 def p_instruccion_2(p):
     """instruccion : condicional_if"""
-    # p[0] = p[1]['principal']
     p[0] = p[1]
 # Intrucion console.log
 
@@ -188,19 +187,60 @@ def p_ciclo_for(p):
                  | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
-    scope: Scope = memoria.desapilar()
-    anterior = scope.anterior
-    scope_interior_for: Scope = Scope(anterior)
-    scope_interior_for.tipo = 'Local'
-    registro.pop()
-    registro.append(scope_interior_for)
-    registro.append(scope)
-    scope.anterior = scope_interior_for
-    memoria.apilar(scope_interior_for)
-    decla_var_fun(p[3])
-    memoria.desapilar()
-    p[0] = Para(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), 1, p[3], p[5], p[7], None)
+    # Debemos de verificar primiero que tipo de derivacion es
+    if p[5] == 'of':
+        # For de tipo iterable
+        # Verificacion que produccion tenga instrucciones
+        if len(p) == 11:
+            # Es un for con instrucciones debemos de apilar el scope implicio del mismo y colocar la referencia al que ya esta
+            declarar: Declaracion = Declaracion(resultado, p.lineno(
+                3), find_column(input, p.slice[3]), p[4], TipoEnum.ANY, None, '')
+            manejo_for_pila(declarar, True)
+            p[0] = Para(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), 2, declarar, None, p[6], None)
+        else:
+            # Es un for sin intrucciones generamos un scope simple declaramos variable del for y hacemos un pop nuevamente
+            declarar: Declaracion = Declaracion(resultado, p.lineno(
+                3), find_column(input, p.slice[3]), p[4], TipoEnum.ANY, None, '')
+            manejo_for_pila(declarar, False)
+            p[0] = Para(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), 2, declarar, None, p[6], None)
+    else:
+        # For de tipo index
+        # Verificamos que la produccion tenga instrucciones
+        if len(p) == 12:
+            # Es un for con instrucciones debemos de apilar el scope implicio del mismo y colocar la referencia al que ya esta
+            manejo_for_pila(p[3], True)
+            p[0] = Para(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), 1, p[3], p[5], p[7], None)
+        else:
+            # Es un for sin intrucciones generamos un scope simple declaramos variable del for y hacemos un pop nuevamente
+            manejo_for_pila(p[3], False)
+            p[0] = Para(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), 1, p[3], p[5], p[7], p[9])
+
+
+def manejo_for_pila(declarar, desapilar: bool):
+    if desapilar:
+        scope: Scope = memoria.desapilar()
+        anterior = scope.anterior
+        scope_interior_for: Scope = Scope(anterior)
+        scope_interior_for.tipo = 'Local'
+        registro.pop()
+        registro.append(scope_interior_for)
+        registro.append(scope)
+        scope.anterior = scope_interior_for
+        memoria.apilar(scope_interior_for)
+        decla_var_fun(declarar)
+        memoria.desapilar()
+    else:
+        scope_anterior = memoria.obtener_tope()
+        scope_interior_for: Scope = Scope(scope_anterior)
+        scope_interior_for.tipo = 'Local'
+        registro.append(scope_interior_for)
+        memoria.apilar(scope_interior_for)
+        decla_var_fun(declarar)
+        memoria.desapilar()
 
 
 def p_declaracion_for(p):
@@ -209,16 +249,36 @@ def p_declaracion_for(p):
     """
     if (p[3] == ':'):
         p[0] = Declaracion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], p[4], p[6])
+            input, p.slice[1]), p[2], p[4], None, p[6])
     else:
         p[0] = Declaracion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], 'any', p[4])
+            input, p.slice[1]), p[2], 'any', None, p[4])
 
 
 def p_sumador(p):
-    """sumador : ID SUM
-               | ID RES"""
+    """sumador : ID SUM"""
+    acc: Acceder = Acceder(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[1])
+    pri: Primitivo = Primitivo(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.NUMBER, 1)
+    arit: Aritmetica = Aritmetica(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), acc, pri, '+')
+    asig: Asignacion = Asignacion(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[1], arit)
+    p[0] = asig
 
+def p_sumador_2(p):
+    """sumador : ID RES"""
+    acc: Acceder = Acceder(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[1])
+    pri: Primitivo = Primitivo(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.NUMBER, 1)
+    arit: Aritmetica = Aritmetica(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), acc, pri, '-')
+    asig: Asignacion = Asignacion(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[1], arit)
+    p[0] = asig
+    
 # Producciones de la intruccion if
 
 
@@ -315,11 +375,11 @@ def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
     if len(p) == 5:
-        p[0] = CallFuncion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[1], None)
+        p[0] = CallFuncion(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1], None)
     else:
-        p[0] = CallFuncion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[1], p[3])
+        p[0] = CallFuncion(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1], p[3])
 
 # Parametros de llamado de funcion o metodo
 
@@ -336,9 +396,11 @@ def p_ciclo_while(p):
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
     if len(p) == 7:
-        p[0] = Mientras(resultado, 0, 0, p[3], None)
+        p[0] = Mientras(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[3], None)
     else:
-        p[0] = Mientras(resultado, 0, 0, p[3], p[6])
+        p[0] = Mientras(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[3], p[6])
 
 # Declaracion de una funcion
 

@@ -27,22 +27,22 @@ class Relacional(Abstract):
         val_derecho = self.expresion_derecha.ejecutar(scope)
 
         if (self.verificarTipos(val_izquierdo, val_derecho)):
-            if (self.tipo == "==="):
+            if (self.tipo_operacion == "==="):
                 result = val_izquierdo['value'] == val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo == "!=="):
+            elif (self.tipo_operacion == "!=="):
                 result = val_izquierdo['value'] != val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo == "<"):
+            elif (self.tipo_operacion == "<"):
                 result = val_izquierdo['value'] < val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo == ">"):
+            elif (self.tipo_operacion == ">"):
                 result = val_izquierdo['value'] > val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo == "<="):
+            elif (self.tipo_operacion == "<="):
                 result = val_izquierdo['value'] <= val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo == ">="):
+            elif (self.tipo_operacion == ">="):
                 result = val_izquierdo['value'] >= val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:

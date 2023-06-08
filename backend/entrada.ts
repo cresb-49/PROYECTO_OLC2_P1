@@ -17,14 +17,14 @@
 // console.log(booleanos[0]);
 // console.log(anys[0]);
 
-let condicion = false;
-
-if (condicion) {
+for (let index = 0; index < 12 ; index++) {
     
-} else if(condicion) {
-
-} else {
-    console.log('hola aqui');
-    condicion = true;
 }
 
+for (let iterator of "hola") {
+    
+}
+
+for (let iterator of [3,3,3]) {
+    
+}
