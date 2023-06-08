@@ -17,13 +17,14 @@
 // console.log(booleanos[0]);
 // console.log(anys[0]);
 
-let condicion = true;
-console.log(condicion);
+let condicion = false;
 
 if (condicion) {
-    condicion = false;
+    
 } else if(condicion) {
-    condicion = false;
+
 } else {
+    console.log('hola aqui');
     condicion = true;
 }
+

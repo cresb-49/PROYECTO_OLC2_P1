@@ -11,9 +11,12 @@ class Contrario(Abstract):
         return f"Contrario: resultado={self.resultado}, linea={self.linea}, columna={self.columna}, sentencias={self.sentencias}"
     
     def ejecutar(self,scope):
-        new_scope = Scope(scope)
-        result = self.sentencias.ejecutar(new_scope)
-        return result
+        try:
+            if self.sentencias != None:
+                new_scope = Scope(scope)
+                return self.sentencias.ejecutar(new_scope)
+        except Exception:
+            print('No se puede operar la sentencia existe un error anterior')
     
     def graficar(self, scope, graphviz, subNameNode, padre):
         pass

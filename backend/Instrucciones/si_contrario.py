@@ -1,6 +1,6 @@
 from Abstract.abstract import Abstract
 from Symbol.scope import Scope
-
+from Symbol.tipoEnum import TipoEnum
 
 class SiContrario(Abstract):
 
@@ -14,13 +14,23 @@ class SiContrario(Abstract):
         return f"SiContrario: resultado={self.resultado}, linea={self.linea}, columna={self.columna}, exprecion_condicion={self.exprecion_condicion}, sentencias_true={self.sentencias_true}, sentencias_false={self.sentencias_false}"
 
     def ejecutar(self, scope):
-        condicion = self.exprecion_condicion.ejecutar(scope)
-        if condicion:
-            new_scope = Scope(scope)
-            return self.sentencias_true.ejecutar(new_scope)
-        else:
-            new_scope = Scope(scope)
-            return self.sentencias_false.ejecutar(new_scope)
+        result = self.exprecion_condicion.ejecutar(scope)
+        try:
+            if result['tipo'] == TipoEnum.BOOLEAN:
+                if result['value']:
+                    print('Else if -> Verdadero')
+                    if self.sentencias_true != None:
+                        new_scope = Scope(scope)
+                        return self.sentencias_true.ejecutar(new_scope)
+                else:
+                    print('Else if -> Falso')
+                    if self.sentencias_false != None:
+                        new_scope = Scope(scope)
+                        return self.sentencias_false.ejecutar(new_scope)
+            else:
+                print('Error el else if opera con una exprecion booleana')
+        except Exception:
+            print('No se puede operar la sentencia existe un error anterior')
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         pass

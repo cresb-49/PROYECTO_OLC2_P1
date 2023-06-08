@@ -1,9 +1,11 @@
 from Abstract.abstract import Abstract
 from Symbol.scope import Scope
+from Symbol.tipoEnum import TipoEnum
+
 
 class Si(Abstract):
-    def __init__(self, resultado,linea, columna, exprecion, sentencias, _else):
-        super().__init__(resultado,linea, columna)
+    def __init__(self, resultado, linea, columna, exprecion, sentencias, _else):
+        super().__init__(resultado, linea, columna)
         self.exprecion = exprecion
         self.sentencias = sentencias
         self._else = _else
@@ -13,12 +15,22 @@ class Si(Abstract):
 
     def ejecutar(self, scope):
         result = self.exprecion.ejecutar(scope)
-        if result:
-            new_scope = Scope(scope)
-            self.sentencias.ejecutar(new_scope)
-        else:
-            new_scope = Scope(scope)
-            self._else.ejecutar(new_scope)
+        try:
+            if result['tipo'] == TipoEnum.BOOLEAN:
+                if result['value']:
+                    print('If -> Verdadero')
+                    if self.sentencias != None:
+                        new_scope = Scope(scope)
+                        return self.sentencias.ejecutar(new_scope)
+                else:
+                    print('If -> Falso')
+                    if self._else != None:
+                        new_scope = Scope(scope)
+                        return self._else.ejecutar(new_scope)
+            else:
+                print('Error el if opera con una exprecion booleana')
+        except Exception:
+            print('No se puede operar la sentencia existe un error anterior')
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1
