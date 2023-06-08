@@ -1,5 +1,6 @@
 from Symbol.tipoEnum import TipoEnum
 
+
 class Simbolo:
     def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna):
         self.valor = valor
@@ -21,16 +22,27 @@ class Scope:
         self.nombre = id(self)
         self.tipo = ''
 
+    def imprimir(self):
+        for x in self.variables.get_diccionario():
+            print('  ', self.variables.get_diccionario()[x])
+        for x in self.funciones.get_diccionario():
+            print('  ', self.funciones.get_diccionario()[x])
+        
+
     def identificar(self, nombre, tipo):
         self.tipo = tipo
         self.nombre = nombre
+
+    def reboot_variables(self):
+        self.variables = Variables()
 
     def __str__(self) -> str:
         return f"Nombre: {self.nombre}, Tipo: {self.tipo}"
 
     def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario, linea, columna):
         try:
-            self.variables.add(id, Simbolo(valor, id, tipo, tipo_secundario, linea, columna))
+            self.variables.add(id, Simbolo(
+                valor, id, tipo, tipo_secundario, linea, columna))
         except ValueError as error:
             print(f"Se produjo un error: {str(error)}")
 
@@ -71,7 +83,7 @@ class Variables:
     def add(self, clave: str, valor: Simbolo):
         if clave in self.diccionario:
             raise ValueError(
-                f"La funcion \"{str(clave)}\" ya esta definida en este scope")
+                f"La variable \"{str(clave)}\" ya esta definida en este scope")
         else:
             self.diccionario[clave] = valor
 
