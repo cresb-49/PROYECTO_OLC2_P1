@@ -38,8 +38,13 @@ class Declaracion(Abstract):
                     'Semantico', 'No se declaro el array', self.linea, self.columna)
         else:
             tipo: TipoEnum = result_expresion['tipo']
-            scope.declarar_variable(
-                self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+            #TODO: Verificar por si hay errores mas adelante en la asignacion
+            if self.tipo == result_expresion['tipo'] or self.tipo == None:
+                scope.declarar_variable(
+                    self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+            else:
+                error = f'No se pude declarar la variable tipo : {self.tipo.value} y asignar un valor tipo: {tipo.value}'
+                self.resultado.add_error('Semantico', error, self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo(self.id, padre)

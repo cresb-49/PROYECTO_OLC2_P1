@@ -47,7 +47,7 @@ entorno.ejecutar(None)
 print('#### ERRORES')
 
 for n in result.errores:
-    print(n.descripcion)
+    print(n)
 
 # entorno.ejecutar(None)
 # print('#### CODIGO AST')
