@@ -58,10 +58,10 @@ class Para(Abstract):
                         # Toma el error de exception
                         print("Error:", str(e))
                 else:
-                    print(
-                        'No se puede ejecutar la sentencia porque la condicional no es booleana')
+                    self.resultado.add_error('Semantico', 'No se puede ejecutar la sentencia porque la condicional no es booleana', self.linea, self.columna)
+                    
             else:
-                print('No se puede ejecutar la sentencia hay un error anterior')
+                self.resultado.add_error('Semantico', 'No se puede ejecutar la sentencia hay un error anterior', self.linea, self.columna)
         else:
             print('Ejecutamos for tipo 2')
             # Iniciamos un scope apartado del entorno del for
@@ -124,7 +124,7 @@ class Para(Abstract):
                 except Exception as e:
                     print("Error:", str(e))
             else:
-                print('Solo se permiten iteraciones de array y string')
+                self.resultado.add_error('Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1

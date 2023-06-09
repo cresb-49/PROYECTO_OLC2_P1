@@ -30,9 +30,9 @@ class Mientras(Abstract):
                         # Toma el error de exception
                         print("Error:", str(e))
             else:
-                print('No se puede ejecutar la sentencia porque la condicional no es booleana')
+                self.resultado.add_error('Semantico', 'No se puede ejecutar la sentencia porque la condicional no es booleana', self.linea, self.columna)
         else:
-            print('No se puede ejecutar la sentencia hay un error anterior')
+            self.resultado.add_error('Semantico', 'No se puede ejecutar la sentencia hay un error anterior', self.linea, self.columna)
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1

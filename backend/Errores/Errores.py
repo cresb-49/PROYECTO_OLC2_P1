@@ -8,6 +8,9 @@ class Error:
         self.linea = linea
         self.columna = columna
         self.fecha_hora = fecha_hora
+    
+    def __str__(self) -> str:
+        return self.descripcion
 
 
 class TablaErrores:

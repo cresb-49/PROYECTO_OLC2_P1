@@ -1,9 +1,11 @@
 import ply.lex as lex #Import del lex para la generacion del analizadoz lexico
-
+from Models.resultado import Resultado
 #Import de las clases auxiliares
 from Errores.Errores import TablaErrores
 
-tabla_errores = TablaErrores();
+tabla_errores = TablaErrores()
+resultado = Resultado(None, [], None, [])
+
 
 # Definicion de tokens
 reservadas = {
@@ -145,8 +147,10 @@ def t_newline(t):
 
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    error = "Caracter ilegal '%s'" % t.value[0]
+    resultado.add_error('Lexico', error, t.lexer.lineno, 0)
     t.lexer.skip(1)
+    
 
 
 def find_column(input, token):

@@ -17,6 +17,7 @@ print('#### PARSER FINALIZADO')
 #print('#### INTRUCIONES RECUPERADAS')
 #print(result.sentencias)
 
+
 ambito_global: Scope = copy.deepcopy(result.tabla_simbolos[0])
 
 ambito_global.reboot_variables()
@@ -33,5 +34,12 @@ for n in result.tabla_simbolos:
             print('  ', n.funciones.get_diccionario()[x])
 
 print(entorno)
+
+
+
 print('#### EJECUCION DEL CODIGO')
 entorno.ejecutar(None)
+print('#### ERRORES')
+
+for n in result.errores:
+    print(n.descripcion)

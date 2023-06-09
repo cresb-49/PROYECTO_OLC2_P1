@@ -29,8 +29,10 @@
 // for (let iterator of [3,3,3]) {
 //     console.log(iterator);
 // }
-let cont = 0;
-while (cont < 3) {
-    cont = cont + 1;
-    console.log(cont);
-}
+//let cont = 0;
+//while (cont < 3) {
+  //  cont = cont + 1;
+    //console.log(cont);
+//}
+
+let 为nose = 5;

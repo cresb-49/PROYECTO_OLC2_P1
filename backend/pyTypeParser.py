@@ -6,7 +6,7 @@ from pyTypeLex import tokens
 # Seccion para importar las abstracciones y ED para verificar la infomacion
 from ED.Pila import Pila
 from pyTypeLex import find_column
-from pyTypeLex import tabla_errores  # Impotado de la tabla de errores del lexer
+from pyTypeLex import resultado
 from Models.resultado import Resultado
 # from Symbol.scope import Scope
 from Instrucciones.sentencias import Scope
@@ -19,7 +19,8 @@ from Expresiones.primitivo import Primitivo
 from Expresiones.relacional import Relacional
 from Expresiones.arreglo import Arreglo
 from Expresiones.acceder_array import AccederArray
-
+from Nativas.concat import Concat
+from Nativas.to_string import ToString
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
 from Instrucciones.callFuncion import CallFuncion
@@ -49,8 +50,6 @@ memoria = Pila()
 contador = 0
 registro = []
 
-resultado = Resultado(None, [], None, [])
-
 
 def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
@@ -66,7 +65,10 @@ def decla_var_fun(instruccion):
 def p_init(p):
     """init : limit_intrucciones"""
     memoria.desapilar()
-    p[0] = Resultado(p[1], tabla_errores, registro, [])
+    resultado.sentencias = p[1]
+    resultado.tabla_simbolos = registro
+    p[0] = resultado
+    # p[0] = Resultado(p[1], tabla_errores, registro, [])
 
 # Intrucciones limitadas solo al ambito global
 
@@ -685,6 +687,20 @@ def p_sub_exprecion_11(p):
             p[0] = CallFuncion(resultado, p.lineno(1), find_column(
                 input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
+        if (len(p) == 6):
+            
+            if(p[3] == 'toString'):
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), p[1])
+                p[0] = ToString(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), acceder)
+            elif(p[3] == 'toLowerCase'):
+                pass
+            elif(p[3] == 'toUpperCase'):
+                pass
+        elif (len(p) == 7):
+            pass
+
         print('Acceso a struct o funcion nativa')
 
 # Definicion de error del analisis sintactico
@@ -693,11 +709,8 @@ def p_sub_exprecion_11(p):
 def p_error(t):
     print(t)
     print("Error sintáctico en '%s'" % t.value)
-    # TODO: Realizar implementacion para recuperar numero de linea y columna en error sintactico
-    tabla_errores.addError('Sintactico', "Error sintáctico en '%s'" %
-                           t.value, t.lineno(1), find_column(input, t.slice[1]))
     resultado.add_error('Sintactico', ('Sintactico', "Error sintáctico en '%s'" %
-                                       t.value),  t.lineno(1), find_column(input, t.slice[1]))
+                                       t.value),  0, 0)
 
 
 # Declaracion de inicio del parser
