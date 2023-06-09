@@ -28,6 +28,8 @@ from Instrucciones.asignacion import Asignacion
 from Instrucciones.callFuncion import CallFuncion
 from Instrucciones.declaracion import Declaracion
 
+from Instrucciones.instr_error import IntruccionError
+
 # from Instrucciones.continuar import Continuar
 # from Instrucciones.detener import Detener
 # from Instrucciones.retornar import Retornar
@@ -142,9 +144,14 @@ def p_instruccion(p):
                    | asignacion
                    | continuar
                    | romper
-                   | retorno
-                   | error"""  # produccion de error
+                   | retorno"""
     p[0] = p[1]
+
+
+def p_instruccion_2(p):
+    """instruccion : error"""  # produccion de error
+    p[0] = IntruccionError(resultado, p.lineno(
+        1), find_column(input, p.slice[1]))
 
 
 def p_instruccion_2(p):
@@ -380,9 +387,11 @@ def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
     if len(p) == 5:
-        p[0] = CallFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], None)
+        p[0] = CallFuncion(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1], None)
     else:
-        p[0] = CallFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
+        p[0] = CallFuncion(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1], p[3])
 
 # Parametros de llamado de funcion o metodo
 
@@ -439,8 +448,8 @@ def p_funcion_3(p):
 def p_funcion_4(p):
     """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]),
-                   p[2], TipoEnum.ANY, p[4], p[7])
+    p[0] = Funcion(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[2], TipoEnum.ANY, p[4], p[7])
 
 # Seccion de declaracion de parametros de una funcion
 
@@ -700,17 +709,17 @@ def p_sub_exprecion_11(p):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
                 p[0] = ToString(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
-            elif(p[3] == 'toLowerCase'):
+                    input, p.slice[1]), acceder)
+            elif (p[3] == 'toLowerCase'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), p[1])
+                    input, p.slice[1]), p[1])
                 p[0] = ToLowerCase(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
-            elif(p[3] == 'toUpperCase'):
+                    input, p.slice[1]), acceder)
+            elif (p[3] == 'toUpperCase'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), p[1])
+                    input, p.slice[1]), p[1])
                 p[0] = ToUpperCase(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
+                    input, p.slice[1]), acceder)
         elif (len(p) == 7):
             pass
 

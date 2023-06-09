@@ -14,11 +14,14 @@ class CallFuncion(Abstract):
         fun = scope.obtener_funcion(self.id)
         if fun != None:
             if self.parametros == None:
-                #Ejecucion de funcion sin parametros
-                print('Ejecucion de funcion sin parametros',type(fun))
+                # Ejecucion de funcion sin parametros
+                # Debemos de mandar el scope global
+                resultado = fun.ejecutar(None)
+                if isinstance(resultado, dict):
+                    print(resultado)
             else:
-                #Ejecucion de una funcion con parametros
-                print('Ejecucion de funcion con parametros',type(fun))
+                # Ejecucion de una funcion con parametros
+                print('Ejecucion de funcion con parametros', type(fun))
         else:
             print('Se invoco un funcion que no esta definida')
 

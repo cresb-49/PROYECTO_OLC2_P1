@@ -37,9 +37,9 @@ print('#### AMBITO GLOBAL')
 ambito_global.reboot_variables()
 print(ambito_global)
 for x in ambito_global.variables.get_diccionario():
-    print('  ', n.variables.get_diccionario()[x])
+    print('  ', ambito_global.variables.get_diccionario()[x])
 for x in ambito_global.funciones.get_diccionario():
-    print('  ', n.funciones.get_diccionario()[x])
+    print('  ', ambito_global.funciones.get_diccionario()[x])
 entorno = Entorno(result, 0, 0, ambito_global, result.sentencias)
 print('#### EJECUCION DEL CODIGO')
 
