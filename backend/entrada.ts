@@ -40,3 +40,6 @@ function nombre() {
 }
 
 nombre();
+let nose:string =  "funciono!!!!";
+console.log(nose.toUpperCase());
+
