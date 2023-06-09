@@ -9,7 +9,7 @@ from Instrucciones.retornar import Retornar
 
 class Sentencias(Abstract):
     def __init__(self, resultado, linea, columna, intr_izquierda, instr_derecha):
-        super().__init__(resultado,linea, columna)
+        super().__init__(resultado, linea, columna)
         self.intr_izquierda = intr_izquierda
         self.instr_derecha = instr_derecha
 
@@ -25,7 +25,9 @@ class Sentencias(Abstract):
             if not (isinstance(self.instr_derecha, Funcion)):
                 self.instr_derecha.ejecutar(scope)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        # iteramos en cada una de las instrucciones de la lista y ejecutamos su metodo graficar
-        for intructions in self.intrucciones:
-            intructions.graficar(scope, graphviz, subNameNode, padre)
+    def graficar(self, graphviz, padre):
+        result = graphviz.add_nodo('instruccion', padre)
+        if self.intr_izquierda != None:
+            self.intr_izquierda.graficar(graphviz, result)
+        if self.instr_derecha != None:
+            self.instr_derecha.graficar(graphviz, result)

@@ -3,8 +3,8 @@ from Abstract.abstract import Abstract
 
 class Funcion(Abstract):
 
-    def __init__(self, resultado,linea, columna, id, tipo, parametros, sentancias):
-        super().__init__(resultado,linea, columna)
+    def __init__(self, resultado, linea, columna, id, tipo, parametros, sentancias):
+        super().__init__(resultado, linea, columna)
         self.id = id
         self.tipo = tipo
         self.sentencias = sentancias
@@ -17,16 +17,13 @@ class Funcion(Abstract):
         result = self.sentencias.ejecutar(scope)
         return result
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        # El codigo codigoReferencia no esta implementado
-        # subName = self.codigoReferencia()
-        node = "nodo_"+subNameNode+"_"+"0"
-        # Array tipos no exite en esta implementacion...debera remplazarse por un metodo
-        arrayTipos = ""
-        # tipoString es un objeto pero no exite en esta implementacion...debera remplazarse por un objeto
-        tipoString = ""
-        decl = node+'[label = "<n>'+arrayTipos[self.tipo] + \
-            ':'+self.id+'('+arrayTipos+')"];'
-        graphviz.declaraciones.push("node [shape=record,width=.1,height=.1];")
-        graphviz.declaraciones.push(decl)
-        self.sentencias.graficar(scope, graphviz, subNameNode, node)
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo(self.id, padre)
+        graphviz.add_nodo('(', padre)
+        # TODO: Agregar la imprecion de los parametros
+        graphviz.add_nodo('parametros', padre)
+        graphviz.add_nodo(')', padre)
+        graphviz.add_nodo('{', padre)
+        if (self.sentencias != None):
+            self.sentencias.graficar(graphviz, padre)
+        graphviz.add_nodo('}', padre)

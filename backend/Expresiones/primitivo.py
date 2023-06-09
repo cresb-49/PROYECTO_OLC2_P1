@@ -23,11 +23,5 @@ class Primitivo(Abstract):
         # print('Debuj-> Primitivo ->', self)
         return {"value": self.valor, "tipo": self.tipo, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        num = graphviz.declaraciones.length + 1
-        node = "nodo" + num + ' [label="<f0> ' + \
-            self.tipo+' |<f1> ' + self.valor + '"];'
-        graphviz.declaraciones.push(node)
-        if (padre.length != 0):
-            relacion = padre + ' -> ' + "nodo" + num
-            graphviz.relaciones.push(relacion)
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo(self.valor, padre)

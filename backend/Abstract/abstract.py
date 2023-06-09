@@ -1,7 +1,8 @@
 from abc import ABC, abstractclassmethod
 
+
 class Abstract(ABC):
-    def __init__(self, resultado,linea, columna):
+    def __init__(self, resultado, linea, columna):
         super().__init__()
         self.linea = linea
         self.columna = columna
@@ -12,5 +13,5 @@ class Abstract(ABC):
         pass
 
     @abstractclassmethod
-    def graficar(self, scope, graphviz, subNameNode, padre):
+    def graficar(self, graphviz, padre):
         pass

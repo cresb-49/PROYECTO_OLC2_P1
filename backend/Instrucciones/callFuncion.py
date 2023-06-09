@@ -12,12 +12,11 @@ class CallFuncion(Abstract):
 
     def ejecutar(self, scope):
         fun = scope.obtener_funcion(self.id)
-        if (function != None):
-            fun.ejecutar(scope)
+        #if (function != None):
+        #    fun.ejecutar(scope)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>Llamar Funcion "'+self.id+'"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo(self.id, padre)
+        graphviz.add_nodo('(', padre)
+        self.parametros.graficar(graphviz,padre)
+        graphviz.add_nodo(')', padre)

@@ -33,18 +33,11 @@ class Si(Abstract):
             self.resultado.add_error(
                 'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        nodeSi = "nodo_" + self.subNameNode + "_" + nume
-        decl = nodeSi + '[label = "<n>Si"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + nodeSi + ':n'))
-        self.codeTrue.graficar(scope, graphviz, self.subNameNode, nodeSi)
-        if (self.codeFalse != None):
-            nume = graphviz.declaraciones.length + 1
-            nodeSino = "nodo_" + self.subNameNode + "_" + nume
-            decl = nodeSino + '[label = "<n>Sino"];'
-            graphviz.declaraciones.push(decl)
-            graphviz.relaciones.push((nodeSi + ':n -> ' + nodeSino + ':n'))
-            self.codeFalse.graficar(
-                scope, graphviz, self.codeTrue, self.subNameNode, nodeSino)
+    def graficar(self, graphviz, padre):
+        result = graphviz.add_nodo('if', padre)
+        if self.exprecion != None:
+            ct = graphviz.add_nodo('condition true', result)
+            self.exprecion.graficar(graphviz, ct)
+        if self._else != None:
+            cf = graphviz.add_nodo('condition false', result)
+            self._else.graficar(graphviz, cf)

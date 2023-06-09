@@ -13,9 +13,8 @@ class Imprimir(Abstract):
         resultado = self.exprecion.ejecutar(scope)
         print(resultado)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>DibujarEXP"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo('console.log(', padre)
+        self.exprecion.graficar(graphviz,padre)
+        graphviz.add_nodo(');', padre)
+        

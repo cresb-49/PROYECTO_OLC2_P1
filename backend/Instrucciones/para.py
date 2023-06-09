@@ -116,7 +116,8 @@ class Para(Abstract):
                         self.resultado, self.linea, self.columna, '$contfor')
                     maximo_for = Acceder(
                         self.resultado, self.linea, self.columna, '$maxfor')
-                    self.condicion = Logico(self.resultado, self.linea, self.columna, contador_for, maximo_for, '<')
+                    self.condicion = Logico(
+                        self.resultado, self.linea, self.columna, contador_for, maximo_for, '<')
 
                     result = self.condicion.ejecutar(scope_declarado_for)
                     print(result)
@@ -126,10 +127,25 @@ class Para(Abstract):
             else:
                 print('Solo se permiten iteraciones de array y string')
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>Para"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
-        self.sentencias.graficar(scope, graphviz, subNameNode, node)
+    def graficar(self, graphviz, padre):
+        if self.tipo_for == 1:
+            graphviz.add_nodo('for', padre)
+            graphviz.add_nodo('(', padre)
+            self.declaracion.graficar(graphviz, padre)
+            graphviz.add_nodo(';', padre)
+            self.condicion.graficar(graphviz, padre)
+            graphviz.add_nodo(';', padre)
+            self.expresion.graficar(graphviz, padre)
+            graphviz.add_nodo(')', padre)
+            graphviz.add_nodo('{', padre)
+            if (self.sentencias != None):
+                self.sentencias.graficar(graphviz, padre)
+            graphviz.add_nodo('}', padre)
+        else:
+            graphviz.add_nodo('for', padre)
+            graphviz.add_nodo('(', padre)
+            graphviz.add_nodo(')', padre)
+            graphviz.add_nodo('{', padre)
+            if (self.sentencias != None):
+                self.sentencias.graficar(graphviz, padre)
+            graphviz.add_nodo('}', padre)
