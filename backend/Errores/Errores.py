@@ -9,8 +9,8 @@ class Error:
         self.columna = columna
         self.fecha_hora = fecha_hora
     
-    def __str__(self) -> str:
-        return self.descripcion
+    def __str__(self):
+        return f"Tipo: {self.tipo}, Descripción: {self.descripcion}, Línea: {self.linea}, Columna: {self.columna}, Fecha y Hora: {self.fecha_hora}"
 
 
 class TablaErrores:
