@@ -11,7 +11,13 @@ class Imprimir(Abstract):
 
     def ejecutar(self, scope):
         resultado = self.exprecion.ejecutar(scope)
-        print(resultado)
+
+        if(isinstance(resultado, dict)):
+            print(resultado['value'])
+        else:
+            print(resultado)
+            self.resultado.add_error(
+                'Semantico', 'Hbo un error previo ha imprimir el valor.', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo('console.log(', padre)

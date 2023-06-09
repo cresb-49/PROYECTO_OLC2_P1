@@ -35,4 +35,5 @@
     //console.log(cont);
 //}
 
-let 为nose = 5;
+let nose:string =  "funciono!!!!";
+console.log(nose.toUpperCase());

@@ -21,6 +21,8 @@ from Expresiones.arreglo import Arreglo
 from Expresiones.acceder_array import AccederArray
 from Nativas.concat import Concat
 from Nativas.to_string import ToString
+from Nativas.to_lower import ToLowerCase
+from Nativas.to_upper import ToUpperCase
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
 from Instrucciones.callFuncion import CallFuncion
@@ -695,9 +697,15 @@ def p_sub_exprecion_11(p):
                 p[0] = ToString(resultado, p.lineno(1), find_column(
                 input, p.slice[1]), acceder)
             elif(p[3] == 'toLowerCase'):
-                pass
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), p[1])
+                p[0] = ToLowerCase(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), acceder)
             elif(p[3] == 'toUpperCase'):
-                pass
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), p[1])
+                p[0] = ToUpperCase(resultado, p.lineno(1), find_column(
+                input, p.slice[1]), acceder)
         elif (len(p) == 7):
             pass
 
