@@ -20,6 +20,7 @@ class Relacional(Abstract):
             concat = 'Error: Tipos no coinciden para la operacion, Se esperaba NUMBER o STRING y se recibio ', tipo_exprecion_izquierda.value, ' y ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
+            print(concat)
             return False
 
     def ejecutar(self, scope):

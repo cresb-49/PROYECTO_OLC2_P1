@@ -194,14 +194,14 @@ def p_ciclo_for(p):
         if len(p) == 11:
             # Es un for con instrucciones debemos de apilar el scope implicio del mismo y colocar la referencia al que ya esta
             declarar: Declaracion = Declaracion(resultado, p.lineno(
-                3), find_column(input, p.slice[3]), p[4], TipoEnum.ANY, None, '')
+                3), find_column(input, p.slice[3]), p[4], TipoEnum.ANY, None, None)
             manejo_for_pila(declarar, True)
             p[0] = Para(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), 2, declarar, None, p[6], None)
+                input, p.slice[1]), 2, declarar, None, p[6], p[9])
         else:
             # Es un for sin intrucciones generamos un scope simple declaramos variable del for y hacemos un pop nuevamente
             declarar: Declaracion = Declaracion(resultado, p.lineno(
-                3), find_column(input, p.slice[3]), p[4], TipoEnum.ANY, None, '')
+                3), find_column(input, p.slice[3]), p[4], TipoEnum.ANY, None, None)
             manejo_for_pila(declarar, False)
             p[0] = Para(resultado, p.lineno(1), find_column(
                 input, p.slice[1]), 2, declarar, None, p[6], None)
@@ -212,12 +212,12 @@ def p_ciclo_for(p):
             # Es un for con instrucciones debemos de apilar el scope implicio del mismo y colocar la referencia al que ya esta
             manejo_for_pila(p[3], True)
             p[0] = Para(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), 1, p[3], p[5], p[7], None)
+                input, p.slice[1]), 1, p[3], p[5], p[7], p[10])
         else:
             # Es un for sin intrucciones generamos un scope simple declaramos variable del for y hacemos un pop nuevamente
             manejo_for_pila(p[3], False)
             p[0] = Para(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), 1, p[3], p[5], p[7], p[9])
+                input, p.slice[1]), 1, p[3], p[5], p[7], None)
 
 
 def manejo_for_pila(declarar, desapilar: bool):
@@ -252,7 +252,7 @@ def p_declaracion_for(p):
             input, p.slice[1]), p[2], p[4], None, p[6])
     else:
         p[0] = Declaracion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], 'any', None, p[4])
+            input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4])
 
 
 def p_sumador(p):
@@ -267,6 +267,7 @@ def p_sumador(p):
         input, p.slice[1]), p[1], arit)
     p[0] = asig
 
+
 def p_sumador_2(p):
     """sumador : ID RES"""
     acc: Acceder = Acceder(resultado, p.lineno(1), find_column(
@@ -278,7 +279,7 @@ def p_sumador_2(p):
     asig: Asignacion = Asignacion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[1], arit)
     p[0] = asig
-    
+
 # Producciones de la intruccion if
 
 

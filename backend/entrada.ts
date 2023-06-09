@@ -17,14 +17,15 @@
 // console.log(booleanos[0]);
 // console.log(anys[0]);
 
-for (let index = 0; index < 12 ; index++) {
-    
-}
+// for (let index = 0; index < 12 ; index++) {
+//     console.log(index);
+// }
 
-for (let iterator of "hola") {
-    
-}
+
+// for (let iterator of "hola") {
+//     console.log(iterator);
+// }
 
 for (let iterator of [3,3,3]) {
-    
+    console.log(iterator);
 }
