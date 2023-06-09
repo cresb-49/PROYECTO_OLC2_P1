@@ -20,9 +20,8 @@ class ToString(Abstract):
         #retornamos un diccionario con la String realizada y el tipo String
         return {"value": toString, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>Concat"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
+    def graficar(self, graphviz, padre):
+        #agregarmos el nombre del nodo (el de la operacion) y el nodo padre
+        result = graphviz.add_nodo("toString", padre)
+        #mandmaos ha graficar el hijo (acceder)
+        self.numero.graficar(graphviz, result)

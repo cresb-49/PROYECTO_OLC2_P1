@@ -23,6 +23,7 @@ from Nativas.concat import Concat
 from Nativas.to_string import ToString
 from Nativas.to_lower import ToLowerCase
 from Nativas.to_upper import ToUpperCase
+from Nativas.concat import Concat
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
 from Instrucciones.callFuncion import CallFuncion
@@ -380,9 +381,11 @@ def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
     if len(p) == 5:
-        p[0] = CallFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], None)
+        p[0] = CallFuncion(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1], None)
     else:
-        p[0] = CallFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
+        p[0] = CallFuncion(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1], p[3])
 
 # Parametros de llamado de funcion o metodo
 
@@ -700,18 +703,22 @@ def p_sub_exprecion_11(p):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
                 p[0] = ToString(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
-            elif(p[3] == 'toLowerCase'):
+                    input, p.slice[1]), acceder)
+            elif (p[3] == 'toLowerCase'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), p[1])
+                    input, p.slice[1]), p[1])
                 p[0] = ToLowerCase(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
-            elif(p[3] == 'toUpperCase'):
+                    input, p.slice[1]), acceder)
+            elif (p[3] == 'toUpperCase'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), p[1])
+                    input, p.slice[1]), p[1])
                 p[0] = ToUpperCase(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
+                    input, p.slice[1]), acceder)
         elif (len(p) == 7):
+            if (p[3] == 'concat'):
+
+                p[0] = Concat(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[5])
             pass
 
         print('Acceso a struct o funcion nativa')
