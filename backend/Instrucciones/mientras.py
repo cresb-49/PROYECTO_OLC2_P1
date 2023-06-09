@@ -1,5 +1,6 @@
 from Abstract.abstract import Abstract
-
+from Symbol.tipoEnum import TipoEnum
+from Symbol.scope import Scope
 
 class Mientras(Abstract):
     def __init__(self, resultado,linea, columna, condicion, sentencias):
@@ -11,7 +12,27 @@ class Mientras(Abstract):
         return f"While -> Condición: {self.condicion}, Sentencias: {self.sentencias}"
 
     def ejecutar(self, scope):
-        condicion = self.condicion.ejecutar(scope)
+        result = self.condicion.ejecutar(scope)
+        if result != None:
+            if result['tipo'] == TipoEnum.BOOLEAN:
+                try:
+                    res: bool = result['value']
+                    while res:
+                        scope_temporal: Scope = Scope(scope)
+                        if self.sentencias != None:
+                            resultado = self.sentencias.ejecutar(scope_temporal)
+                            if isinstance(resultado, dict):
+                                    return resultado
+                            self.condicion.ejecutar(scope)
+                        r = self.condicion.ejecutar(scope)
+                        res = r['value']
+                except Exception as e:
+                        # Toma el error de exception
+                        print("Error:", str(e))
+            else:
+                print('No se puede ejecutar la sentencia porque la condicional no es booleana')
+        else:
+            print('No se puede ejecutar la sentencia hay un error anterior')
 
     def graficar(self, scope, graphviz, subNameNode, padre):
         nume = graphviz.declaraciones.length + 1
