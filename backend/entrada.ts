@@ -36,10 +36,9 @@
 //}
 
 function nombre() {
-  console.log('hola desde la funcion');
+  let nose:string =  "funciono!!!!";
+  console.log(nose.toUpperCase());
 }
 
 nombre();
-let nose:string =  "funciono!!!!";
-console.log(nose.toUpperCase());
 

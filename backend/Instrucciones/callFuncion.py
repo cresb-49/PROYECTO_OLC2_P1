@@ -1,4 +1,5 @@
 from Abstract.abstract import Abstract
+from Symbol.scope import Scope
 
 
 class CallFuncion(Abstract):
@@ -15,8 +16,10 @@ class CallFuncion(Abstract):
         if fun != None:
             if self.parametros == None:
                 # Ejecucion de funcion sin parametros
-                # Debemos de mandar el scope global
-                resultado = fun.ejecutar(None)
+                # Declaramos scope de tranajo pero debemos mandar el scope
+                scope_global = None
+                scope_funcion: Scope = Scope(scope_global)
+                resultado = fun.ejecutar(scope_funcion)
                 if isinstance(resultado, dict):
                     print(resultado)
             else:
