@@ -1,3 +1,4 @@
+from Nativas.split import Split
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -749,7 +750,11 @@ def p_sub_exprecion_11(p):
 
                 p[0] = Concat(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[5])
-            pass
+            elif (p[3] == 'split'):
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = Split(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder, p[5])
 
         print('Acceso a struct o funcion nativa')
 
