@@ -141,10 +141,7 @@ def p_instruccion(p):
                    | struct
                    | llamar_funcion
                    | declaracion
-                   | asignacion
-                   | continuar
-                   | romper
-                   | retorno"""
+                   | asignacion"""
     p[0] = p[1]
 
 
@@ -157,6 +154,28 @@ def p_instruccion_2(p):
 def p_instruccion_3(p):
     """instruccion : condicional_if"""
     p[0] = p[1]
+
+
+def p_instruccion_4(p):
+    """instruccion : continuar"""
+    p[0] = p[1]
+
+
+def p_instruccion_5(p):
+    """instruccion : romper"""
+    p[0] = p[1]
+
+
+def p_instruccion_6(p):
+    """instruccion : retorno"""
+    size = memoria.obtener_tamanio()
+    if size == 1:
+        ret: Retornar = p[1]
+        p[0] = IntruccionError(resultado, ret.linea, ret.columna)
+        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" % "return",  ret.linea, ret.columna)
+    else:
+        p[0] = p[1]
+
 # Intrucion console.log
 
 
