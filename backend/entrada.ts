@@ -35,10 +35,12 @@
     //console.log(cont);
 //}
 
-function nombre() {
-  let nose:string =  "funciono!!!!";
+function nombre(hola:string) {
+  let nose:string =  hola;
   console.log(nose.toUpperCase());
 }
 
-nombre();
+nombre("hola");
 
+let str:string = 5;
+console.log(str);

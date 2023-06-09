@@ -154,7 +154,7 @@ def p_instruccion_2(p):
         1), find_column(input, p.slice[1]))
 
 
-def p_instruccion_2(p):
+def p_instruccion_3(p):
     """instruccion : condicional_if"""
     p[0] = p[1]
 # Intrucion console.log
@@ -455,8 +455,31 @@ def p_funcion_4(p):
 
 
 def p_lista_parametros(p):
-    """lista_parametros : ID COLON tipo
-                        | lista_parametros COMMA ID COLON tipo"""
+    """lista_parametros : lista_parametros COMMA variable_funcion"""
+    lista_def_params: list = p[1]
+    lista_def_params.append(p[3])
+    p[0] = lista_def_params
+
+
+def p_lista_parametros_2(p):
+    """lista_parametros : variable_funcion"""
+    lista_def_params: list = []
+    lista_def_params.append(p[1])
+    p[0] = lista_def_params
+
+
+def p_variables_funcion(p):
+    """variable_funcion : ID COLON tipo
+                        | ID"""
+    if len(p) == 4:
+        b: dict = p[3]
+        decla: Declaracion = Declaracion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[1], b['tipo'], b['tipo_secundario'], None)
+        p[0] = decla
+    else:
+        decla: Declaracion = Declaracion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[1], TipoEnum.ANY, None, None)
+        p[0] = decla
 
 # instruccion de declaracion de variables
 
