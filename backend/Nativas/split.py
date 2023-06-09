@@ -25,20 +25,29 @@ class Split(Abstract):
             return False
 
     def ejecutar(self, scope):
-        print("xxxx"+self.expreciones)
         # ejecutamos el diccionario de la cade
         ejecutar = self.cadena.ejecutar(scope)
         
         if(self.verificarTipos(ejecutar)):
-            pass
-        # if len(results) > 0:
-        #     base = results[0]['tipo']
-        #     if all(base == exp['tipo'] for exp in results):
-        #         return {"value": results, "tipo": self.tipo, "tipo_secundario": base.value, "linea": self.linea, "columna": self.columna}
-        #     else:
-        #         return {"value": results, "tipo": self.tipo, "tipo_secundario": TipoEnum.ANY.value, "linea": self.linea, "columna": self.columna}
-        # else:
-        #     return {"value": results, "tipo": self.tipo, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            #Enviar ha ejecutar la exprecion para obtener su diccionario
+            ejecutarExpresion = self.expreciones.ejecutar(scope)
+            if(self.verificarTipos(ejecutarExpresion)):
+                value_id = ejecutar['value'] #valor del id al que se aplico split
+                value_separador = ejecutarExpresion['value'] #calor del saparador de split
+                #mandamos ha ejecutar la funcion nativa con los valores recabados
+                split = FuncionNativa.hacer_split(None, value_id, value_separador)
+                
+                arrayTmp = []
+
+                #ADJUNTAMOS TODOS LOS STRING GENERADOS a un array terporal
+                for cadena in split:
+                    arrayTmp.append({"value": cadena, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna})
+                
+                return {"value": arrayTmp, "tipo": TipoEnum.ARRAY, "tipo_secundario": TipoEnum.STRING.value, "linea": self.linea, "columna": self.columna} 
+            else:
+                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}  
+        else:
+            return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
