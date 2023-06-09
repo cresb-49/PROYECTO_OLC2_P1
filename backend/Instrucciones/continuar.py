@@ -11,9 +11,5 @@ class Continuar(Abstract):
     def ejecutar(self, scope):
         return None
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>Continuar"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo('continue', padre)

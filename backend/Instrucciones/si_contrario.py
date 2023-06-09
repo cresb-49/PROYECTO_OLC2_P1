@@ -35,5 +35,16 @@ class SiContrario(Abstract):
             self.resultado.add_error(
                 'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        pass
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo('else if', padre)
+        graphviz.add_nodo('(', padre)
+        if self.exprecion_condicion != None:
+            self.exprecion_condicion.graficar(graphviz,padre)
+        graphviz.add_nodo(')', padre)
+        graphviz.add_nodo('{', padre)
+        if self.sentencias_true != None:
+            self.sentencias_true.graficar(graphviz,padre)
+        graphviz.add_nodo('}', padre)
+        if self.sentencias_false != None:
+            self.sentencias_false.graficar(graphviz,padre)
+        

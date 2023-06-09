@@ -20,5 +20,6 @@ class Contrario(Abstract):
             self.resultado.add_error(
                 'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        pass
+    def graficar(self, graphviz, padre):
+        result = graphviz.add_nodo('else',padre)
+        self.sentencias.graficar(graphviz,result)

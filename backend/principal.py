@@ -3,6 +3,7 @@ from pyTypeParser import Scope
 # from pyTypeParser import Sentencias
 from pyTypeParser import Resultado
 from Instrucciones.entorno import Entorno
+from Modulos.grafico_dot import GraficoDot
 
 import copy
 
@@ -38,8 +39,16 @@ print(entorno)
 
 
 print('#### EJECUCION DEL CODIGO')
+
 entorno.ejecutar(None)
 print('#### ERRORES')
 
 for n in result.errores:
     print(n.descripcion)
+
+#entorno.ejecutar(None)
+#print('#### CODIGO AST')
+#gv = GraficoDot()
+#entorno.graficar(gv,None)
+#print(gv.get_dot())
+

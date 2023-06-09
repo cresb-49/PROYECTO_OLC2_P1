@@ -13,14 +13,7 @@ class Retornar(Abstract):
         valor = self.exprecion.ejecutar(scope)
         return valor
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>Retorno"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
-        nume2 = graphviz.declaraciones.length + 1
-        node2 = "nodo_" + subNameNode + "_" + nume2
-        decl2 = node2 + '[label = "<n>Exprecion"];'
-        graphviz.declaraciones.push(decl2)
-        graphviz.relaciones.push((node + ':n -> ' + node2 + ':n'))
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo('return', padre)
+        if self.exprecion != None:
+            self.exprecion.ejecutar(graphviz,padre)

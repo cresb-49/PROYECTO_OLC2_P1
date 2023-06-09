@@ -50,14 +50,7 @@ class Relacional(Abstract):
             # print('Debuj-> Primitivo ->', self)
             return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        num = graphviz.declaraciones.length + 1
-        node = "nodo" + num + ' [label="' + \
-            self.tipo_operacion + '",shape="circle"];'
-        graphviz.declaraciones.push(node)
-        if (padre.length != 0):
-            relacion = padre + ' -> ' + "nodo" + num
-            graphviz.relaciones.push(relacion)
-
-        self.izquierda.graficar(scope, graphviz, ("nodo" + num))
-        self.derecha.graficar(scope, graphviz, ("nodo" + num))
+    def graficar(self, graphviz, padre):
+        result = graphviz.add_nodo(self.tipo_operacion, padre)
+        self.expresion_izquierda.graficar(graphviz, result)
+        self.expresion_derecha.graficar(graphviz, result)

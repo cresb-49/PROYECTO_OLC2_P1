@@ -35,15 +35,14 @@ class Declaracion(Abstract):
                     self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
             else:
                 self.resultado.add_error(
-                        'Semantico', 'No se declaro el array', self.linea, self.columna)
+                    'Semantico', 'No se declaro el array', self.linea, self.columna)
         else:
             tipo: TipoEnum = result_expresion['tipo']
             scope.declarar_variable(
                 self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
 
-    def graficar(self, scope, graphviz, subNameNode, padre):
-        nume = graphviz.declaraciones.length + 1
-        node = "nodo_" + subNameNode + "_" + nume
-        decl = node + '[label = "<n>Declaracion"];'
-        graphviz.declaraciones.push(decl)
-        graphviz.relaciones.push((padre + ':n -> ' + node + ':n'))
+    def graficar(self, graphviz, padre):
+        graphviz.add_nodo(self.id, padre)
+        igual = graphviz.add_nodo('=', padre)
+        if (self.valor != None):
+            self.valor.graficar(graphviz, igual)
