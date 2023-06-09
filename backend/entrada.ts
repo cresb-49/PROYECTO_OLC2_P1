@@ -35,4 +35,8 @@
     //console.log(cont);
 //}
 
-let 为nose = 5;
+function nombre() {
+  console.log('hola desde la funcion');
+}
+
+nombre();

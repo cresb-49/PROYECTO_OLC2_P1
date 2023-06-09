@@ -2,8 +2,8 @@ from Abstract.abstract import Abstract
 
 
 class CallFuncion(Abstract):
-    def __init__(self,resultado,linea, columna, id, parametros):
-        super().__init__(resultado,linea, columna)
+    def __init__(self, resultado, linea, columna, id, parametros):
+        super().__init__(resultado, linea, columna)
         self.id = id
         self.parametros = parametros
 
@@ -12,11 +12,18 @@ class CallFuncion(Abstract):
 
     def ejecutar(self, scope):
         fun = scope.obtener_funcion(self.id)
-        #if (function != None):
-        #    fun.ejecutar(scope)
+        if fun != None:
+            if self.parametros == None:
+                #Ejecucion de funcion sin parametros
+                print('Ejecucion de funcion sin parametros',type(fun))
+            else:
+                #Ejecucion de una funcion con parametros
+                print('Ejecucion de funcion con parametros',type(fun))
+        else:
+            print('Se invoco un funcion que no esta definida')
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo(self.id, padre)
         graphviz.add_nodo('(', padre)
-        self.parametros.graficar(graphviz,padre)
+        self.parametros.graficar(graphviz, padre)
         graphviz.add_nodo(')', padre)

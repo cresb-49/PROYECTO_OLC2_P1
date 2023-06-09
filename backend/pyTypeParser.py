@@ -378,18 +378,23 @@ def p_llamar_funcion(p):
     """llamar_funcion : ID LPAR RPAR SEMICOLON
                       | ID LPAR parametros RPAR SEMICOLON"""
     if len(p) == 5:
-        p[0] = CallFuncion(resultado, p.lineno(
-            1), find_column(input, p.slice[1]), p[1], None)
+        p[0] = CallFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], None)
     else:
-        p[0] = CallFuncion(resultado, p.lineno(
-            1), find_column(input, p.slice[1]), p[1], p[3])
+        p[0] = CallFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
 
 # Parametros de llamado de funcion o metodo
 
 
 def p_parametros(p):
-    """parametros : exprecion
-                  | parametros COMMA exprecion"""
+    """parametros : parametros COMMA exprecion"""
+    params: list = p[1]
+    params.append(p[3])
+
+
+def p_parametros_2(p):
+    """parametros : exprecion"""
+    params = [p[1]]
+    p[0] = params
 
 # Ciclo while de un funcion
 
@@ -688,15 +693,15 @@ def p_sub_exprecion_11(p):
                 input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
         if (len(p) == 6):
-            
-            if(p[3] == 'toString'):
+
+            if (p[3] == 'toString'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), p[1])
+                    input, p.slice[1]), p[1])
                 p[0] = ToString(resultado, p.lineno(1), find_column(
-                input, p.slice[1]), acceder)
-            elif(p[3] == 'toLowerCase'):
+                    input, p.slice[1]), acceder)
+            elif (p[3] == 'toLowerCase'):
                 pass
-            elif(p[3] == 'toUpperCase'):
+            elif (p[3] == 'toUpperCase'):
                 pass
         elif (len(p) == 7):
             pass
