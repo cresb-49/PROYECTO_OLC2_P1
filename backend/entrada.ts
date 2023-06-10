@@ -48,6 +48,9 @@ function nombre(hola:string) {
   console.log(var4);
 }
 
+break;
+continue;
+
 nombre("hola");
 
 let str2= 5;

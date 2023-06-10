@@ -128,15 +128,18 @@ def p_limit_intrucciones_2(p):
     sentencias = Sentencias(resultado, 0, 0, p[1], None)
     # sentencias.intrucciones.append(p[1])
     p[0] = sentencias
+    # Aqui es donde se inicializa el scope global, este es el scope 0
     print('Generacion Entorno Global')
     entorno = Scope(memoria.obtener_tope())
     entorno.tipo = 'Global'
     memoria.apilar(entorno)
     registro.append(entorno)
     decla_var_fun(p[1])
-    # TODO: Aqui es donde se inicializa el scope global, este es el scope 0
+    # Memoria de inicio
+    memoria_espacios.apilar(ESPACIO_GLOBAL)
 
 
+#ESTA PRODUCCION ES PARA INTRUCCIONES SOLO PARA EL AMBITO GLOBAL
 def p_limit_intruccion(p):
     """limit_intruccion : instruccion
                         | funcion"""
@@ -168,8 +171,6 @@ def p_instrucciones_2(p):
     memoria.apilar(entorno)
     registro.append(entorno)
     decla_var_fun(p[1])
-    # Memoria de inicio
-    memoria_espacios.apilar(ESPACIO_GLOBAL)
 
 
 def p_instruccion(p):
@@ -179,7 +180,9 @@ def p_instruccion(p):
                    | struct
                    | llamar_funcion
                    | declaracion
-                   | asignacion"""
+                   | asignacion
+                   | interrupcion_funcion
+                   | interrupcion_ciclo"""
     p[0] = p[1]
 
 
@@ -194,8 +197,8 @@ def p_instruccion_3(p):
     p[0] = p[1]
 
 
-def p_instruccion_4(p):
-    """instruccion : continuar"""
+def p_interrupcion_ciclo(p):
+    """interrupcion_ciclo : continuar"""
     size = memoria.obtener_tamanio()
     if size == 1:
         ret: Continuar = p[1]
@@ -206,8 +209,8 @@ def p_instruccion_4(p):
         p[0] = p[1]
 
 
-def p_instruccion_5(p):
-    """instruccion : romper"""
+def p_interrupcion_ciclo_2(p):
+    """interrupcion_ciclo : romper"""
     size = memoria.obtener_tamanio()
     if size == 1:
         ret: Detener = p[1]
@@ -218,8 +221,8 @@ def p_instruccion_5(p):
         p[0] = p[1]
 
 
-def p_instruccion_6(p):
-    """instruccion : retorno"""
+def p_interrupcion_funcion(p):
+    """interrupcion_funcion : retorno"""
     size = memoria.obtener_tamanio()
     if size == 1:
         ret: Retornar = p[1]
@@ -869,10 +872,9 @@ def p_sub_exprecion_12(p):
 
 
 def p_error(t):
-    print(t)
+    print('Error Parser p_error ->',t,type(t))
     print("Error sintáctico en '%s'" % t.value)
-    resultado.add_error('Sintactico', ('Sintactico', "Error sintáctico en '%s'" %
-                                       t.value),  0, 0)
+    resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
 
 
 # Declaracion de inicio del parser
