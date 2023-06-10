@@ -63,8 +63,11 @@ def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
         scope: Scope = memoria.obtener_tope()
         tipo_secundario = instruccion.tipo_secundario
-        scope.declarar_variable(instruccion.id, None, instruccion.tipo,
-                                tipo_secundario, instruccion.linea, instruccion.columna)
+        try:
+            scope.declarar_variable(instruccion.id, None, instruccion.tipo,tipo_secundario, instruccion.linea, instruccion.columna)
+        except ValueError as error:
+            resultado.add_error('Semantico',str(error),instruccion.linea,instruccion.columna)
+            print(str(error))
     if isinstance(instruccion, Funcion):
         scope: Scope = memoria.obtener_tope()
         scope.declarar_funcion(instruccion.id, instruccion)

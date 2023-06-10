@@ -27,12 +27,20 @@ class Declaracion(Abstract):
 
         if self.tipo == TipoEnum.ANY:
             tipo_secundario: TipoEnum = result_expresion['tipo']
-            scope.declarar_variable(
-                self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
+            try:
+                scope.declarar_variable(
+                    self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
+            except ValueError as error:
+                self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
+                print('Semantico',str(error),self.linea,self.columna)
         elif self.tipo == TipoEnum.ARRAY:
             if len(self.valor.arreglo) == len(result_expresion['value']):
-                scope.declarar_variable(
-                    self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                try:
+                    scope.declarar_variable(
+                        self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                except ValueError as error:
+                    self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
+                    print('Semantico',str(error),self.linea,self.columna)
             else:
                 self.resultado.add_error(
                     'Semantico', 'No se declaro el array', self.linea, self.columna)
@@ -40,8 +48,12 @@ class Declaracion(Abstract):
             tipo: TipoEnum = result_expresion['tipo']
             #TODO: Verificar por si hay errores mas adelante en la asignacion
             if self.tipo == result_expresion['tipo'] or self.tipo == None:
-                scope.declarar_variable(
-                    self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+                try:
+                    scope.declarar_variable(
+                        self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+                except ValueError as error:
+                    self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
+                    print('Semantico',str(error),self.linea,self.columna)
             else:
                 error = f'No se pude declarar la variable tipo : {self.tipo.value} y asignar un valor tipo: {tipo.value}'
                 self.resultado.add_error('Semantico', error, self.linea, self.columna)

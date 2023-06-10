@@ -27,7 +27,6 @@ class Scope:
             print('  ', self.variables.get_diccionario()[x])
         for x in self.funciones.get_diccionario():
             print('  ', self.funciones.get_diccionario()[x])
-        
 
     def identificar(self, nombre, tipo):
         self.tipo = tipo
@@ -44,7 +43,7 @@ class Scope:
             self.variables.add(id, Simbolo(
                 valor, id, tipo, tipo_secundario, linea, columna))
         except ValueError as error:
-            print(f"Se produjo un error: {str(error)}")
+            raise ValueError(str(error))
 
     def modificar_variable(self, id: str, valor: any, tipo_secundario):
         if self.variables.has(id):
