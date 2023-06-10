@@ -6,12 +6,13 @@ class Acceder(Abstract):
     def __init__(self, resultado, linea, columna, id):
         super().__init__(resultado, linea, columna)
         self.id = id
+        print('Init Acceder -> ',self.resultado,' ,linea: ',linea," ,Columna: ",columna)
 
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)
         if (recuperacion == None):
-            self.resultado.add_error(
-                'Semantico', "La variable no existe", self.linea, self.columna)
+            print('Acceder -> ',self.resultado)
+            self.resultado.add_error('Semantico', "La variable no existe", self.linea, self.columna);
         else:
             if (recuperacion.tipo == TipoEnum.ANY):
                 if recuperacion.tipo_secundario == TipoEnum.NUMBER.value:

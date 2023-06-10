@@ -18,7 +18,7 @@ print('#### PARSER FINALIZADO')
 
 # print('#### INTRUCIONES RECUPERADAS')
 # print(result.sentencias)
-
+print('principal -> ', result)
 
 ambito_global: Scope = None
 
@@ -41,12 +41,17 @@ for x in ambito_global.variables.get_diccionario():
 for x in ambito_global.funciones.get_diccionario():
     print('  ', ambito_global.funciones.get_diccionario()[x])
 entorno = Entorno(result, 0, 0, ambito_global, result.sentencias)
+result.set_scope_global(ambito_global)
 print('#### EJECUCION DEL CODIGO')
 
 entorno.ejecutar(None)
 print('#### ERRORES')
 
 for n in result.errores:
+    print(n)
+
+print('#### CONSOLA DE SALIDA')
+for n in result.consola:
     print(n)
 
 # entorno.ejecutar(None)
