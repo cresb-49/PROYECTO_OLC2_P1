@@ -74,8 +74,16 @@ def set_memoria_funcion():
     memoria_espacios.apilar(ESPACIO_FUNCION)
 
 
-def validar_interrupciones():
-    print('Parser en linea 76 -> ', 'Validacion de Interrupciones')
+def validar_interrupciones(espacio):
+    print('Parser en linea 78 -> ', 'Validacion de Interrupciones')
+    if isinstance(espacio, Funcion):
+        print('Validacion Funcion -> ', type(espacio))
+    elif isinstance(espacio, Para):
+        print('Validacion Para -> ', type(espacio))
+    elif isinstance(espacio, Mientras):
+        print('Validacio Mientras -> ', type(espacio))
+    else:
+        print('Error: Ocurrio algo en la validacion de interrupciones, Parser, linea 86')
 
 
 def decla_var_fun(instruccion):
@@ -188,12 +196,26 @@ def p_instruccion_3(p):
 
 def p_instruccion_4(p):
     """instruccion : continuar"""
-    p[0] = p[1]
+    size = memoria.obtener_tamanio()
+    if size == 1:
+        ret: Continuar = p[1]
+        p[0] = IntruccionError(resultado, ret.linea, ret.columna)
+        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" %
+                            "continue",  ret.linea, ret.columna)
+    else:
+        p[0] = p[1]
 
 
 def p_instruccion_5(p):
     """instruccion : romper"""
-    p[0] = p[1]
+    size = memoria.obtener_tamanio()
+    if size == 1:
+        ret: Detener = p[1]
+        p[0] = IntruccionError(resultado, ret.linea, ret.columna)
+        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" %
+                            "break",  ret.linea, ret.columna)
+    else:
+        p[0] = p[1]
 
 
 def p_instruccion_6(p):
@@ -486,7 +508,7 @@ def p_funcion(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
     set_memoria_funcion()
-    validar_interrupciones()
+    validar_interrupciones(p[0])
 
 
 def p_funcion_2(p):
@@ -495,7 +517,7 @@ def p_funcion_2(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
     set_memoria_funcion()
-    validar_interrupciones()
+    validar_interrupciones(p[0])
 
 
 def p_funcion_3(p):
@@ -504,7 +526,7 @@ def p_funcion_3(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, p[6])
     set_memoria_funcion()
-    validar_interrupciones()
+    validar_interrupciones(p[0])
 
 
 def p_funcion_4(p):
@@ -513,7 +535,7 @@ def p_funcion_4(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], p[7])
     set_memoria_funcion()
-    validar_interrupciones()
+    validar_interrupciones(p[0])
 
 # Seccion de declaracion de parametros de una funcion
 
