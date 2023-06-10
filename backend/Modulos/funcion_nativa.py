@@ -29,6 +29,6 @@ class FuncionNativa():
     def hacer_to_fixed(self, numero: float, no_decimales: float):
         return round(numero,  int(no_decimales))
 
-    def hacer_to_exponential(self, numero: float, numeroExponencial: int):
-        xx = f"{numero:.{numeroExponencial}E} "
+    def hacer_to_exponential(self, numero: float, numeroExponencial: float):
+        xx = f"{numero:.{int(numeroExponencial)}E} "
         return xx
