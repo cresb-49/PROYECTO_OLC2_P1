@@ -1,4 +1,5 @@
 from Nativas.split import Split
+from Nativas.to_fixed import ToFixed
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -675,33 +676,45 @@ def p_sub_exprecion_3(p):
             input, p.slice[1]))
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.NUMBER, result)
-
-
+    
 def p_sub_exprecion_4(p):
+    """sub_exprecion : FLOAT"""
+    result = 0
+    try:
+        result = float(p[1])
+    except ValueError:
+        print("Float value too large %d", p[1])
+        resultado.add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(
+            input, p.slice[1]))
+    p[0] = Primitivo(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), TipoEnum.NUMBER, result)
+
+
+def p_sub_exprecion_5(p):
     """sub_exprecion : STR"""
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]),  TipoEnum.STRING, p[1])
 
 
-def p_sub_exprecion_5(p):
+def p_sub_exprecion_6(p):
     """sub_exprecion : STRCS"""
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]),  TipoEnum.STRING, p[1])
 
 
-def p_sub_exprecion_6(p):
+def p_sub_exprecion_7(p):
     """sub_exprecion : TRUE"""
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.BOOLEAN, True)
 
 
-def p_sub_exprecion_7(p):
+def p_sub_exprecion_8(p):
     """sub_exprecion : FALSE"""
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.BOOLEAN, False)
 
 
-def p_sub_exprecion_8(p):
+def p_sub_exprecion_9(p):
     """sub_exprecion : LBRA exp_array RBRA"""
     p[0] = Arreglo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.ARRAY, None, p[2])
@@ -721,19 +734,19 @@ def p_exp_array_2(p):
     p[0] = lista
 
 
-def p_sub_exprecion_9(p):
+def p_sub_exprecion_10(p):
     """sub_exprecion : ID"""
     p[0] = Acceder(resultado, p.lineno(
         1), find_column(input, p.slice[1]), p[1])
 
 
-def p_sub_exprecion_10(p):
+def p_sub_exprecion_11(p):
     """sub_exprecion : exprecion LBRA exprecion RBRA"""
     p[0] = AccederArray(resultado, p.lineno(2), find_column(
         input, p.slice[2]), p[1], p[3])
 
 
-def p_sub_exprecion_11(p):
+def p_sub_exprecion_12(p):
     """sub_exprecion : ID LPAR RPAR
                      | ID LPAR parametros RPAR
                      | ID DOT ID
@@ -774,6 +787,12 @@ def p_sub_exprecion_11(p):
                     input, p.slice[1]), p[1])
                 p[0] = Split(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
+            elif (p[3] == 'toFixed'):
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = ToFixed(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder, p[5])
+
 
         print('Acceso a struct o funcion nativa')
 

@@ -1,6 +1,6 @@
-import ply.lex as lex #Import del lex para la generacion del analizadoz lexico
+import ply.lex as lex  # Import del lex para la generacion del analizadoz lexico
 from Models.resultado import Resultado
-#Import de las clases auxiliares
+# Import de las clases auxiliares
 from Errores.Errores import TablaErrores
 
 tabla_errores = TablaErrores()
@@ -32,7 +32,8 @@ reservadas = {
 
 tokens = [
     'STR',  # Cadena string ""
-    'STRCS', # Cadena string ''
+    'STRCS',  # Cadena string ''
+    'FLOAT',  # valor con punto decimal
     'NUM',  # Valor numerico
     'LPAR',  # (
     'RPAR',  # )
@@ -78,13 +79,20 @@ def t_STR(t):
     t.value = t.value[1:-1].encode().decode("unicode_escape")
     return t
 
+
 def t_STRCS(t):
     r'\'.*?\''
     t.value = t.value[1:-1].encode().decode("unicode_escape")
     return t
 
+
+def t_FLOAT(t):
+    r'[-+]?[0-9]+(\.([0-9]+)?([eE][-+]?[0-9]+)?|[eE][-+]?[0-9]+)'
+    return t
+
+
 def t_NUM(t):
-    r'(\d+|\d+\.\d+)'
+    r'(\d+)'
     return t
 
 
@@ -150,7 +158,6 @@ def t_error(t):
     error = "Caracter ilegal '%s'" % t.value[0]
     resultado.add_error('Lexico', error, t.lexer.lineno, 0)
     t.lexer.skip(1)
-    
 
 
 def find_column(input, token):
@@ -163,13 +170,13 @@ lexer = lex.lex()
 # lexer = lex.lex(reflags=re.IGNORECASE) #TODO: tomar en si no funciona
 
 # Apertura y lectura del archivo de entrada
-#archivo = open("backend/entrada.ts", "r")
-#input = archivo.read()
+# archivo = open("backend/entrada.ts", "r")
+# input = archivo.read()
 
-#lexer.input(input)
+# lexer.input(input)
 
-#while True:
-    #tok = lexer.token()
-    #if not tok:
-        #break
-    #print(tok)
+# while True:
+# tok = lexer.token()
+# if not tok:
+# break
+# print(tok)

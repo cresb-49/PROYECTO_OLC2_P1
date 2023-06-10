@@ -24,7 +24,7 @@ class Imprimir(Abstract):
         else:
             print(resultado)
             self.resultado.add_error(
-                'Semantico', 'Hbo un error previo ha imprimir el valor.', self.linea, self.columna)
+                'Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
 
     # imprime un array en un formato correcto
     def imprimir_array(self, resultado):

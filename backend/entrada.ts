@@ -56,3 +56,7 @@ let variable = "hola como esta mi amor linda jahahahah que hace?";
 let var2 = variable.split(" ");
 
 console.log(var2);
+
+let var3 = 2.33456;
+
+console.log(var3.toFixed(2));
