@@ -28,8 +28,7 @@ class CallFuncion(Abstract):
                 if self.parametros == None:
                     # Ejecucion de funcion sin parametros
                     # Declaramos scope de tranajo pero debemos mandar el scope
-                    scope_global = None
-                    scope_funcion: Scope = Scope(scope_global)
+                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
                     resultado = fun.ejecutar(scope_funcion)
                     if isinstance(resultado, dict):
                         print(resultado)
@@ -37,8 +36,7 @@ class CallFuncion(Abstract):
                 else:
                     # Ejecucion de una funcion con parametros
                     # Declaracion del scope de trabajo
-                    scope_global = None
-                    scope_funcion: Scope = Scope(scope_global)
+                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
                     try:
                         # Hacemos la declaracion de variables en el scope de la funcion
                         for param_fun, param_send in zip(fun.parametros, self.parametros):

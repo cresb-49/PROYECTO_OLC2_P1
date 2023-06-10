@@ -74,7 +74,6 @@ def p_init(p):
     memoria.desapilar()
     resultado.sentencias = p[1]
     resultado.tabla_simbolos = registro    
-    print('Parser -> ',resultado)
     p[0] = resultado
     # p[0] = Resultado(p[1], tabla_errores, registro, [])
 

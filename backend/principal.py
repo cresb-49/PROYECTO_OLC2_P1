@@ -18,16 +18,18 @@ print('#### PARSER FINALIZADO')
 
 # print('#### INTRUCIONES RECUPERADAS')
 # print(result.sentencias)
-print('principal -> ', result)
 
 ambito_global: Scope = None
+#Buscar si puedo hacer un deep copy sin eliminar lo que ya tengo
+ambitos_copia:Scope = copy.deepcopy(ambito_global)
 
 # print('#### ENTORNOS GENERADOS')
 for n in result.tabla_simbolos:
     if isinstance(n, Scope):
         # print('Scope ->', n, ", Anterior ->", n.anterior)
         if n.tipo == 'Global':
-            ambito_global = copy.deepcopy(n)
+            #ambito_global = copy.deepcopy(n)
+            ambito_global = n
         # for x in n.variables.get_diccionario():
             # print('  ', n.variables.get_diccionario()[x])
         # for x in n.funciones.get_diccionario():
@@ -41,7 +43,9 @@ for x in ambito_global.variables.get_diccionario():
 for x in ambito_global.funciones.get_diccionario():
     print('  ', ambito_global.funciones.get_diccionario()[x])
 entorno = Entorno(result, 0, 0, ambito_global, result.sentencias)
+
 result.set_scope_global(ambito_global)
+
 print('#### EJECUCION DEL CODIGO')
 
 entorno.ejecutar(None)

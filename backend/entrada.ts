@@ -40,9 +40,12 @@ while (cont < 3) {
     console.log(cont);
 }
 
+let var4 = 'global';
+
 function nombre(hola:string) {
   let nose:string =  hola;
   console.log(nose.toUpperCase());
+  console.log(var4);
 }
 
 nombre("hola");
