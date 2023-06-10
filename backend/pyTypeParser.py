@@ -58,15 +58,34 @@ memoria = Pila()
 contador = 0
 registro = []
 
+# Memoria para establecer los limites de donde pueden estar las instrucciones de break, continue, return
+memoria_break = Pila()
+memoria_continue = Pila()
+memoria_return = Pila()
+
+# Memoria para entornos con nombres
+memoria_espacios = Pila()
+ESPACIO_GLOBAL = 'GLOBAL'
+ESPACIO_FUNCION = 'FUNCION'
+ESPACIO_CICLO = 'CICLO'
+
+
+def set_memoria_funcion():
+    memoria_espacios.apilar(ESPACIO_FUNCION)
+
+def validar_interrupciones():
+    print('Parser en linea 76 -> ','Validacion de Interrupciones')
 
 def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
         scope: Scope = memoria.obtener_tope()
         tipo_secundario = instruccion.tipo_secundario
         try:
-            scope.declarar_variable(instruccion.id, None, instruccion.tipo,tipo_secundario, instruccion.linea, instruccion.columna)
+            scope.declarar_variable(instruccion.id, None, instruccion.tipo,
+                                    tipo_secundario, instruccion.linea, instruccion.columna)
         except ValueError as error:
-            resultado.add_error('Semantico',str(error),instruccion.linea,instruccion.columna)
+            resultado.add_error('Semantico', str(
+                error), instruccion.linea, instruccion.columna)
             print(str(error))
     if isinstance(instruccion, Funcion):
         scope: Scope = memoria.obtener_tope()
@@ -77,7 +96,7 @@ def p_init(p):
     """init : limit_intrucciones"""
     memoria.desapilar()
     resultado.sentencias = p[1]
-    resultado.tabla_simbolos = registro    
+    resultado.tabla_simbolos = registro
     p[0] = resultado
     # p[0] = Resultado(p[1], tabla_errores, registro, [])
 
@@ -132,13 +151,15 @@ def p_instrucciones_2(p):
     sentencias = Sentencias(resultado, 0, 0, p[1], None)
     # sentencias.intrucciones.append(p[1])
     p[0] = sentencias
+    # Aqui es donde se inicializa un scope local, crear una pila para numerar los scopes
     print('Generacion Entorno Local')
     entorno = Scope(memoria.obtener_tope())
     entorno.tipo = 'Local'
     memoria.apilar(entorno)
     registro.append(entorno)
     decla_var_fun(p[1])
-    # TODO: Aqui es donde se inicializa un scope local, crear una pila para numerar los scopes
+    # Memoria de inicio
+    memoria_espacios.apilar(ESPACIO_GLOBAL)
 
 
 def p_instruccion(p):
@@ -179,7 +200,8 @@ def p_instruccion_6(p):
     if size == 1:
         ret: Retornar = p[1]
         p[0] = IntruccionError(resultado, ret.linea, ret.columna)
-        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" % "return",  ret.linea, ret.columna)
+        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" %
+                            "return",  ret.linea, ret.columna)
     else:
         p[0] = p[1]
 
@@ -439,11 +461,11 @@ def p_parametros_2(p):
 def p_ciclo_while(p):
     """ciclo_while : WHILE LPAR exprecion RPAR LKEY RKEY
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
-    memoria.desapilar()
     if len(p) == 7:
         p[0] = Mientras(resultado, p.lineno(
             1), find_column(input, p.slice[1]), p[3], None)
     else:
+        memoria.desapilar()
         p[0] = Mientras(resultado, p.lineno(
             1), find_column(input, p.slice[1]), p[3], p[6])
 
@@ -452,16 +474,20 @@ def p_ciclo_while(p):
 
 def p_funcion(p):
     """funcion : FUNCTION ID LPAR RPAR LKEY RKEY"""
-    memoria.desapilar()
+    #memoria.desapilar()
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
+    set_memoria_funcion()
+    validar_interrupciones()
 
 
 def p_funcion_2(p):
     """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY"""
-    memoria.desapilar()
+    #memoria.desapilar()
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
+    set_memoria_funcion()
+    validar_interrupciones()
 
 
 def p_funcion_3(p):
@@ -469,6 +495,8 @@ def p_funcion_3(p):
     memoria.desapilar()
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, p[6])
+    set_memoria_funcion()
+    validar_interrupciones()
 
 
 def p_funcion_4(p):
@@ -476,6 +504,8 @@ def p_funcion_4(p):
     memoria.desapilar()
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], p[7])
+    set_memoria_funcion()
+    validar_interrupciones()
 
 # Seccion de declaracion de parametros de una funcion
 
@@ -680,7 +710,8 @@ def p_sub_exprecion_3(p):
             input, p.slice[1]))
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.NUMBER, result)
-    
+
+
 def p_sub_exprecion_4(p):
     """sub_exprecion : FLOAT"""
     result = 0
@@ -801,7 +832,6 @@ def p_sub_exprecion_12(p):
                     input, p.slice[1]), p[1])
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
-
 
         print('Acceso a struct o funcion nativa')
 
