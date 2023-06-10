@@ -1,5 +1,6 @@
 from Nativas.split import Split
 from Nativas.to_fixed import ToFixed
+from Nativas.to_exponential import ToExponential
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -791,6 +792,11 @@ def p_sub_exprecion_12(p):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
                 p[0] = ToFixed(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder, p[5])
+            elif (p[3] == 'toExponential'):
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
 
 
