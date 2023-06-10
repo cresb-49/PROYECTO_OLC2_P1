@@ -73,8 +73,10 @@ ESPACIO_CICLO = 'CICLO'
 def set_memoria_funcion():
     memoria_espacios.apilar(ESPACIO_FUNCION)
 
+
 def validar_interrupciones():
-    print('Parser en linea 76 -> ','Validacion de Interrupciones')
+    print('Parser en linea 76 -> ', 'Validacion de Interrupciones')
+
 
 def decla_var_fun(instruccion):
     if isinstance(instruccion, Declaracion):
@@ -219,12 +221,16 @@ def p_print(p):
 def p_continuar(p):
     """continuar : CONTINUE SEMICOLON"""
     p[0] = Continuar(resultado, p.lineno(1), find_column(input, p.slice[1]))
+    memoria_continue.apilar(p[0])
+
 # Instruccion break
 
 
 def p_romper(p):
     """romper : BREAK SEMICOLON"""
     p[0] = Detener(resultado, p.lineno(1), find_column(input, p.slice[1]))
+    memoria_break.apilar(p[0])
+
 
 # Instruccion return
 
@@ -235,9 +241,11 @@ def p_retorno(p):
     if len(p) == 3:
         p[0] = Retornar(resultado, p.lineno(
             1), find_column(input, p.slice[1]), None)
+        memoria_return.apilar(p[0])
     else:
         p[0] = Retornar(resultado, p.lineno(
             1), find_column(input, p.slice[1]), p[2])
+        memoria_return.apilar(p[0])
 # Producciones de la intruccion for
 
 
@@ -474,7 +482,7 @@ def p_ciclo_while(p):
 
 def p_funcion(p):
     """funcion : FUNCTION ID LPAR RPAR LKEY RKEY"""
-    #memoria.desapilar()
+    # memoria.desapilar()
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
     set_memoria_funcion()
@@ -483,7 +491,7 @@ def p_funcion(p):
 
 def p_funcion_2(p):
     """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY"""
-    #memoria.desapilar()
+    # memoria.desapilar()
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
     set_memoria_funcion()
