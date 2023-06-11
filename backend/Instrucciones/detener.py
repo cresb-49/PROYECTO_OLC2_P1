@@ -9,7 +9,7 @@ class Detener(Abstract):
         return f"Break -> linea: {self.linea} ,columna: {self.columna}"
 
     def ejecutar(self, scope) -> any:
-        return None
+        return self
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo('break', padre)

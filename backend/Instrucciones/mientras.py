@@ -2,6 +2,9 @@ from Abstract.abstract import Abstract
 from Symbol.tipoEnum import TipoEnum
 from Symbol.scope import Scope
 
+from Instrucciones.continuar import Continuar
+from Instrucciones.detener import Detener
+
 
 class Mientras(Abstract):
     def __init__(self, resultado, linea, columna, condicion, sentencias):
@@ -18,14 +21,22 @@ class Mientras(Abstract):
             if result['tipo'] == TipoEnum.BOOLEAN:
                 try:
                     res: bool = result['value']
+                    print('debuj mientras',res)
                     while res:
                         scope_temporal: Scope = Scope(scope)
                         if self.sentencias != None:
-                            resultado = self.sentencias.ejecutar(
-                                scope_temporal)
+                            resultado = self.sentencias.ejecutar(scope_temporal)
                             if isinstance(resultado, dict):
                                 return resultado
-                            self.condicion.ejecutar(scope)
+                            elif isinstance(resultado, Continuar):
+                                r = self.condicion.ejecutar(scope)
+                                res = r['value']
+                                # TODO: [IMPORTANTE] Eliminar debuj
+                                print('debuj mientras:',resultado)
+                            elif isinstance(resultado, Detener):
+                                # TODO: [IMPORTANTE] Eliminar debuj
+                                print('debuj mientras:',resultado)
+                                break
                         r = self.condicion.ejecutar(scope)
                         res = r['value']
                 except Exception as e:
