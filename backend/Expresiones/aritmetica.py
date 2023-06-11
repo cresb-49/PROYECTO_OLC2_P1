@@ -30,9 +30,8 @@ class Aritmetica(Abstract):
             # si la verificacion se cumple entonces pasamos del metodo
             return True
         else:
-            concat = 'Error: Tipos no coinciden para la operacion ', self.tipo_operacion, ', Se esperaba number ', self.tipo_operacion, ' number o string ', self.tipo_operacion, ' string y se recibio ', tipo_exprecion_izquierda.value, ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
             self.resultado.add_error(
-                'Semantico', concat, self.linea, self.columna)
+                'Semantico', f'Tipos no coinciden para la operacion {self.tipo_operacion} , Se esperaba number {self.tipo_operacion} number | string {self.tipo_operacion} string y se recibio {tipo_exprecion_izquierda.value} {self.tipo_operacion} {tipo_exprecion_der.value}', self.linea, self.columna)
             return False
 
     def validar_otrasOperaciones(self, tipo_exprecion_izquierda, tipo_exprecion_der):
@@ -41,8 +40,7 @@ class Aritmetica(Abstract):
             # si la verificacion se cumple entonces pasamos del metodo
             return True
         else:
-            concat = 'Error: Tipos no coinciden para la operacion ', self.tipo_operacion, ', Se esperaba number ', self.tipo_operacion, ' number y se recibio ', tipo_exprecion_izquierda.value, ' ', self.tipo_operacion, ' ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
-
+            concat = f'Tipos no coinciden para la operacion {self.tipo_operacion}, Se esperaba number {self.tipo_operacion} number o string {self.tipo_operacion} string y se recibio {tipo_exprecion_izquierda.value} {self.tipo_operacion} {tipo_exprecion_der.value}'
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
 

@@ -18,7 +18,7 @@ class ToUpperCase(Abstract):
         if (tipo == TipoEnum.STRING):
             return True
         else:
-            concat = 'Error: Tipos no coinciden para la operacion toUpperCase(), Se esperaba String y recibio ' + tipo.value
+            concat = f'Tipos no coinciden para la operacion split(), Se esperaba String y recibio {tipo.value}'
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
             return False

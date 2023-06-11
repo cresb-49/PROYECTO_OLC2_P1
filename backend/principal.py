@@ -45,17 +45,19 @@ for x in ambito_global.funciones.get_diccionario():
 entorno = Entorno(result, 0, 0, ambito_global, result.sentencias)
 
 result.set_scope_global(ambito_global)
-
-print('#### EJECUCION DEL CODIGO')
-
-entorno.ejecutar(None)
-print('#### ERRORES')
-
+print('#### ERRORES LEXER PARSER')
 for n in result.errores:
     print(n)
 
+print('#### EJECUCION DEL CODIGO')
+entorno.ejecutar(None)
+
 print('#### CONSOLA DE SALIDA')
 for n in result.consola:
+    print(n)
+
+print('#### ERRORES EJECUCION DE CODIGO')
+for n in result.errores:
     print(n)
 
 # entorno.ejecutar(None)

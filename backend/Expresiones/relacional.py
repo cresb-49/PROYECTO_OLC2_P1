@@ -11,13 +11,15 @@ class Relacional(Abstract):
 
     def verificarTipos(self, val_izq, val_derecho):
         # extraemos el tipo de la exprecion izquierda de la op
+        if(val_izq == None or val_derecho == None):
+            return False
         tipo_exprecion_izquierda = val_izq["tipo"]
         tipo_exprecion_der = val_derecho["tipo"]
         if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING)):
             # si se trata de una suma enviamos a validarla
             return True
         else:
-            concat = 'Error: Tipos no coinciden para la operacion, Se esperaba NUMBER o STRING y se recibio ', tipo_exprecion_izquierda.value, ' y ', tipo_exprecion_der.value, ' linea:', self.linea, 'columna', self.columna
+            concat = f'Tipos no coinciden para la operacion, Se esperaba number {self.tipo_operacion} number o string {self.tipo_operacion} string y se recibio {tipo_exprecion_izquierda.value} {self.tipo_operacion} {tipo_exprecion_der.value}'
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
             print(concat)

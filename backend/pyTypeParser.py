@@ -5,6 +5,7 @@ import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
 from pyTypeLex import tokens
+from ply.lex import LexToken
 
 # Seccion para importar las abstracciones y ED para verificar la infomacion
 from ED.Pila import Pila
@@ -104,7 +105,8 @@ def validar_interrupciones():
                     else:
                         pila_sentencias.desapilar()
                         # Debemos de verificar si hay otro return en la pila despues de una sentencia
-                        verificacion_codigo_basura_return(pila_sentencias, top,'return')
+                        verificacion_codigo_basura_return(
+                            pila_sentencias, top, 'return')
                 elif isinstance(top, Continuar):
                     if not pila_sentencias.existe_elemento_arriba_abajo(ESPACIO_CICLO):
                         resultado.add_error(
@@ -115,7 +117,8 @@ def validar_interrupciones():
                     else:
                         pila_sentencias.desapilar()
                         # Debemos de verificar si hay otro return en la pila despues de una sentencia
-                        verificacion_codigo_basura_return(pila_sentencias, top,'continue')
+                        verificacion_codigo_basura_return(
+                            pila_sentencias, top, 'continue')
                 elif isinstance(top, Detener):
                     if not pila_sentencias.existe_elemento_arriba_abajo(ESPACIO_CICLO):
 
@@ -127,7 +130,8 @@ def validar_interrupciones():
                     else:
                         pila_sentencias.desapilar()
                         # Debemos de verificar si hay otro return en la pila despues de una sentencia
-                        verificacion_codigo_basura_return(pila_sentencias, top,'break')
+                        verificacion_codigo_basura_return(
+                            pila_sentencias, top, 'break')
                 else:
                     pila_sentencias.desapilar()
 
@@ -139,25 +143,33 @@ def verificacion_codigo_basura_return(pila: Pila, inst: Abstract, nombre):
         for ins in instrucciones:
             # print('ccc', ins)
             if isinstance(ins, Abstract):
-                resultado.add_error('Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
-                resultado.add_error('Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
+                resultado.add_error(
+                    'Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
+                resultado.add_error(
+                    'Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
                 break
     else:
-        instrucciones = pila.obtener_elementos_arriba_abajo_hasta(ESPACIO_CICLO)
+        instrucciones = pila.obtener_elementos_arriba_abajo_hasta(
+            ESPACIO_CICLO)
         if instrucciones != None:
             for ins in instrucciones:
                 # print('ccc', ins)
                 if isinstance(ins, Abstract):
-                    resultado.add_error('Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
-                    resultado.add_error('Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
+                    resultado.add_error(
+                        'Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
+                    resultado.add_error(
+                        'Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
                     break
         else:
-            instrucciones = pila.obtener_elementos_arriba_abajo_hasta(ESPACIO_GLOBAL)
+            instrucciones = pila.obtener_elementos_arriba_abajo_hasta(
+                ESPACIO_GLOBAL)
             for ins in instrucciones:
                 # print('ccc', ins)
                 if isinstance(ins, Abstract):
-                    resultado.add_error('Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
-                    resultado.add_error('Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
+                    resultado.add_error(
+                        'Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
+                    resultado.add_error(
+                        'Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
                     break
 
 
@@ -290,6 +302,7 @@ def p_instruccion_2(p):
     """instruccion : ciclo_for
                    | ciclo_while"""
     p[0] = p[1]
+
 
 def p_instruccion_3(p):
     """instruccion : error"""  # produccion de error
@@ -426,10 +439,16 @@ def p_declaracion_for(p):
     """
     if (p[3] == ':'):
         p[0] = Declaracion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], p[4], None, p[6])
+            input, p.slice[1]), p[2], p[4]['tipo'], p[4]['tipo_secundario'], p[6])
     else:
         p[0] = Declaracion(resultado, p.lineno(1), find_column(
             input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4])
+
+
+def p_declaracion_for_2(p):
+    """declaracion_for : ID IGUAL exprecion"""
+    p[0] = Asignacion(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[1], p[3])
 
 
 def p_sumador(p):
@@ -964,8 +983,10 @@ def p_sub_exprecion_12(p):
 def p_error(t):
     print('Error Parser p_error ->', t, type(t))
     print("Error sintáctico en '%s'" % t.value)
-    resultado.add_error(
-        'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+    if isinstance(t,LexToken):
+        resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+    else:
+        resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
 
 
 # Declaracion de inicio del parser

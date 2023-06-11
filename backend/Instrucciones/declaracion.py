@@ -28,8 +28,7 @@ class Declaracion(Abstract):
         if self.tipo == TipoEnum.ANY:
             tipo_secundario: TipoEnum = result_expresion['tipo']
             try:
-                scope.declarar_variable(
-                    self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
+                scope.declarar_variable(self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
             except ValueError as error:
                 self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
                 print('Semantico',str(error),self.linea,self.columna)
@@ -55,7 +54,7 @@ class Declaracion(Abstract):
                     self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
                     print('Semantico',str(error),self.linea,self.columna)
             else:
-                error = f'No se pude declarar la variable tipo : {self.tipo.value} y asignar un valor tipo: {tipo.value}'
+                error = f'No se pude declarar la variable "{self.id}" de tipo : {tipo.value} y asignar un valor tipo: {tipo.value}'
                 self.resultado.add_error('Semantico', error, self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
