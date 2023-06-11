@@ -619,34 +619,55 @@ def p_ciclo_while(p):
 
 
 def p_funcion(p):
-    """funcion : FUNCTION ID LPAR RPAR LKEY RKEY"""
+    """funcion : FUNCTION ID LPAR RPAR LKEY RKEY 
+               | FUNCTION ID LPAR RPAR COLON tipo LKEY RKEY"""
     # memoria.desapilar()
-    p[0] = Funcion(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
+    if p[5] == ":":
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], p[6]['tipo'], p[6]['tipo_secundario'], None, None)
+    else:
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], TipoEnum.ANY, None, None, None)
     set_memoria_funcion()
 
 
 def p_funcion_2(p):
-    """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY"""
+    """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY RKEY
+               | FUNCTION ID LPAR lista_parametros RPAR COLON tipo LKEY RKEY"""
     # memoria.desapilar()
-    p[0] = Funcion(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
+    if p[6] == ":":
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], p[7]['tipo'], p[7]['tipo_secundario'], p[4], None)
+    else:
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4], None)
     set_memoria_funcion()
 
 
 def p_funcion_3(p):
-    """funcion : FUNCTION ID LPAR RPAR LKEY instrucciones RKEY"""
+    """funcion : FUNCTION ID LPAR RPAR LKEY instrucciones RKEY
+               | FUNCTION ID LPAR RPAR COLON tipo LKEY instrucciones RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[2], TipoEnum.ANY, None, p[6])
+    if p[5] == ":":
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], p[6]['tipo'], p[6]['tipo_secundario'], None, p[6])
+    else:
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], TipoEnum.ANY, None, None, p[6])
     set_memoria_funcion()
 
 
 def p_funcion_4(p):
-    """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY"""
+    """funcion : FUNCTION ID LPAR lista_parametros RPAR LKEY instrucciones RKEY
+               | FUNCTION ID LPAR lista_parametros RPAR COLON tipo LKEY instrucciones RKEY"""
     memoria.desapilar()
-    p[0] = Funcion(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[2], TipoEnum.ANY, p[4], p[7])
+    if p[6] == ":":
+        # Funcion con tipo
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], p[7]['tipo'], p[7]['tipo_secundario'], p[4], p[7])
+    else:
+        p[0] = Funcion(resultado, p.lineno(1), find_column(
+            input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4], p[7])
     set_memoria_funcion()
 
 # Seccion de declaracion de parametros de una funcion
@@ -983,10 +1004,12 @@ def p_sub_exprecion_12(p):
 def p_error(t):
     print('Error Parser p_error ->', t, type(t))
     print("Error sintáctico en '%s'" % t.value)
-    if isinstance(t,LexToken):
-        resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+    if isinstance(t, LexToken):
+        resultado.add_error(
+            'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
     else:
-        resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+        resultado.add_error(
+            'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
 
 
 # Declaracion de inicio del parser
