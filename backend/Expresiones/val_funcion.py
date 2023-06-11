@@ -10,7 +10,7 @@ class ValFuncion(Abstract):
         self.parametros = parametros
 
     def __str__(self):
-        return f"Llamar Funcion: {self.id}, Parámetros: {self.parametros}"
+        return f"ValFuncion: {self.id}, Parámetros: {self.parametros}"
 
     def ejecutar(self, scope):
         fun = scope.obtener_funcion(self.id)
@@ -44,12 +44,17 @@ class ValFuncion(Abstract):
                             param_fun.ejecutar(scope_funcion)
                         return fun.ejecutar(scope_funcion)
                     except Exception as e:
+                        print(
+                            'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
                         self.resultado.add_error(
                             'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
             else:
                 self.resultado.add_error(
                     'Semantico', f'La funcion que desea ejecutar necesita {size_funcion} parametros, pero la esta ejecutando con {size} parametros', self.linea, self.columna)
+                print(
+                    'Semantico', f'La funcion que desea ejecutar necesita {size_funcion} parametros, pero la esta ejecutando con {size} parametros', self.linea, self.columna)
         else:
+            print('Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
             self.resultado.add_error(
                 'Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
 

@@ -18,13 +18,15 @@ class Imprimir(Abstract):
             if (resultado['tipo'] == TipoEnum.ARRAY):
                 self.imprimir_array(resultado)
             #si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
+            # elif (resultado['tipo'] == TipoEnum.ERROR):
+            #     print(resultado['value'])
+            #     self.resultado.consola.append(resultado['value'])
             else:
                 print(resultado['value'])
                 self.resultado.consola.append(resultado['value'])
         else:
-            print(resultado)
-            self.resultado.add_error(
-                'Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
+            print('Debuj imprimir -> ',resultado)
+            self.resultado.add_error('Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
 
     # imprime un array en un formato correcto
     def imprimir_array(self, resultado):

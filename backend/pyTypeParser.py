@@ -593,6 +593,7 @@ def p_parametros(p):
     """parametros : parametros COMMA exprecion"""
     params: list = p[1]
     params.append(p[3])
+    p[0] = params
 
 
 def p_parametros_2(p):
@@ -952,16 +953,15 @@ def p_sub_exprecion_12(p):
                      | ID DOT ID LPAR RPAR
                      | ID DOT ID LPAR exprecion RPAR"""
     if (p[2] == '('):
-        if isinstance(p[3], str):
+        if p[3] == ')':
             p[0] = ValFuncion(resultado, p.lineno(1), find_column(
                 input, p.slice[1]), p[1], [])
         else:
             if p[1] == 'String':
                 # Funcion nativa string
-                pass
+                print('Hacer funcion nativa String(val)')
             else:
-                p[0] = ValFuncion(resultado, p.lineno(
-                    1), find_column(input, p.slice[1]), p[1], p[3])
+                p[0] = ValFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
         if (len(p) == 6):
 

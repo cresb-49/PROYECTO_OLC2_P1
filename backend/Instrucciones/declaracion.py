@@ -44,18 +44,24 @@ class Declaracion(Abstract):
                 self.resultado.add_error(
                     'Semantico', 'No se declaro el array', self.linea, self.columna)
         else:
-            tipo: TipoEnum = result_expresion['tipo']
-            #TODO: Verificar por si hay errores mas adelante en la asignacion
-            if self.tipo == result_expresion['tipo'] or self.tipo == None:
-                try:
-                    scope.declarar_variable(
-                        self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
-                except ValueError as error:
-                    self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
+            if(result_expresion != None):
+                tipo: TipoEnum = result_expresion['tipo']
+                #TODO: Verificar por si hay errores mas adelante en la asignacion
+                if self.tipo == result_expresion['tipo'] or self.tipo == None:
+                    try:
+                        scope.declarar_variable(
+                            self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+                    except ValueError as error:
+                        self.resultado.add_error('Semantico',str(error),self.linea,self.columna)
+                        print('Semantico',str(error),self.linea,self.columna)
+                else:
+                    error = f'No se pude declarar la variable "{self.id}" de tipo : {tipo.value} y asignar un valor tipo: {tipo.value}'
+                    self.resultado.add_error('Semantico', error, self.linea, self.columna)
                     print('Semantico',str(error),self.linea,self.columna)
             else:
-                error = f'No se pude declarar la variable "{self.id}" de tipo : {tipo.value} y asignar un valor tipo: {tipo.value}'
+                error = f'No se pude declarar la variable "{self.id}" no existe valor para asignar'
                 self.resultado.add_error('Semantico', error, self.linea, self.columna)
+                print('Semantico',str(error),self.linea,self.columna)
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo(self.id, padre)
