@@ -6,7 +6,7 @@ class Continuar(Abstract):
         super().__init__(resultado,linea, columna)
 
     def __str__(self):
-        return "Continuar"
+        return f"Continue -> linea: {self.linea} ,columna: {self.columna}"
 
     def ejecutar(self, scope):
         return None

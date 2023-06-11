@@ -15,6 +15,7 @@ from Models.resultado import Resultado
 from Instrucciones.sentencias import Scope
 from Symbol.tipoEnum import TipoEnum
 # Clases referentes a las expreciones
+from Expresiones.acceder import Abstract
 from Expresiones.acceder import Acceder
 from Expresiones.aritmetica import Aritmetica
 from Expresiones.logico import Logico
@@ -63,6 +64,7 @@ memoria_entornos_intrucciones_interrupcion = Pila()
 ESPACIO_GLOBAL = 'GLOBAL'
 ESPACIO_FUNCION = 'FUNCION'
 ESPACIO_CICLO = 'CICLO'
+ESPACIO_SENTENCIA = 'SENTENCIA'
 INS_RETURN = 'RETURN'
 INS_BREAK = 'BREAK'
 INS_CONTINUE = 'CONTINUE'
@@ -73,17 +75,110 @@ def set_memoria_funcion():
 
 
 def validar_interrupciones():
-    print('Parser en linea 78 -> ', 'Validacion de Interrupciones')
-    print(memoria_entornos_intrucciones_interrupcion.items)
-    top = memoria_entornos_intrucciones_interrupcion.obtener_tope()
-    if isinstance(top, Retornar):
-        pass
-    elif isinstance(top, Continuar):
-        pass
-    elif isinstance(top, Detener):
-        pass
+    # print('Parser en linea 78 -> ', 'Validacion de Interrupciones')
+    # print(memoria_entornos_intrucciones_interrupcion.items)
+    # Divicion de toda la memoria hasta arreglos pequenos
+    general = []
+    tmp = []
+    for elemento in memoria_entornos_intrucciones_interrupcion.items:
+        if elemento == ESPACIO_GLOBAL:
+            tmp.append(elemento)
+            p = Pila()
+            p.items = list(reversed(invertir_solo_abstractos(tmp)))
+            general.append(p)
+            tmp = []
+        else:
+            tmp.append(elemento)
+
+    for pila_sentencias in general:
+        if isinstance(pila_sentencias, Pila):
+            while pila_sentencias.obtener_tamanio() != 0:
+                top = pila_sentencias.obtener_tope()
+                if isinstance(top, Retornar):
+                    if not pila_sentencias.existe_elemento_abajo_arriba(ESPACIO_FUNCION):
+                        resultado.add_error(
+                            'Semantico', 'No puede agregar un "return" si no esta contenido en una funcion', top.linea, top.columna)
+                        print(
+                            'Semantico', 'No puede agregar un "return" si no esta contenido en una funcion', top.linea, top.columna)
+                        pila_sentencias.desapilar()
+                    else:
+                        pila_sentencias.desapilar()
+                        # Debemos de verificar si hay otro return en la pila despues de una sentencia
+                        verificacion_codigo_basura_return(pila_sentencias, top,'return')
+                elif isinstance(top, Continuar):
+                    if not pila_sentencias.existe_elemento_arriba_abajo(ESPACIO_CICLO):
+                        resultado.add_error(
+                            'Semantico', 'No puede agregar un "continue" si no esta contenido en un ciclo for o while', top.linea, top.columna)
+                        print(
+                            'Semantico', 'No puede agregar un "continue" si no esta contenido en un ciclo for o while', top.linea, top.columna)
+                        pila_sentencias.desapilar()
+                    else:
+                        pila_sentencias.desapilar()
+                        # Debemos de verificar si hay otro return en la pila despues de una sentencia
+                        verificacion_codigo_basura_return(pila_sentencias, top,'continue')
+                elif isinstance(top, Detener):
+                    if not pila_sentencias.existe_elemento_arriba_abajo(ESPACIO_CICLO):
+
+                        resultado.add_error(
+                            'Semantico', 'No puede agregar un "break" si no esta contenido en un ciclo for o while', top.linea, top.columna)
+                        print(
+                            'Semantico', 'No puede agregar un "break" si no esta contenido en un ciclo for o while', top.linea, top.columna)
+                        pila_sentencias.desapilar()
+                    else:
+                        pila_sentencias.desapilar()
+                        # Debemos de verificar si hay otro return en la pila despues de una sentencia
+                        verificacion_codigo_basura_return(pila_sentencias, top,'break')
+                else:
+                    pila_sentencias.desapilar()
+
+
+def verificacion_codigo_basura_return(pila: Pila, inst: Abstract, nombre):
+    if pila.existe_elemento_arriba_abajo(ESPACIO_SENTENCIA):
+        instrucciones = pila.obtener_elementos_arriba_abajo_hasta(
+            ESPACIO_SENTENCIA)
+        for ins in instrucciones:
+            # print('ccc', ins)
+            if isinstance(ins, Abstract):
+                resultado.add_error('Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
+                resultado.add_error('Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
+                break
     else:
-        pass
+        instrucciones = pila.obtener_elementos_arriba_abajo_hasta(ESPACIO_CICLO)
+        if instrucciones != None:
+            for ins in instrucciones:
+                # print('ccc', ins)
+                if isinstance(ins, Abstract):
+                    resultado.add_error('Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
+                    resultado.add_error('Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
+                    break
+        else:
+            instrucciones = pila.obtener_elementos_arriba_abajo_hasta(ESPACIO_GLOBAL)
+            for ins in instrucciones:
+                # print('ccc', ins)
+                if isinstance(ins, Abstract):
+                    resultado.add_error('Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
+                    resultado.add_error('Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
+                    break
+
+
+def invertir_solo_abstractos(items) -> list:
+    result = []
+    tmp = []
+    for item in items:
+        if isinstance(item, Abstract):
+            tmp.append(item)
+        else:
+            if len(tmp) == 0:
+                result.append(item)
+            else:
+                result.extend(list(reversed(tmp)))
+                tmp = []
+                result.append(item)
+    # print('@@@@@@@@@@@@@@@@@@@@@@@@@')
+    # for item in result:
+    #     print(item)
+    # print('@@@@@@@@@@@@@@@@@@@@@@@@@')
+    return result
 
 
 def decla_var_fun(instruccion):
@@ -99,7 +194,12 @@ def decla_var_fun(instruccion):
             print(str(error))
     if isinstance(instruccion, Funcion):
         scope: Scope = memoria.obtener_tope()
-        scope.declarar_funcion(instruccion.id, instruccion)
+        try:
+            scope.declarar_funcion(instruccion.id, instruccion)
+        except ValueError as error:
+            resultado.add_error('Semantico', str(
+                error), instruccion.linea, instruccion.columna)
+            print(str(error))
 
 
 def p_init(p):
@@ -322,7 +422,7 @@ def manejo_for_pila(declarar, desapilar: bool):
 
 def p_declaracion_for(p):
     """declaracion_for : LET ID COLON tipo IGUAL exprecion
-                       | LET ID IGUAL exprecion 
+                       | LET ID IGUAL exprecion
     """
     if (p[3] == ':'):
         p[0] = Declaracion(resultado, p.lineno(1), find_column(
@@ -364,14 +464,18 @@ def p_condicional_if(p):
     """condicional_if : si_continuacion_if continuacion_if"""
     print('Si con else')
     heredado: SiContrario = p[1]['heredado']
-    heredado.sentencias_false = p[2]
+    if heredado == None:
+        base: Si = p[1]['base']
+        base._else = p[2]
+    else:
+        heredado.sentencias_false = p[2]
     p[0] = p[1]['base']
 
 
 def p_condicional_if2(p):
     """condicional_if : si_continuacion_if"""
     print('Si con else if')
-    print(p[1])
+    # print(p[1])
     p[0] = p[1]['base']
 
 
@@ -392,6 +496,7 @@ def p_si_continuacion_if(p):
         p[0] = manejo_if(p, heredado, None)
     else:
         p[0] = {'base': p[1], 'heredado': None}
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_SENTENCIA)
 
 
 def manejo_if(p, heredado: SiContrario, instrucciones):
@@ -418,6 +523,7 @@ def p_base_if(p):
         print('Si sin instrucciones')
         p[0] = Si(resultado, p.lineno(1), find_column(
             input, p.slice[1]), p[3], None, None)
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_SENTENCIA)
 
 
 def p_continuacion_if(p):
@@ -432,6 +538,7 @@ def p_continuacion_if(p):
         print('Else sin instrucciones')
         p[0] = Contrario(resultado, p.lineno(
             1), find_column(input, p.slice[1]), None)
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_SENTENCIA)
 
 # Declaracion de un struct
 

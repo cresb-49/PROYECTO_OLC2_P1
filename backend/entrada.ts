@@ -16,9 +16,70 @@ let anys: any[] = ["Hola", false, 3];
 console.log(palabras[0]);
 console.log(booleanos[0]);
 console.log(anys[0]);
+function nombre(params:string) {
+  for (let index = 0; index < 12 ; index++) {
+    console.log(index);
+    for (let IN = 0; IN < 12; IN++) {
+      if(true){
+        return;
+      }else{
+        break;
+      }
+    }
+  }
+  return;
+  
+}
+
+function nombre45(params:string) {
+  for (let index = 0; index < 12 ; index++) {
+    console.log(index);
+    for (let IN = 0; IN < 12; IN++) {
+      break;
+    }
+  }
+}
+
+function nombre47(params:string) {
+  for (let index = 0; index < 12 ; index++) {
+    console.log(index);
+    for (let IN = 0; IN < 12; IN++) {
+      return;
+    }
+  }
+}
 
 for (let index = 0; index < 12 ; index++) {
+  console.log(index);
+  for (let IN = 0; IN < 12; IN++) {
+    if(true){
+      continue;
+    }
+    
+  }
+}
+
+function nombre1(params:string) {
+  for (let index = 0; index < 12 ; index++) {
     console.log(index);
+    for (let IN = 0; IN < 12; IN++) {
+      if(true){
+        return;
+      }
+    }
+  }
+}
+
+function nombre2(params:string) {
+  for (let index = 0; index < 12 ; index++) {
+    console.log(index);
+    for (let IN = 0; IN < 12; IN++) {
+      if(true){
+        continue;
+      }
+      break;
+    }
+  }
 }
 
 let str = "5";
@@ -42,14 +103,11 @@ while (cont < 3) {
 
 let var4 = 'global';
 
-function nombre(hola:string) {
+function nombre63(hola:string) {
   let nose:string =  hola;
   console.log(nose.toUpperCase());
   console.log(var4);
 }
-
-break;
-continue;
 
 nombre("hola");
 
@@ -68,6 +126,6 @@ let var3 = 2.33456;
 console.log(var3.toFixed(2));
 
 
-let var4 = 223234234.33456;
+let var7 = 223234234.33456;
 
-console.log(var3.toExponential(5));
+console.log(var7.toExponential(5));

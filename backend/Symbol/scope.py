@@ -64,7 +64,7 @@ class Scope:
         try:
             self.funciones.add(id, funcion)
         except ValueError as error:
-            print(f"Se produjo un error: {str(error)}")
+            raise ValueError(str(error))
 
     def obtener_funcion(self, id: str):
         scope = self
@@ -120,7 +120,7 @@ class Funciones:
     def add(self, clave: str, valor):
         if clave in self.diccionario:
             raise ValueError(
-                f"La variable \"{str(clave)}\" ya esta definida en este scope")
+                f"Ya existe una Funcion \"{str(clave)}\" ya esta definida en programa")
         else:
             self.diccionario[clave] = valor
 

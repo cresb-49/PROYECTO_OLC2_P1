@@ -35,3 +35,16 @@ class Pila:
             if dato == item:
                 return True
         return False
+
+    def obtener_elementos_arriba_abajo_hasta(self,dato):
+        result = []
+        # print('!!!!!!!!!!!!!!!!')
+        # for item in self.items:
+        #     print('ttt',item)
+        # print('!!!!!!!!!!!!!!!!')
+        for item in reversed(self.items):
+            if dato == item:
+                return list(reversed(result))
+            else:
+                # print('agreggo',item)
+                result.append(item)
