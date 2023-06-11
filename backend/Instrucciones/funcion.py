@@ -16,12 +16,11 @@ class Funcion(Abstract):
         return f"Funcion: {self.id}, tipo: {self.tipo}, tipo_secundario: {self.tipo_secundario}, parametros: {self.parametros}"
 
     def ejecutar(self, scope):
-        print('debuj funcion', self)
         if self.sentencias != None:
             result = self.sentencias.ejecutar(scope)
-            print('debuj funcion result', result)
             if result != None:
-                return result
+                #Validar el tipo de retorno de la funcion
+                return result                
             else:
                 return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:

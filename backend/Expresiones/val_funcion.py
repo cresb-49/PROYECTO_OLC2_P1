@@ -3,7 +3,7 @@ from Symbol.scope import Scope
 from Instrucciones.funcion import Funcion
 
 
-class CallFuncion(Abstract):
+class ValFuncion(Abstract):
     def __init__(self, resultado, linea, columna, id, parametros):
         super().__init__(resultado, linea, columna)
         self.id = id
@@ -42,11 +42,8 @@ class CallFuncion(Abstract):
                         for param_fun, param_send in zip(fun.parametros, self.parametros):
                             param_fun.valor = param_send
                             param_fun.ejecutar(scope_funcion)
-                        # Ejecutamos la funcion si retornar ningun valor
-                        fun.ejecutar(scope_funcion)
+                        return fun.ejecutar(scope_funcion)
                     except Exception as e:
-                        print(
-                            'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
                         self.resultado.add_error(
                             'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
             else:
