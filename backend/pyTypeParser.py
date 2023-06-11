@@ -636,11 +636,9 @@ def p_funcion_2(p):
                | FUNCTION ID LPAR lista_parametros RPAR COLON tipo LKEY RKEY"""
     # memoria.desapilar()
     if p[6] == ":":
-        p[0] = Funcion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], p[7]['tipo'], p[7]['tipo_secundario'], p[4], None)
+        p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[2], p[7]['tipo'], p[7]['tipo_secundario'], p[4], None)
     else:
-        p[0] = Funcion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4], None)
+        p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4], None)
     set_memoria_funcion()
 
 
@@ -649,11 +647,9 @@ def p_funcion_3(p):
                | FUNCTION ID LPAR RPAR COLON tipo LKEY instrucciones RKEY"""
     memoria.desapilar()
     if p[5] == ":":
-        p[0] = Funcion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], p[6]['tipo'], p[6]['tipo_secundario'], None, p[6])
+        p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[2], p[6]['tipo'], p[6]['tipo_secundario'], None, p[8])
     else:
-        p[0] = Funcion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], TipoEnum.ANY, None, None, p[6])
+        p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[2], TipoEnum.ANY, None, None, p[6])
     set_memoria_funcion()
 
 
@@ -663,11 +659,9 @@ def p_funcion_4(p):
     memoria.desapilar()
     if p[6] == ":":
         # Funcion con tipo
-        p[0] = Funcion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], p[7]['tipo'], p[7]['tipo_secundario'], p[4], p[7])
+        p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[2], p[7]['tipo'], p[7]['tipo_secundario'], p[4], p[9])
     else:
-        p[0] = Funcion(resultado, p.lineno(1), find_column(
-            input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4], p[7])
+        p[0] = Funcion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4], p[7])
     set_memoria_funcion()
 
 # Seccion de declaracion de parametros de una funcion
