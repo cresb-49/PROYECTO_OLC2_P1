@@ -1,6 +1,7 @@
 from Abstract.abstract import Abstract
 from Symbol.tipoEnum import TipoEnum
 
+
 class Funcion(Abstract):
 
     def __init__(self, resultado, linea, columna, id, tipo, tipo_secundario, parametros, sentancias):
@@ -15,10 +16,14 @@ class Funcion(Abstract):
         return f"Funcion: {self.id}, tipo: {self.tipo}, tipo_secundario: {self.tipo_secundario}, parametros: {self.parametros}"
 
     def ejecutar(self, scope):
-        print('debuj funcion',self)
+        print('debuj funcion', self)
         if self.sentencias != None:
             result = self.sentencias.ejecutar(scope)
-            return result
+            print('debuj funcion result', result)
+            if result != None:
+                return result
+            else:
+                return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
