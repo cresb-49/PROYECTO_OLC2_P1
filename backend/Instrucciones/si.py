@@ -18,17 +18,18 @@ class Si(Abstract):
         try:
             if result['tipo'] == TipoEnum.BOOLEAN:
                 if result['value']:
-                    print('If -> Verdadero')
+                    #print('If -> Verdadero')
                     if self.sentencias != None:
                         new_scope = Scope(scope)
                         return self.sentencias.ejecutar(new_scope)
                 else:
-                    print('If -> Falso')
+                    #print('If -> Falso')
                     if self._else != None:
                         new_scope = Scope(scope)
                         return self._else.ejecutar(new_scope)
             else:
-                print('Error el if opera con una exprecion booleana')
+                self.resultado.add_error(
+                'Semantico', 'Error el if opera con una exprecion booleana', self.linea, self.columna)    
         except Exception:
             self.resultado.add_error(
                 'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)

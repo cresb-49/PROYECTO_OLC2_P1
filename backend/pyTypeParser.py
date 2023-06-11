@@ -289,7 +289,7 @@ def p_instruccion(p):
 def p_instruccion_2(p):
     """instruccion : ciclo_for
                    | ciclo_while"""
-
+    p[0] = p[1]
 
 def p_instruccion_3(p):
     """instruccion : error"""  # produccion de error
