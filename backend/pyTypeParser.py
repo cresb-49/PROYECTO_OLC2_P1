@@ -58,32 +58,32 @@ memoria = Pila()
 contador = 0
 registro = []
 
-# Memoria para establecer los limites de donde pueden estar las instrucciones de break, continue, return
-memoria_break = Pila()
-memoria_continue = Pila()
-memoria_return = Pila()
-
 # Memoria para entornos con nombres
-memoria_espacios = Pila()
+memoria_entornos_intrucciones_interrupcion = Pila()
 ESPACIO_GLOBAL = 'GLOBAL'
 ESPACIO_FUNCION = 'FUNCION'
 ESPACIO_CICLO = 'CICLO'
+INS_RETURN = 'RETURN'
+INS_BREAK = 'BREAK'
+INS_CONTINUE = 'CONTINUE'
 
 
 def set_memoria_funcion():
-    memoria_espacios.apilar(ESPACIO_FUNCION)
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_FUNCION)
 
 
-def validar_interrupciones(espacio):
+def validar_interrupciones():
     print('Parser en linea 78 -> ', 'Validacion de Interrupciones')
-    if isinstance(espacio, Funcion):
-        print('Validacion Funcion -> ', type(espacio))
-    elif isinstance(espacio, Para):
-        print('Validacion Para -> ', type(espacio))
-    elif isinstance(espacio, Mientras):
-        print('Validacio Mientras -> ', type(espacio))
+    print(memoria_entornos_intrucciones_interrupcion.items)
+    top = memoria_entornos_intrucciones_interrupcion.obtener_tope()
+    if isinstance(top, Retornar):
+        pass
+    elif isinstance(top, Continuar):
+        pass
+    elif isinstance(top, Detener):
+        pass
     else:
-        print('Error: Ocurrio algo en la validacion de interrupciones, Parser, linea 86')
+        pass
 
 
 def decla_var_fun(instruccion):
@@ -108,17 +108,19 @@ def p_init(p):
     resultado.sentencias = p[1]
     resultado.tabla_simbolos = registro
     p[0] = resultado
-    # p[0] = Resultado(p[1], tabla_errores, registro, [])
+    validar_interrupciones()
 
 # Intrucciones limitadas solo al ambito global
 
 
 def p_limit_intrucciones(p):
     """limit_intrucciones : limit_intrucciones limit_intruccion"""
+    # Limites de verificacion
+    print('Regreso a Entorno Global')
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_GLOBAL)
     sent: Sentencias = p[1]
     sent.instr_derecha = p[2]
     sentencias: Sentencias = Sentencias(resultado, 0, 0, sent, None)
-    # sentencias.intrucciones.append(p[2])
     decla_var_fun(p[2])
     p[0] = sentencias
 
@@ -135,11 +137,11 @@ def p_limit_intrucciones_2(p):
     memoria.apilar(entorno)
     registro.append(entorno)
     decla_var_fun(p[1])
-    # Memoria de inicio
-    memoria_espacios.apilar(ESPACIO_GLOBAL)
+    # Limites de verificacion
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_GLOBAL)
 
 
-#ESTA PRODUCCION ES PARA INTRUCCIONES SOLO PARA EL AMBITO GLOBAL
+# ESTA PRODUCCION ES PARA INTRUCCIONES SOLO PARA EL AMBITO GLOBAL
 def p_limit_intruccion(p):
     """limit_intruccion : instruccion
                         | funcion"""
@@ -175,8 +177,6 @@ def p_instrucciones_2(p):
 
 def p_instruccion(p):
     """instruccion : print
-                   | ciclo_for
-                   | ciclo_while
                    | struct
                    | llamar_funcion
                    | declaracion
@@ -187,50 +187,37 @@ def p_instruccion(p):
 
 
 def p_instruccion_2(p):
+    """instruccion : ciclo_for
+                   | ciclo_while"""
+
+
+def p_instruccion_3(p):
     """instruccion : error"""  # produccion de error
     p[0] = IntruccionError(resultado, p.lineno(
         1), find_column(input, p.slice[1]))
 
 
-def p_instruccion_3(p):
+def p_instruccion_4(p):
     """instruccion : condicional_if"""
     p[0] = p[1]
 
 
 def p_interrupcion_ciclo(p):
     """interrupcion_ciclo : continuar"""
-    size = memoria.obtener_tamanio()
-    if size == 1:
-        ret: Continuar = p[1]
-        p[0] = IntruccionError(resultado, ret.linea, ret.columna)
-        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" %
-                            "continue",  ret.linea, ret.columna)
-    else:
-        p[0] = p[1]
+    memoria_entornos_intrucciones_interrupcion.apilar(p[1])
+    p[0] = p[1]
 
 
 def p_interrupcion_ciclo_2(p):
     """interrupcion_ciclo : romper"""
-    size = memoria.obtener_tamanio()
-    if size == 1:
-        ret: Detener = p[1]
-        p[0] = IntruccionError(resultado, ret.linea, ret.columna)
-        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" %
-                            "break",  ret.linea, ret.columna)
-    else:
-        p[0] = p[1]
+    memoria_entornos_intrucciones_interrupcion.apilar(p[1])
+    p[0] = p[1]
 
 
 def p_interrupcion_funcion(p):
     """interrupcion_funcion : retorno"""
-    size = memoria.obtener_tamanio()
-    if size == 1:
-        ret: Retornar = p[1]
-        p[0] = IntruccionError(resultado, ret.linea, ret.columna)
-        resultado.add_error('Sintactico', "En el ambito principal no puede contener '%s'" %
-                            "return",  ret.linea, ret.columna)
-    else:
-        p[0] = p[1]
+    memoria_entornos_intrucciones_interrupcion.apilar(p[1])
+    p[0] = p[1]
 
 # Intrucion console.log
 
@@ -246,7 +233,6 @@ def p_print(p):
 def p_continuar(p):
     """continuar : CONTINUE SEMICOLON"""
     p[0] = Continuar(resultado, p.lineno(1), find_column(input, p.slice[1]))
-    memoria_continue.apilar(p[0])
 
 # Instruccion break
 
@@ -254,7 +240,6 @@ def p_continuar(p):
 def p_romper(p):
     """romper : BREAK SEMICOLON"""
     p[0] = Detener(resultado, p.lineno(1), find_column(input, p.slice[1]))
-    memoria_break.apilar(p[0])
 
 
 # Instruccion return
@@ -266,11 +251,9 @@ def p_retorno(p):
     if len(p) == 3:
         p[0] = Retornar(resultado, p.lineno(
             1), find_column(input, p.slice[1]), None)
-        memoria_return.apilar(p[0])
     else:
         p[0] = Retornar(resultado, p.lineno(
             1), find_column(input, p.slice[1]), p[2])
-        memoria_return.apilar(p[0])
 # Producciones de la intruccion for
 
 
@@ -279,6 +262,8 @@ def p_ciclo_for(p):
                  | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
                  | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
+    # Apilamos la instruccion ciclo para verificacion
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_CICLO)
     # Debemos de verificar primiero que tipo de derivacion es
     if p[5] == 'of':
         # For de tipo iterable
@@ -494,6 +479,8 @@ def p_parametros_2(p):
 def p_ciclo_while(p):
     """ciclo_while : WHILE LPAR exprecion RPAR LKEY RKEY
                    | WHILE LPAR exprecion RPAR LKEY instrucciones RKEY"""
+    # Apilamos la instruccion ciclo para verificacion
+    memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_CICLO)
     if len(p) == 7:
         p[0] = Mientras(resultado, p.lineno(
             1), find_column(input, p.slice[1]), p[3], None)
@@ -511,7 +498,6 @@ def p_funcion(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, None)
     set_memoria_funcion()
-    validar_interrupciones(p[0])
 
 
 def p_funcion_2(p):
@@ -520,7 +506,6 @@ def p_funcion_2(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], None)
     set_memoria_funcion()
-    validar_interrupciones(p[0])
 
 
 def p_funcion_3(p):
@@ -529,7 +514,6 @@ def p_funcion_3(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, None, p[6])
     set_memoria_funcion()
-    validar_interrupciones(p[0])
 
 
 def p_funcion_4(p):
@@ -538,7 +522,6 @@ def p_funcion_4(p):
     p[0] = Funcion(resultado, p.lineno(1), find_column(
         input, p.slice[1]), p[2], TipoEnum.ANY, p[4], p[7])
     set_memoria_funcion()
-    validar_interrupciones(p[0])
 
 # Seccion de declaracion de parametros de una funcion
 
@@ -872,9 +855,10 @@ def p_sub_exprecion_12(p):
 
 
 def p_error(t):
-    print('Error Parser p_error ->',t,type(t))
+    print('Error Parser p_error ->', t, type(t))
     print("Error sintáctico en '%s'" % t.value)
-    resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+    resultado.add_error(
+        'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
 
 
 # Declaracion de inicio del parser

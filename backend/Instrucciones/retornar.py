@@ -7,7 +7,8 @@ class Retornar(Abstract):
         self.exprecion = exprecion
 
     def __str__(self):
-        return f"Return -> Expresión: {self.exprecion}"
+        #return f"Return -> Expresión: {self.exprecion}"
+        return f"Return -> linea: {self.linea} ,columna: {self.columna}"
 
     def ejecutar(self, scope):
         valor = self.exprecion.ejecutar(scope)

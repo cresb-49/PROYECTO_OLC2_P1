@@ -19,7 +19,7 @@ class Imprimir(Abstract):
                 self.imprimir_array(resultado)
             #si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
             else:
-                print(resultado['value'])
+                #print(resultado['value'])
                 self.resultado.consola.append(resultado['value'])
         else:
             print(resultado)
@@ -34,7 +34,7 @@ class Imprimir(Abstract):
             contenido.append(string['value'])
         #mandamos ha guardar el string en la consola
         self.resultado.consola.append(str(contenido))
-        print(str(contenido))
+        #print(str(contenido))
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo('console.log(', padre)

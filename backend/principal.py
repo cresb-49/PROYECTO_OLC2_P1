@@ -54,9 +54,9 @@ print('#### ERRORES')
 for n in result.errores:
     print(n)
 
-print('#### CONSOLA DE SALIDA')
-for n in result.consola:
-    print(n)
+# print('#### CONSOLA DE SALIDA')
+# for n in result.consola:
+#     print(n)
 
 # entorno.ejecutar(None)
 # print('#### CODIGO AST')

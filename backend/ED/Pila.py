@@ -20,3 +20,18 @@ class Pila:
         if self.esta_vacia():
             return None
         return self.items[-1]
+
+    def limpiar(self):
+        self.items = []
+
+    def existe_elemento_abajo_arriba(self, dato):
+        for item in self.items:
+            if dato == item:
+                return True
+        return False
+
+    def existe_elemento_arriba_abajo(self, dato):
+        for item in reversed(self.items):
+            if dato == item:
+                return True
+        return False
