@@ -28,7 +28,8 @@ class CallFuncion(Abstract):
                 if self.parametros == None:
                     # Ejecucion de funcion sin parametros
                     # Declaramos scope de tranajo pero debemos mandar el scope
-                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
+                    scope_funcion: Scope = Scope(
+                        self.resultado.get_scope_global())
                     resultado = fun.ejecutar(scope_funcion)
                     if isinstance(resultado, dict):
                         print(resultado)
@@ -36,24 +37,26 @@ class CallFuncion(Abstract):
                 else:
                     # Ejecucion de una funcion con parametros
                     # Declaracion del scope de trabajo
-                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
+                    scope_funcion: Scope = Scope(
+                        self.resultado.get_scope_global())
                     try:
                         # Hacemos la declaracion de variables en el scope de la funcion
                         for param_fun, param_send in zip(fun.parametros, self.parametros):
                             param_fun.valor = param_send
-                            param_fun.ejecutar(scope_funcion)                        
+                            param_fun.ejecutar(scope_funcion)
                         resultado = fun.ejecutar(scope_funcion)
                         if isinstance(resultado, dict):
                             print(resultado)
                             return resultado
-                        
+
                     except Exception as e:
                         print('Error'+str(e))
             else:
-                print(
-                    f'La funcion que desea ejecutar necesita {size_funcion} parametros, pero la esta ejecutando con {size} parametros')
+                self.resultado.add_error(
+                    'Semantico', f'La funcion que desea ejecutar necesita {size_funcion} parametros, pero la esta ejecutando con {size} parametros', self.linea, self.columna)
         else:
-            print('Se invoco un funcion que no esta definida')
+            self.resultado.add_error(
+                'Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo(self.id, padre)
