@@ -20,10 +20,10 @@ class Sentencias(Abstract):
         # Verificamos que la instruccion no sea una funcion para no ejecutarla
         if self.intr_izquierda != None:
             if not (isinstance(self.intr_izquierda, Funcion)):
-                self.intr_izquierda.ejecutar(scope)
+                return self.intr_izquierda.ejecutar(scope)
         if self.instr_derecha != None:
             if not (isinstance(self.instr_derecha, Funcion)):
-                self.instr_derecha.ejecutar(scope)
+                return self.instr_derecha.ejecutar(scope)
 
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo('instruccion', padre)
