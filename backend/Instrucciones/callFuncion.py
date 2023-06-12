@@ -1,6 +1,7 @@
 from Abstract.abstract import Abstract
 from Symbol.scope import Scope
 from Instrucciones.funcion import Funcion
+import traceback
 
 
 class CallFuncion(Abstract):
@@ -49,6 +50,7 @@ class CallFuncion(Abstract):
                             'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
                         self.resultado.add_error(
                             'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
+                        traceback.print_exc()
             else:
                 self.resultado.add_error(
                     'Semantico', f'La funcion que desea ejecutar necesita {size_funcion} parametros, pero la esta ejecutando con {size} parametros', self.linea, self.columna)
