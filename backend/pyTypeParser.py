@@ -322,8 +322,8 @@ def p_sub_array(p):
 
 
 def p_instruccion_2(p):
-    """instruccion : ciclo_for
-                   | ciclo_while"""
+    """instruccion : ciclo_for SEMICOLON
+                   | ciclo_while SEMICOLON"""
     p[0] = p[1]
 
 
@@ -334,7 +334,7 @@ def p_instruccion_3(p):
 
 
 def p_instruccion_4(p):
-    """instruccion : condicional_if"""
+    """instruccion : condicional_if SEMICOLON"""
     p[0] = p[1]
 
 
