@@ -715,7 +715,7 @@ def p_declaracion(p):
 def p_declaracion_2(p):
     """declaracion : LET ID IGUAL exprecion SEMICOLON"""
     p[0] = Declaracion(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[2], None, None, p[4])
+        input, p.slice[1]), p[2], TipoEnum.ANY, None, p[4])
 
 
 def p_declaracion_3(p):
@@ -961,7 +961,8 @@ def p_sub_exprecion_12(p):
                 # Funcion nativa string
                 print('Hacer funcion nativa String(val)')
             else:
-                p[0] = ValFuncion(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1], p[3])
+                p[0] = ValFuncion(resultado, p.lineno(
+                    1), find_column(input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
         if (len(p) == 6):
 
@@ -982,12 +983,13 @@ def p_sub_exprecion_12(p):
                     input, p.slice[1]), acceder)
         elif (len(p) == 7):
             if (p[3] == 'concat'):
-
-                p[0] = Concat(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), p[5])
-            elif (p[3] == 'split'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
+                p[0] = Concat(resultado, p.lineno(
+                    1), find_column(input, p.slice[1]), acceder, p[5])
+            elif (p[3] == 'split'):
+                acceder = Acceder(resultado, p.lineno(
+                    1), find_column(input, p.slice[1]), p[1])
                 p[0] = Split(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
             elif (p[3] == 'toFixed'):
@@ -1011,7 +1013,7 @@ def p_error(t):
     print("Error sintáctico en '%s'" % t.value)
     if isinstance(t, LexToken):
         resultado.add_error(
-            'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+            'Sintactico', "Error sintáctico en '%s'" % t.value,  t.lineno, 'n/a')
     else:
         resultado.add_error(
             'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
