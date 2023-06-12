@@ -13,6 +13,8 @@ class String(Abstract):
 
 
     def ejecutar(self, scope):
+            print(self.expreciones)
+
             #Enviar ha ejecutar la exprecion para obtener su diccionario
             ejecutarExpresion = self.expreciones.ejecutar(scope)
             parametro = ejecutarExpresion['value'] #calor del saparador de split

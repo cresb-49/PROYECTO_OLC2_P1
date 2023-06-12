@@ -979,13 +979,12 @@ def p_sub_exprecion_12(p):
         else:
             if p[1] == 'String':
                 p[0] = String(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), p[5])
+                    input, p.slice[1]), p[3])
             else:
                 p[0] = ValFuncion(resultado, p.lineno(
                     1), find_column(input, p.slice[1]), p[1], p[3])
     elif (p[2] == '.'):
         if (len(p) == 6):
-
             if (p[3] == 'toString'):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
@@ -1022,7 +1021,6 @@ def p_sub_exprecion_12(p):
                     input, p.slice[1]), p[1])
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
-
         print('Acceso a struct o funcion nativa')
 
 # Definicion de error del analisis sintactico

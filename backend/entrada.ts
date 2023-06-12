@@ -142,13 +142,4 @@
 // let valor =  nombre(5);
 // console.log(valor);
 
-let index = 0;
-while (index <= 5) {
-  console.log(index);
-  index = index + 1;
-  if (index === 3){
-    continue;
-  }
-}
-
-console.log(String(2+5));
+String(4);
