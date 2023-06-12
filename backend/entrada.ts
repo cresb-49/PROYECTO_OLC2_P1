@@ -150,3 +150,5 @@ while (index <= 5) {
     continue;
   }
 }
+
+console.log(String(2+5));

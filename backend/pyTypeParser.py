@@ -1,6 +1,7 @@
 from Nativas.split import Split
 from Nativas.to_fixed import ToFixed
 from Nativas.to_exponential import ToExponential
+from Nativas.string import String
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -300,17 +301,22 @@ def p_instruccion(p):
                    | interrupcion_ciclo"""
     p[0] = p[1]
 
+
 def p_asignar_array(p):
     """asignar_array : sub_array LBRA exprecion RBRA IGUAL exprecion SEMICOLON"""
-    p[0] = AsignacionArray(resultado, p.lineno(5), find_column(input, p.slice[5]),p[1],p[3],p[6])
-    
+    p[0] = AsignacionArray(resultado, p.lineno(
+        5), find_column(input, p.slice[5]), p[1], p[3], p[6])
+
+
 def p_sub_array(p):
     """sub_array : sub_array LBRA exprecion RBRA
                  | ID """
     if len(p) == 2:
-        p[0] = Acceder(resultado,p.lineno(1),find_column(input,p.slice[1]),p[1])
+        p[0] = Acceder(resultado, p.lineno(
+            1), find_column(input, p.slice[1]), p[1])
     else:
-        p[0] = AccederArray(resultado,p.lineno(2),find_column(input,p.slice[2]),p[1],p[3])
+        p[0] = AccederArray(resultado, p.lineno(
+            2), find_column(input, p.slice[2]), p[1], p[3])
 
 
 def p_instruccion_2(p):
@@ -972,8 +978,8 @@ def p_sub_exprecion_12(p):
                 input, p.slice[1]), p[1], [])
         else:
             if p[1] == 'String':
-                # Funcion nativa string
-                print('Hacer funcion nativa String(val)')
+                p[0] = String(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[5])
             else:
                 p[0] = ValFuncion(resultado, p.lineno(
                     1), find_column(input, p.slice[1]), p[1], p[3])
