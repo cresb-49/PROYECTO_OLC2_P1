@@ -11,23 +11,25 @@ class Imprimir(Abstract):
         return f"Print -> Expresión: {self.exprecion}"
 
     def ejecutar(self, scope):
-        resultado = self.exprecion.ejecutar(scope)
-        #print(self.exprecion)
-        if (isinstance(resultado, dict)):
-            #si el tipo de dato es un array entonces debemos imprimirlo como tal
-            if (resultado['tipo'] == TipoEnum.ARRAY):
-                self.imprimir_array(resultado)
-            #si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
-            # elif (resultado['tipo'] == TipoEnum.ERROR):
-            #     print(resultado['value'])
-            #     self.resultado.consola.append(resultado['value'])
+        
+        for diccionario in self.exprecion:
+            resultado = diccionario.ejecutar(scope)
+            #print(self.exprecion)
+            if (isinstance(resultado, dict)):
+                #si el tipo de dato es un array entonces debemos imprimirlo como tal
+                if (resultado['tipo'] == TipoEnum.ARRAY):
+                    self.imprimir_array(resultado)
+                #si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
+                # elif (resultado['tipo'] == TipoEnum.ERROR):
+                #     print(resultado['value'])
+                #     self.resultado.consola.append(resultado['value'])
+                else:
+                    print_val = resultado['value'] if resultado['value'] != None else 'Null'
+                    print(print_val)
+                    self.resultado.consola.append(print_val)
             else:
-                print_val = resultado['value'] if resultado['value'] != None else 'Null'
-                print(print_val)
-                self.resultado.consola.append(print_val)
-        else:
-            print('Debuj imprimir -> ',resultado)
-            self.resultado.add_error('Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
+                print('Debuj imprimir -> ',resultado)
+                self.resultado.add_error('Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
 
     # imprime un array en un formato correcto
     def imprimir_array(self, resultado):

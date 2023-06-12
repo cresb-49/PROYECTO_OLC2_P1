@@ -13,16 +13,18 @@ class String(Abstract):
 
 
     def ejecutar(self, scope):
-            print(self.expreciones)
-
-            #Enviar ha ejecutar la exprecion para obtener su diccionario
-            ejecutarExpresion = self.expreciones.ejecutar(scope)
-            parametro = ejecutarExpresion['value'] #calor del saparador de split
-            #mandamos ha ejecutar la funcion nativa con los valores recabados
-            parametroString = FuncionNativa.string(None, parametro)
-            #retornamos un nuevo diccionario con la informacion del fixed    
-            return {"value": parametroString, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna} 
-
+            #Verificar que solo venga un parametro
+            if(len(self.expreciones) == 1):
+                expresion = self.expreciones[0]
+                #Enviar ha ejecutar la exprecion para obtener su diccionario
+                ejecutarExpresion = expresion.ejecutar(scope)
+                parametro = ejecutarExpresion['value'] #calor del saparador de split
+                #mandamos ha ejecutar la funcion nativa con los valores recabados
+                parametroString = FuncionNativa.string(None, parametro)
+                #retornamos un nuevo diccionario con la informacion del fixed    
+                return {"value": parametroString, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna} 
+            else:
+                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna} 
 
 
     def graficar(self, graphviz, padre):
