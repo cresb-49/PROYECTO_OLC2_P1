@@ -32,6 +32,7 @@ from Nativas.to_upper import ToUpperCase
 from Nativas.concat import Concat
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
+from Instrucciones.asignar_array import AsignacionArray
 from Instrucciones.callFuncion import CallFuncion
 from Instrucciones.declaracion import Declaracion
 
@@ -293,10 +294,23 @@ def p_instruccion(p):
                    | struct
                    | llamar_funcion
                    | declaracion
+                   | asignar_array
                    | asignacion
                    | interrupcion_funcion
                    | interrupcion_ciclo"""
     p[0] = p[1]
+
+def p_asignar_array(p):
+    """asignar_array : sub_array LBRA exprecion RBRA IGUAL exprecion SEMICOLON"""
+    p[0] = AsignacionArray(resultado, p.lineno(5), find_column(input, p.slice[5]),p[1],p[3],p[6])
+    
+def p_sub_array(p):
+    """sub_array : sub_array LBRA exprecion RBRA
+                 | ID """
+    if len(p) == 2:
+        p[0] = Acceder(resultado,p.lineno(1),find_column(input,p.slice[1]),p[1])
+    else:
+        p[0] = AccederArray(resultado,p.lineno(2),find_column(input,p.slice[2]),p[1],p[3])
 
 
 def p_instruccion_2(p):
