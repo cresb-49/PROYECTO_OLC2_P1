@@ -37,7 +37,8 @@ class Declaracion(Abstract):
                 print('Semantico', str(error), self.linea, self.columna)
         elif self.tipo == TipoEnum.ARRAY:
             # Resolvemos el array y verificamos que este completo como al inicio
-            if isinstance(self.valor, Arreglo):
+            #if isinstance(self.valor, Arreglo):
+            if isinstance(result_expresion, Arreglo):
                 if len(self.valor.arreglo) == len(result_expresion['value']):
                     if self.tipo_secundario == result_expresion['tipo_secundario']:
                         try:
@@ -62,19 +63,17 @@ class Declaracion(Abstract):
 
                         arreglo = self.calculo_tipo_array(
                             result_expresion['value'], self.tipo_secundario)
-
                         if arreglo['tipo_secundario'] == self.tipo_secundario:
                             scope.declarar_variable(
                                 self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
                         else:
-                            error = f'No puede declarar un varaible array de tipo: {self.tipo_secundario} y asignar un tipo: ' + str(
-                                arreglo['tipo_secundario'])
+                            error = f'No puede declarar un varaible array de tipo: {self.tipo_secundario} y asignar un tipo: ' + str(arreglo['tipo_secundario'])
                             self.resultado.add_error(
                                 'Semantico', error, self.linea, self.columna)
                             print('Semantico', str(error),
                                   self.linea, self.columna)
 
-                    elif result_expresion['tipo_secundario'] == self.tipo_secundario:
+                    elif result_expresion['tipo_secundario'] == self.tipo_secundario or self.tipo_secundario == TipoEnum.ANY.value:
 
                         scope.declarar_variable(
                             self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)

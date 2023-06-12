@@ -18,7 +18,8 @@ class Arreglo(Abstract):
         if len(results) > 0:
             base = results[0]['tipo']
             if all(base == exp['tipo'] for exp in results):
-                return {"value": results, "tipo": self.tipo, "tipo_secundario": base.value, "linea": self.linea, "columna": self.columna}
+                tipo_secundario = base.value
+                return {"value": results, "tipo": self.tipo, "tipo_secundario": tipo_secundario, "linea": self.linea, "columna": self.columna}
             else:
                 return {"value": results, "tipo": self.tipo, "tipo_secundario": TipoEnum.ANY.value, "linea": self.linea, "columna": self.columna}
         else:
