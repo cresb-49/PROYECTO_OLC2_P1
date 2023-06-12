@@ -9,22 +9,38 @@ class Logico(Abstract):
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
 
+    def __str__(self):
+        return f"Resultado: {self.resultado}\nLínea: {self.linea}\nColumna: {self.columna}\nExpresión Izquierda: {self.expresion_izquierda}\nExpresión Derecha: {self.expresion_derecha}\nTipo de Operación: {self.tipo_operacion}"
+
     def verificarTipos(self, val_izq, val_derecho):
         # extraemos el tipo de la exprecion izquierda de la op
-        tipo_exprecion_izquierda = val_izq["tipo"]
         tipo_exprecion_der = val_derecho["tipo"]
-        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.BOOLEAN)):
-            # si se trata de una suma enviamos a validarla
-            return True
+        if self.tipo_operacion == "!":
+            if tipo_exprecion_der == TipoEnum.BOOLEAN:
+                return True
+            else:
+                concat = f'Se esperaba boolean para la operacion "{self.tipo_operacion}" boolean y se recibio: {self.tipo_operacion} {tipo_exprecion_der.value}'
+                self.resultado.add_error(
+                    'Semantico', concat, self.linea, self.columna)
+                return False
         else:
-            concat = f'Tipos no coinciden para la operacion, Se esperaba boolean {self.tipo_operacion} boolean y se recibio {tipo_exprecion_izquierda.value} {self.tipo_operacion} {tipo_exprecion_der.value}'
-            self.resultado.add_error(
-                'Semantico', concat, self.linea, self.columna)
-            return False
+            tipo_exprecion_izquierda = val_izq["tipo"]
+            if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.BOOLEAN)):
+                # si se trata de una suma enviamos a validarla
+                return True
+            else:
+                concat = f'Tipos no coinciden para la operacion, Se esperaba boolean {self.tipo_operacion} boolean y se recibio {tipo_exprecion_izquierda.value} {self.tipo_operacion} {tipo_exprecion_der.value}'
+                self.resultado.add_error(
+                    'Semantico', concat, self.linea, self.columna)
+                return False
 
     def ejecutar(self, scope):
+        print(self)
         val_derecho = self.expresion_derecha.ejecutar(scope)
-        val_izq = self.expresion_izquierda.ejecutar(scope)
+        if self.expresion_izquierda != None:
+            val_izq = self.expresion_izquierda.ejecutar(scope)
+        else:
+            val_izq = None
         if (self.verificarTipos(val_izq, val_derecho)):
             if (self.tipo_operacion == "&&"):
                 val_izquierdo = self.expresion_izquierda.ejecutar(scope)
