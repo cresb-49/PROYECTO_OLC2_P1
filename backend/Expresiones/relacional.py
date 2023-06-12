@@ -15,7 +15,7 @@ class Relacional(Abstract):
             return False
         tipo_exprecion_izquierda = val_izq["tipo"]
         tipo_exprecion_der = val_derecho["tipo"]
-        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING)):
+        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING or tipo_exprecion_izquierda == TipoEnum.BOOLEAN)):
             # si se trata de una suma enviamos a validarla
             return True
         else:
@@ -30,10 +30,10 @@ class Relacional(Abstract):
         val_derecho = self.expresion_derecha.ejecutar(scope)
 
         if (self.verificarTipos(val_izquierdo, val_derecho)):
-            if (self.tipo_operacion == "==="):
+            if (self.tipo_operacion == "===" or self.tipo_operacion == "=="):
                 result = val_izquierdo['value'] == val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo_operacion == "!=="):
+            elif (self.tipo_operacion == "!==" or self.tipo_operacion == "!="):
                 result = val_izquierdo['value'] != val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "<"):
