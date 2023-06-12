@@ -23,6 +23,9 @@ class Acceder(Abstract):
                     return {"value": recuperacion.valor, "tipo": TipoEnum.STRUCT, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
                 elif recuperacion.tipo_secundario == TipoEnum.ARRAY.value:
                     return {"value": recuperacion.valor, "tipo": TipoEnum.ARRAY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                elif recuperacion.tipo_secundario == TipoEnum.ANY.value:
+                    return {"value": recuperacion.valor, "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                print('No devolvio nada acceder')
             elif (recuperacion.tipo == TipoEnum.ARRAY):
                 return {"value": recuperacion.valor, "tipo": TipoEnum.ARRAY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             else:
