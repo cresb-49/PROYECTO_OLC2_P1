@@ -12,7 +12,7 @@ class Imprimir(Abstract):
 
     def ejecutar(self, scope):
         resultado = self.exprecion.ejecutar(scope)
-
+        #print(self.exprecion)
         if (isinstance(resultado, dict)):
             #si el tipo de dato es un array entonces debemos imprimirlo como tal
             if (resultado['tipo'] == TipoEnum.ARRAY):
@@ -22,8 +22,9 @@ class Imprimir(Abstract):
             #     print(resultado['value'])
             #     self.resultado.consola.append(resultado['value'])
             else:
-                print(resultado['value'])
-                self.resultado.consola.append(resultado['value'])
+                print_val = resultado['value'] if resultado['value'] != None else 'Null'
+                print(print_val)
+                self.resultado.consola.append(print_val)
         else:
             print('Debuj imprimir -> ',resultado)
             self.resultado.add_error('Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
