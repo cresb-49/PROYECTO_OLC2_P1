@@ -18,22 +18,35 @@ class Funcion(Abstract):
     def ejecutar(self, scope):
         if self.sentencias != None:
             result = self.sentencias.ejecutar(scope)
-            print('debuj funcion',result)
             if self.validacion_salida_funccion(result):
-                if result != None:
-                    # Validar el tipo de retorno de la funcion
-                    return result
-                else:
-                    if self.tipo == TipoEnum.ARRAY or self.tipo == TipoEnum.BOOLEAN or self.tipo == TipoEnum.NUMBER or self.tipo == TipoEnum.STRING or self.tipo == TipoEnum.STRUCT:
-                        self.resultado.add_error(
-                            'Semantico', f'La funcion "{self.id}" necesita retornar un valor de tipo {self.tipo.value} agregue la instruccion', self.linea, self.columna)
-                        return {"value": 'Null', "tipo": TipoEnum.NULL, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-                    else:
-                        return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                val = {"value": result['value'], "tipo": result['tipo'], "tipo_secundario": result['tipo_secundario'], "linea": self.linea, "columna": self.columna}
+                print(f'Funcion -> {self.id} retorna -> ',val)
+                return val
+                # print('aquies es')
+                # return {"value": result['value'], "tipo": result['tipo'], "tipo_secundario": result['tipo_tiposecundario'], "linea": self.linea, "columna": self.columna}
+            else:
+                val = {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario, "linea": self.linea, "columna": self.columna}
+                print(f'Funcion -> {self.id} retorna -> ',val)
+                return val
+                # if result != None:
+                #     # Validar el tipo de retorno de la funcion
+                #     return {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario, "linea": self.linea, "columna": self.columna}
+                # else:
+                #     if self.tipo == TipoEnum.ARRAY or self.tipo == TipoEnum.BOOLEAN or self.tipo == TipoEnum.NUMBER or self.tipo == TipoEnum.STRING or self.tipo == TipoEnum.STRUCT:
+                #         self.resultado.add_error(
+                #             'Semantico', f'La funcion "{self.id}" necesita retornar un valor de tipo {self.tipo.value} agregue la instruccion', self.linea, self.columna)
+                #         return {"value": 'Null', "tipo": TipoEnum.NULL, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                #     else:
+                #         return {"value": None, "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
-            return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            val = {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario, "linea": self.linea, "columna": self.columna}
+            print(f'Funcion -> {self.id} retorna -> ',val)
+            return val
+            #return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def validacion_salida_funccion(self,result:dict) -> bool:
+        if result == None:
+            return False
         tipo:TipoEnum = result['tipo']
         if(self.tipo == tipo):
             tipo_secundario = result['tipo_secundario']
@@ -46,6 +59,8 @@ class Funcion(Abstract):
                     return False
             else:
                 return True
+        elif self.tipo == TipoEnum.ANY:
+            return True
         else:
             self.resultado.add_error('Semantico', f'La funcion "{self.id}" necesita retornar un valor de tipo {self.tipo.value} y esta retornando un valor de tipo {tipo.value}', self.linea, self.columna)
             print('Semantico', f'La funcion "{self.id}" necesita retornar un valor de tipo {self.tipo.value} y esta retornando un valor de tipo {tipo.value}', self.linea, self.columna)
