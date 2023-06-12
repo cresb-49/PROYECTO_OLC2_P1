@@ -58,9 +58,8 @@ class Para(Abstract):
                                 elif isinstance(resultado, Detener):
                                     break
                                 elif isinstance(resultado, Continuar):
-                                    r = self.condicion.ejecutar(
-                                        scope_declarado_for)
-                                    res = r['value']
+                                    self.expresion.ejecutar(scope_declarado_for)
+                                    r = self.condicion.ejecutar(scope_declarado_for)
                             self.expresion.ejecutar(scope_declarado_for)
                             r = self.condicion.ejecutar(scope_declarado_for)
                             res = r['value']

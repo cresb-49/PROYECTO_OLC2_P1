@@ -12,7 +12,7 @@ class Concat(Abstract):
 
     def ejecutar(self, scope):
         print(self.expreciones)
-   
+        
         # if len(results) > 0:
         #     base = results[0]['tipo']
         #     if all(base == exp['tipo'] for exp in results):
