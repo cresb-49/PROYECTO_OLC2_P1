@@ -3,6 +3,8 @@ from Models.resultado import Resultado
 # Import de las clases auxiliares
 from Errores.Errores import TablaErrores
 
+import re
+
 tabla_errores = TablaErrores()
 resultado = Resultado(None, [], None, [])
 
@@ -70,7 +72,8 @@ tokens = [
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     # Verifica en las palabras reservadas
-    t.type = reservadas.get(t.value.lower(), 'ID')
+    #t.type = reservadas.get(t.value.lower(), 'ID')
+    t.type = reservadas.get(t.value, 'ID')
     return t
 
 
@@ -149,7 +152,6 @@ t_ignore = " \t\r"
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
-    pass
 
 # Control de errores de analizador lexico
 
@@ -166,17 +168,17 @@ def find_column(input, token):
 
 
 # Construcion del Lexer
-lexer = lex.lex()
-# lexer = lex.lex(reflags=re.IGNORECASE) #TODO: tomar en si no funciona
+#lexer = lex.lex()
+lexer = lex.lex(reflags=re.IGNORECASE) #TODO: tomar en si no funciona
 
-# Apertura y lectura del archivo de entrada
+# #Apertura y lectura del archivo de entrada
 # archivo = open("backend/entrada.ts", "r")
 # input = archivo.read()
 
 # lexer.input(input)
 
 # while True:
-# tok = lexer.token()
-# if not tok:
-# break
-# print(tok)
+#     tok = lexer.token()
+#     if not tok:
+#         break
+#     print(tok)
