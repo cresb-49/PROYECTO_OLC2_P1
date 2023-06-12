@@ -3,13 +3,13 @@ from Modulos.funcion_nativa import FuncionNativa
 from Symbol.tipoEnum import TipoEnum
 
 
-class String(Abstract):
+class Number(Abstract):
     def __init__(self, resultado, linea, columna, expreciones):
         super().__init__(resultado, linea, columna)
         self.expreciones = expreciones
 
     def __str__(self):
-        return "String"
+        return "Number"
 
     def ejecutar(self, scope):
         # Verificar que solo venga un parametro
@@ -20,12 +20,18 @@ class String(Abstract):
             # calor del saparador de split
             parametro = ejecutarExpresion['value']
             # mandamos ha ejecutar la funcion nativa con los valores recabados
-            parametroString = FuncionNativa.string(None, parametro)
-            # retornamos un nuevo diccionario con la informacion del fixed
-            return {"value": parametroString, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            parametroNumber = FuncionNativa.number(None, parametro)
+            # Si la respuesta del metodo es none entonces hubo un error de conversion
+            if (parametroNumber == None):
+                self.resultado.add_error(
+                    'Semantico', 'Error al tratar de castear a formato Number', self.linea, self.columna)
+                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            
+            # SI LA RESPUESTA NO ES NONE ENTONCES  DEVLVEMOS LA RESPUESTA
+            return {"value": parametroNumber, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             self.resultado.add_error(
-                'Semantico', 'String(), no se puede ejecutar con mas de 1 parametro', self.linea, self.columna)
+                'Semantico', 'Number(), no se puede ejecutar con mas de 1 parametro', self.linea, self.columna)
             return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):

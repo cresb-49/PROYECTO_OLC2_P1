@@ -33,6 +33,14 @@ class FuncionNativa():
         xx = f"{numero:.{int(numeroExponencial)}E} "
         return xx
     
-    #devulve la conversion ha string de algo 
+    #devuelve la conversion ha string de algo 
     def string(self, param):
         return str(param)
+    
+    #devuelve la conversion ha string de algo 
+    def number(self, param):
+        try:
+            return float(param)
+        except ValueError as verr:
+            return None
+        

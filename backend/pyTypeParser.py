@@ -2,6 +2,8 @@ from Nativas.split import Split
 from Nativas.to_fixed import ToFixed
 from Nativas.to_exponential import ToExponential
 from Nativas.string import String
+from Nativas.number import Number
+from Nativas.type_of import TypeOf
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -979,6 +981,12 @@ def p_sub_exprecion_12(p):
         else:
             if p[1] == 'String':
                 p[0] = String(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[3])
+            elif p[1] == 'Number':
+                p[0] = Number(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[3])
+            elif p[1] == 'typeof':
+                p[0] = TypeOf(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[3])
             else:
                 p[0] = ValFuncion(resultado, p.lineno(

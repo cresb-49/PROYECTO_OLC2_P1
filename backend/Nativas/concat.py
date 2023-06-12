@@ -34,12 +34,15 @@ class Concat(Abstract):
                 else:
                     self.resultado.add_error(
                         'Semantico', 'concat solo funciona con un array en la entrada', self.linea, self.columna)
+                    return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             else:
                 self.resultado.add_error(
                     'Semantico', 'concat solo funciona con Arrays', self.linea, self.columna)
+                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             self.resultado.add_error(
                 'Semantico', f'Concat, no se puede operar con el identificador {self.id_arreglo.id}', self.linea, self.columna)
+            return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
