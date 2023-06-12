@@ -805,7 +805,7 @@ precedence = (
 def p_exprecion(p):
     """exprecion : MENOS exprecion %prec UMINUS"""
     izquiera = Primitivo(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), 'number', -1)
+        input, p.slice[1]), TipoEnum.NUMBER, -1)
     p[0] = Aritmetica(resultado, p.lineno(1), find_column(
         input, p.slice[1]), izquiera, p[2], '*')
 
