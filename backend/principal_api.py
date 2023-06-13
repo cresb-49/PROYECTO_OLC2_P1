@@ -3,7 +3,7 @@ from pyTypeParser import Scope
 # from pyTypeParser import Sentencias
 from pyTypeParser import Resultado
 from Instrucciones.entorno import Entorno
-
+from Modulos.grafico_dot import GraficoDot
 
 def leer(codigo):
     # Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
@@ -41,4 +41,10 @@ def leer(codigo):
     print('#### ERRORES EJECUCION DE CODIGO')
     for n in result.errores:
         print(n)
-    return result
+    
+    #mandamos ha graficar el resultado
+    # gv = GraficoDot()
+    # entorno.graficar(gv,None)
+
+    return {"result": result, "dot":""}
+

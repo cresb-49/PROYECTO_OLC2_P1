@@ -60,8 +60,8 @@ print('#### ERRORES EJECUCION DE CODIGO')
 for n in result.errores:
     print(n)
 
-# entorno.ejecutar(None)
-# print('#### CODIGO AST')
-# gv = GraficoDot()
-# entorno.graficar(gv,None)
-# print(gv.get_dot())
+
+print('#### CODIGO AST')
+gv = GraficoDot()
+entorno.graficar(gv,None)
+print(gv.get_dot())
