@@ -121,14 +121,10 @@ for (let i=0; i<=9; i++){
     for (let j =0; j<10; j++){
         output = output + " ";
     };
-
     for (let k =0; k<10; k++ ){
         output = output + "* ";
     };
-
-
     console.log(output);
-
 };
 
 console.log("");

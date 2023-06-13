@@ -14,6 +14,9 @@ class Aritmetica(Abstract):
         tipo_exprecion_izquierda = val_izquierdo["tipo"]
         # extraemos el tipo de la exprecion derecha de la op
         tipo_exprecion_der = val_derecho["tipo"]
+        
+        # print('debuj val izquierdo -> ',val_izquierdo)
+        # print('debuj val derecho -> ',val_derecho)
 
         # extraemos el tipo de operacion que se quiere realizar
         tipo_operacion = self.tipo_operacion
