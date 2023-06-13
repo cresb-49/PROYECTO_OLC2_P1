@@ -41,6 +41,7 @@ from Nativas.concat import Concat
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
 from Instrucciones.asignar_array import AsignacionArray
+from Instrucciones.asignar_estructura import AsignacionEstructura
 from Instrucciones.callFuncion import CallFuncion
 from Instrucciones.declaracion import Declaracion
 
@@ -111,7 +112,7 @@ def validacion_info_estructuras():
             elif len(resultados) == 1:
                 tipo_secundario = resultados[0].id
                 exprecion.tipo_secundario = tipo_secundario
-                #print(exprecion)
+                # print(exprecion)
             else:
                 resultado.add_error(
                     'Semantico', 'Existe ambiguedad al deducir la estructura', exprecion.linea, exprecion.columna)
@@ -376,6 +377,7 @@ def p_instruccion(p):
                    | llamar_funcion
                    | declaracion
                    | asignar_array
+                   | asignar_struct
                    | asignacion
                    | interrupcion_funcion
                    | interrupcion_ciclo"""
@@ -397,6 +399,14 @@ def p_sub_array(p):
     else:
         p[0] = AccederArray(resultado, p.lineno(
             2), find_column(input, p.slice[2]), p[1], p[3])
+
+
+def p_asignar_struct(p):
+    """asignar_struct : ID DOT ID IGUAL exprecion SEMICOLON"""
+    acceder = Acceder(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[1])
+    p[0] = AsignacionEstructura(resultado, p.lineno(
+        2), find_column(input, p.slice[2]), acceder, p[3], p[5])
 
 
 def p_instruccion_2(p):
