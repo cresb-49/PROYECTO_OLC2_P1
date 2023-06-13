@@ -26,10 +26,8 @@ class Asignacion(Abstract):
                 if variable_recuperada.tipo == result_exprecion['tipo']:
                     variable_recuperada.valor = result_exprecion['value']
                 else:
-                    concat = 'No se puede asignar un:', result_exprecion[
-                        'tipo'].value, ', a la variable ->', self.id, ':', variable_recuperada.tipo.value, ', linea: ', self.linea, ', columna: ', self.columna
-                    self.resultado.add_error(
-                        'Semantico', concat, self.linea, self.columna)
+                    concat = f"No se puede asignar un: {result_exprecion['tipo'].value}, a la variable: {self.id}: {variable_recuperada.tipo.value} , linea: {self.linea}, columna: {self.columna}"
+                    self.resultado.add_error('Semantico', concat, self.linea, self.columna)
         else:
             concat = 'No se puede encontrar la variable: ', self.id, ', linea: ', self.linea, ', columna: ', self.columna
             self.resultado.add_error(
