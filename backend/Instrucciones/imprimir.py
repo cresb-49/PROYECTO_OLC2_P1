@@ -17,7 +17,9 @@ class Imprimir(Abstract):
             if (isinstance(resultado, dict)):
                 # si el tipo de dato es un array entonces debemos imprimirlo como tal
                 if (resultado['tipo'] == TipoEnum.ARRAY):
-                    self.imprimir_array(resultado)
+                    concat = self.imprimir_array(resultado)
+                elif (resultado['tipo'] == TipoEnum.STRUCT):
+                    concat = self.imprimir_struct(resultado)
                 # si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
                 else:
                     print_val = resultado['value'] if resultado['value'] != None else 'Null'
@@ -32,11 +34,17 @@ class Imprimir(Abstract):
 
     def imprimir_array(self, resultado):
         # mandamos ha guardar el string en la consola
-        printHecho = self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
-        self.resultado.consola.append(printHecho)
-        print(printHecho)
+        return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
+
+    def imprimir_struct(self, resultado):
+        concat = "{\n"
+        for x in resultado['value']:
+            concat = concat + ' ' + x+': ' + \
+                resultado['value'][x]['value'] + '\n'
+        return concat + "}"
 
     # crea un string de array imprimible, si un elemento del array es un array entonces se convierte en funcion recursiva
+
     def imprimir_array_recu(self, resultado):
         contenido = []
         concat = ""
