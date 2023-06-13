@@ -29,6 +29,7 @@ from Expresiones.arreglo import Arreglo
 from Expresiones.acceder_array import AccederArray
 from Expresiones.val_funcion import ValFuncion
 from Expresiones.estructura_val import EstructuraVal
+from Expresiones.acceder_estructura import AccederEstructura
 
 from Structs.estructura import Estructura
 
@@ -87,9 +88,11 @@ funciones_estrucuras = []
 
 def filtro_funciones_vars_estructuras(intruccion):
     if isinstance(intruccion, Funcion):
-        funciones_estrucuras.append(intruccion)
+        if intruccion.tipo == TipoEnum.STRUCT:
+            funciones_estrucuras.append(intruccion)
     elif isinstance(intruccion, Declaracion):
-        variables_estrcuturas.append(intruccion)
+        if intruccion.tipo == TipoEnum.STRUCT:
+            variables_estrcuturas.append(intruccion)
 
 
 def validacion_info_estructuras():
@@ -108,21 +111,26 @@ def validacion_info_estructuras():
             elif len(resultados) == 1:
                 tipo_secundario = resultados[0].id
                 exprecion.tipo_secundario = tipo_secundario
-                print(exprecion)
+                #print(exprecion)
             else:
                 resultado.add_error(
                     'Semantico', 'Existe ambiguedad al deducir la estructura', exprecion.linea, exprecion.columna)
                 # print('Generico')
         for funcion in funciones_estrucuras:
             tipo_secundario = funcion.tipo_secundario
-            result = scope_global_fin_analisis.obtener_estructura(tipo_secundario)
+            result = scope_global_fin_analisis.obtener_estructura(
+                tipo_secundario)
             if result == None:
-                resultado.add_error('Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la funcion', funcion.linea, funcion.columna)
+                resultado.add_error(
+                    'Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la funcion', funcion.linea, funcion.columna)
         for variable in variables_estrcuturas:
             tipo_secundario = variable.tipo_secundario
-            result = scope_global_fin_analisis.obtener_estructura(tipo_secundario)
+            result = scope_global_fin_analisis.obtener_estructura(
+                tipo_secundario)
             if result == None:
-                resultado.add_error('Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la variable', variable.linea, variable.columna)
+                resultado.add_error(
+                    'Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la variable', variable.linea, variable.columna)
+
 
 def comparar_diccionarios(diccionario1, diccionario2):
     claves1 = diccionario1.keys()
@@ -1140,7 +1148,10 @@ def p_sub_exprecion_12(p):
                 p[0] = Length(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder)
             else:
-                print('Acceso a struct o funcion nativa')
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = AccederEstructura(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder, p[3])
 
 
 def p_sub_exprecion_13(p):

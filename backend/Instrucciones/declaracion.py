@@ -27,7 +27,7 @@ class Declaracion(Abstract):
                                     "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         if self.tipo == TipoEnum.ANY:
             tipo_secundario: TipoEnum = result_expresion['tipo']
-            #print(f'Declaro variable "{self.id}" con ->',result_expresion)
+            # print(f'Declaro variable "{self.id}" con ->',result_expresion)
             try:
                 scope.declarar_variable(
                     self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
@@ -37,7 +37,7 @@ class Declaracion(Abstract):
                 print('Semantico', str(error), self.linea, self.columna)
         elif self.tipo == TipoEnum.ARRAY:
             # Resolvemos el array y verificamos que este completo como al inicio
-            #if isinstance(self.valor, Arreglo):
+            # if isinstance(self.valor, Arreglo):
             if isinstance(result_expresion, Arreglo):
                 if len(self.valor.arreglo) == len(result_expresion['value']):
                     if self.tipo_secundario == result_expresion['tipo_secundario']:
@@ -67,7 +67,8 @@ class Declaracion(Abstract):
                             scope.declarar_variable(
                                 self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
                         else:
-                            error = f'No puede declarar un varaible array de tipo: {self.tipo_secundario} y asignar un tipo: ' + str(arreglo['tipo_secundario'])
+                            error = f'No puede declarar un varaible array de tipo: {self.tipo_secundario} y asignar un tipo: ' + str(
+                                arreglo['tipo_secundario'])
                             self.resultado.add_error(
                                 'Semantico', error, self.linea, self.columna)
                             print('Semantico', str(error),
@@ -92,6 +93,26 @@ class Declaracion(Abstract):
                     self.resultado.add_error(
                         'Semantico', error, self.linea, self.columna)
                     print('Semantico', str(error), self.linea, self.columna)
+        elif self.tipo == TipoEnum.STRUCT:
+            if self.tipo == result_expresion['tipo']:
+                if result_expresion['tipo_secundario'] == self.tipo_secundario:
+                    try:
+                        scope.declarar_variable(
+                            self.id, result_expresion['value'], result_expresion['tipo'], result_expresion['tipo_secundario'], self.linea, self.columna)
+                    except ValueError as error:
+                        self.resultado.add_error('Semantico', str(
+                            error), self.linea, self.columna)
+                        print('Semantico', str(error),
+                              self.linea, self.columna)
+                else:
+                    error = f'No puede declarar un varaible struct tipo "{self.tipo_secundario}" y asignar un struct de tipo {result_expresion["tipo_secundario"]}'
+                    self.resultado.add_error(
+                        'Semantico', error, self.linea, self.columna)
+            else:
+                error = 'No puede declarar un varaible struct y asignar un tipo: ' + \
+                    str(result_expresion['tipo'])
+                self.resultado.add_error(
+                    'Semantico', error, self.linea, self.columna)
         else:
             if (result_expresion != None):
                 tipo: TipoEnum = result_expresion['tipo']
