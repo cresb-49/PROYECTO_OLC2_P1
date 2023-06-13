@@ -32,15 +32,17 @@ class FuncionNativa():
     def hacer_to_exponential(self, numero: float, numeroExponencial: float):
         xx = f"{numero:.{int(numeroExponencial)}E} "
         return xx
-    
-    #devuelve la conversion ha string de algo 
+
+    # devuelve la conversion ha string de algo
     def string(self, param):
         return str(param)
-    
-    #devuelve la conversion ha string de algo 
+
+    # devuelve la conversion ha string de algo
     def number(self, param):
         try:
             return float(param)
         except ValueError as verr:
             return None
-        
+
+    def length(self, param):
+        return len(param)

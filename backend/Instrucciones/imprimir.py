@@ -21,7 +21,7 @@ class Imprimir(Abstract):
                 # si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
                 else:
                     print_val = resultado['value'] if resultado['value'] != None else 'Null'
-                    concat = concat + " " + print_val
+                    concat = concat + " " + str(print_val)
 
             else:
                 print('Debuj imprimir -> ', resultado)

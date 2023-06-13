@@ -4,6 +4,7 @@ from Nativas.to_exponential import ToExponential
 from Nativas.string import String
 from Nativas.number import Number
 from Nativas.type_of import TypeOf
+from Nativas.length import Length
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -1073,7 +1074,14 @@ def p_sub_exprecion_12(p):
                     input, p.slice[1]), p[1])
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
-        print('Acceso a struct o funcion nativa')
+        elif (len(p) == 4):
+            if (p[3] == 'length'):
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = Length(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder)
+            else:
+                print('Acceso a struct o funcion nativa')
 
 # Definicion de error del analisis sintactico
 
