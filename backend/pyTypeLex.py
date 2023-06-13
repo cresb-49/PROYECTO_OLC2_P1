@@ -171,7 +171,7 @@ def find_column(input, token):
 #lexer = lex.lex()
 lexer = lex.lex(reflags=re.IGNORECASE) #TODO: tomar en si no funciona
 
-# #Apertura y lectura del archivo de entrada
+#Apertura y lectura del archivo de entrada
 # archivo = open("backend/entrada.ts", "r")
 # input = archivo.read()
 

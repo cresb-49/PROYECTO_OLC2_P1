@@ -482,10 +482,10 @@ def p_retorno(p):
 
 
 def p_ciclo_for(p):
-    """ciclo_for : FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY RKEY
-                 | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY
-                 | FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
-                 | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY"""
+    """ciclo_for : FOR LPAR LET ID OF exprecion RPAR LKEY RKEY
+                 | FOR LPAR LET ID OF exprecion RPAR LKEY instrucciones RKEY
+                 | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY RKEY
+                 | FOR LPAR declaracion_for SEMICOLON exprecion SEMICOLON sumador RPAR LKEY instrucciones RKEY"""
     # Apilamos la instruccion ciclo para verificacion
     memoria_entornos_intrucciones_interrupcion.apilar(ESPACIO_CICLO)
     # Debemos de verificar primiero que tipo de derivacion es

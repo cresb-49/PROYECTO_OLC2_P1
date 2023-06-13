@@ -1,54 +1,155 @@
+let array = [32, 21, 7, 89, 56, 909, 109, 2];
 
-// //Pruebas del print con expreciones artimeticas
-// let v: any;
-// v = 5;
-// //Pruebas de array
-// let numeros:any[] = [1, 2, 3, 4, [5,6]];
-// let nume = [1, 2, 3, 4, [5,6]];
-// console.log(nume);
-// //console.log(5[0]);
-// let palabras: string[] = ["Hola", "Mundo", "en", "TypeScript"];
-// let booleanos: boolean[] = [true, false, true];
-// let anys: any[] = ["Hola", false, 3];
-// let arrayDeArrays =  [1,2,3,[4,5,[6,[6,[6,[6,7,[6,7,5]],5],5],7,8]]];
-// console.log(palabras[0]);
+console.log("=======================================================================");
+console.log("==================================IF===================================");
+console.log("=======================================================================");
 
-// console.log(String(Number("35")), "No se jajaj");
-
-// console.log(numeros); // Esta funcion sera extra, la veremos en clase para que la implementen
-
-// interface Carro {
-//     placa: string;
-//     color: string;
-//     tipo: string;
-// };
-
-interface Carro {
-    placa: string;
-    color: string;
-    tipo: string;
+if (array[4] > 50) {
+    console.log("IF CORRECTO");
+} else if (array[4] == 56) {
+    console.log("IF INCORRECTO");
+} else {
+    console.log("IF INCORRECTO");
 };
 
+console.log("");
+console.log("=======================================================================");
+console.log("=============================IFs ANIDADOS==============================");
+console.log("=======================================================================");
+let aux: number = 10;
+if (aux > 0) {
+    console.log("PRIMER IF CORRECTO");
+    if (true && (aux == 1)) {
+        console.log("SEGUNDO IF INCORRECTO");
+    } else if (aux > 10) {
+        console.log("SEGUNDO IF INCORRECTO");
+    } else {
+        console.log("SEGUNDO IF CORRECTO");
+    };
+} else if (aux <= 3) {
+    console.log("PRIMER IF INCORRECTO");
+    if (true && (aux == 1)) {
+        console.log("SEGUNDO IF INCORRECTO");
+    } else if (aux > 10) {
+        console.log("SEGUNDO IF INCORRECTO");
+    } else {
+        console.log("SEGUNDO IF CORRECTO");
+    };
+} else if (aux == array[4]) {
+    console.log("PRIMER IF INCORRECTO");
+    if (true && (aux == 1)) {
+        console.log("SEGUNDO IF INCORRECTO");
+    } else if (aux > 10) {
+        console.log("SEGUNDO IF INCORRECTO");
+    } else {
+        console.log("SEGUNDO IF CORRECTO");
+    };
+};
 
-// let c1: Carro = {
-//     placa: "090PLO",
-//     color: 'gris',
-//     tipo: 'mecanico'
-// };
+console.log("");
+console.log("=======================================================================");
+console.log("=================================WHILE=================================");
+console.log("=======================================================================");
 
-// let c2: Carro = {
-//     placa: "POS921",
-//     color: 'verde',
-//     tipo: 'automatico'
-// };
+let index: number;
+index = 0;
+while (index >= 0) {
+    if (index == 0) {
+        index = index + 100;
+    } else if (index > 50) {
+        index = index / 2 - 25;
+    } else {
+        index = (index / 2) - 1;
+    };
+    console.log(index);
+};
 
-// //Asignacion de atributos
-// c1.color = 'cafe';
-// c2.color = 'rojo';
+console.log("");
+console.log("=======================================================================");
+console.log("================================WHILE-2================================");
+console.log("=======================================================================");
 
-// //Acceso Atributo
-// console.log(c1.color);
+index = -2;
+index = index + 1;
 
-// console.log(String(Number("35")), "No se jajaj");
+while (index !== 12) {
+    index = index + 1;
 
-// console.log([1,2,3,[4,5,[6,[6,[6,[6,7,[6,7,5]],5],5],7,8]]]); // Esta funcion sera extra, la veremos en clase para que la implementen
+    if (index === 0 || index === 1 || index === 11 || index === 12) {
+        console.log("*********************************************************************************************************");
+    } else if (index == 2) {
+        console.log("**********  ***************  ******                 ******                 ******              **********");
+    } else if (index >= 3 && index <= 5) {
+        console.log("**********  ***************  ******  *********************  *************  ******  **********************");
+    } else if (index == 6) {
+        console.log("**********  ***************  ******                 ******                 ******  **********************");
+    } else if (index >= 7 && index <= 9) {
+        console.log("**********  ***************  ********************   ******  *************  ******  **********************");
+    } else if (index == 10) {
+        console.log("**********                   ******                 ******  *************  ******              **********");
+    };
+};
+
+console.log("");
+console.log("=======================================================================");
+console.log("=============================TRANSFERENCIA=============================");
+console.log("=======================================================================");
+
+let a: number = -1;
+while (a < 5) {
+    a = a + 1;
+    if (a === 3) {
+        console.log("a");
+        continue;
+    } else if (a == 4) {
+        console.log("b");
+        break;
+    };
+    console.log("El valor de a es: ", a, ", ");
+};
+
+console.log("Se debió imprimir");
+
+console.log("");
+console.log("=======================================================================");
+console.log("==================================FOR==================================");
+console.log("=======================================================================");
+
+for (let i = 0; i <= 9; i++) {
+    let output = "";
+    for (let j = 0; j < 10; j++) {
+        output = output + " ";
+    };
+    for (let k = 0; k < 10; k++) {
+        output = output + "* ";
+    };
+    console.log(output);
+};
+
+console.log("");
+console.log("=======================================================================");
+console.log("=================================FOR-2=================================");
+console.log("=======================================================================");
+
+let arr = [1, 2, 3, 4, 5, 6];
+for (let i of [1, 2, 3, 4, 5, 6]) {
+    console.log(arr[i] == 1, arr[i] == 2, arr[i] == 3, arr[i] == 4, arr[i] == 5, arr[i] == 6);
+};
+
+console.log("");
+console.log("=======================================================================");
+console.log("=================================FOR-3=================================");
+console.log("=======================================================================");
+for (let e of [1, 2, 3, 4, 5, 6]) {
+    if (arr.length > Number(e)) {
+        console.log(e + arr[e], e + arr[e], e + arr[e], e + arr[e], e + arr[e], e + arr[e]);
+    };
+};
+
+console.log("");
+console.log("=======================================================================");
+console.log("=================================FOR-4=================================");
+console.log("=======================================================================");
+for (let letra of "Calificacion de Intermedio") {
+    console.log(letra);
+};
