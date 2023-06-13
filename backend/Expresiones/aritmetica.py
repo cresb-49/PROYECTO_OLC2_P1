@@ -58,7 +58,7 @@ class Aritmetica(Abstract):
         if (self.verificarTipos(val_izquierdo, val_derecho)):
             if (self.tipo_operacion == "+"):
                 result = val_izquierdo['value'] + val_derecho['value']
-                return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                return {"value": result, "tipo": val_izquierdo['tipo'], "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "-"):
                 result = val_izquierdo['value'] - val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
