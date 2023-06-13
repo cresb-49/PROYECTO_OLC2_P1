@@ -1,6 +1,6 @@
 <div class="row editors-container">
   <div class="col">
-    <app-editor [nombreBoton]="'Descargar Codigo'" [isLoadFile]="true" [resultConsole]="resultConsole"></app-editor>
+    <app-editor [nombreBoton]="'Descargar Codigo'" (sendCodigo)="setCodigo($event)" [isLoadFile]="true" [resultConsole]="resultConsole"></app-editor>
   </div>
   <div class="col">
     <app-editor #consoleResult [nombreBoton]="'Descargar Resultado'" [isEditable]="false"></app-editor>
@@ -8,7 +8,7 @@
 </div>
 
 <div class="button-container">
-  <button class="cssbuttons-io">
+  <button class="cssbuttons-io" (click)="sendCode()">
     <span>
       <img src="../../../assets/coding-sign.png" alt="">
       Analizar
