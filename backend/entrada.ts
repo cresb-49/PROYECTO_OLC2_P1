@@ -1,3 +1,4 @@
+
 // //Pruebas del print con expreciones artimeticas
 // let v: any;
 // v = 5;
@@ -21,6 +22,13 @@
 //     color: string;
 //     tipo: string;
 // };
+
+interface Carro {
+    placa: string;
+    color: string;
+    tipo: string;
+};
+
 
 // let c1: Carro = {
 //     placa: "090PLO",
