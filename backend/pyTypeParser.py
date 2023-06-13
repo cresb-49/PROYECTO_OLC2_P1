@@ -940,6 +940,7 @@ precedence = (
     ('left', 'MULT', 'DIV', 'MOD'),
     ('right', 'POTENCIA'),
     ('right', 'UMINUS'),  # Operador unario
+    ('nonassoc', 'LBRA', 'RBRA')  # Precedencia de los corchetes
 )
 # ('left', 'LPAR', 'RPAR'), #Precedencia de parentesis
 
