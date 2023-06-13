@@ -28,6 +28,8 @@ from Expresiones.arreglo import Arreglo
 from Expresiones.acceder_array import AccederArray
 from Expresiones.val_funcion import ValFuncion
 
+from Structs.estructura import Estructura
+
 from Nativas.concat import Concat
 from Nativas.to_string import ToString
 from Nativas.to_lower import ToLowerCase
@@ -217,6 +219,14 @@ def decla_var_fun(instruccion):
             resultado.add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
             print(str(error))
+    if isinstance(instruccion, Estructura):
+        scope: Scope = memoria.obtener_tope()
+        try:
+            scope.declarar_estructura(instruccion.id, instruccion)
+        except ValueError as error:
+            resultado.add_error('Semantico', str(
+                error), instruccion.linea, instruccion.columna)
+            print(str(error))
 
 
 def p_init(p):
@@ -261,7 +271,8 @@ def p_limit_intrucciones_2(p):
 # ESTA PRODUCCION ES PARA INTRUCCIONES SOLO PARA EL AMBITO GLOBAL
 def p_limit_intruccion(p):
     """limit_intruccion : instruccion
-                        | funcion"""
+                        | funcion
+                        | struct"""
     p[0] = p[1]
 
 # Intrucciones que pueden estar dentro de sentencias de control, no podemos
@@ -294,7 +305,6 @@ def p_instrucciones_2(p):
 
 def p_instruccion(p):
     """instruccion : print
-                   | struct
                    | llamar_funcion
                    | declaracion
                    | asignar_array
@@ -586,14 +596,48 @@ def p_continuacion_if(p):
 
 
 def p_struct(p):
-    """struct : INTERFACE ID LKEY valores RKEY"""
+    """struct : INTERFACE ID LKEY valores RKEY SEMICOLON"""
+    p[0] = Estructura(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[2], p[4])
 
 # Declarion del interior de la interfaz del programa
 
 
 def p_valores(p):
+    """valores : valores ID COLON tipo SEMICOLON
+               | valores ID SEMICOLON"""
+    if len(p) == 6:
+        p[0] = agregar_parametros_definicion_struct(p[1], p, p[4])
+    else:
+        p[0] = agregar_parametros_definicion_struct(
+            p[1], p, {"tipo": TipoEnum.ANY, "tipo_secundario": None})
+
+
+def agregar_parametros_definicion_struct(diccionario: dict, p, tipo):
+    if p[2] in diccionario:
+        resultado.add_error('Semantico', f'Ya existe un parametro {p[2]} en el struct', p.lineno(
+            2), find_column(input, p.slice[2]))
+    else:
+        if tipo['tipo'] != TipoEnum.STRUCT:
+            diccionario[p[2]] = tipo
+        else:
+            resultado.add_error('Semantico', 'No se pueden declarar parametros de tipo Struct', p.lineno(
+                2), find_column(input, p.slice[2]))
+    return diccionario
+
+
+def p_valores_2(p):
     """valores : ID COLON tipo SEMICOLON
-               | valores ID COLON tipo SEMICOLON"""
+               | ID SEMICOLON"""
+    if len(p) == 5:
+        diccionario_struct = dict()
+        diccionario_struct[p[1]] = p[3]
+        p[0] = diccionario_struct
+    else:
+        diccionario_struct = dict()
+        diccionario_struct[p[1]] = {
+            "tipo": TipoEnum.ANY, "tipo_secundario": None}
+        p[0] = diccionario_struct
 
 # Intruccion de llamado de funcion
 

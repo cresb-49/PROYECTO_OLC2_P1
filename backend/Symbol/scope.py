@@ -19,6 +19,7 @@ class Scope:
         self.anterior = anterior
         self.variables = Variables()
         self.funciones = Funciones()
+        self.estructuras = Estructuras()
         self.nombre = id(self)
         self.tipo = ''
 
@@ -74,6 +75,19 @@ class Scope:
             scope = scope.anterior
         return None
 
+    def declarar_estructura(self, id: str, estructura):
+        try:
+            self.estructuras.add(id, estructura)
+        except ValueError as error:
+            raise ValueError(str(error))
+
+    def obtener_estructura(self, id: str):
+        scope = self
+        while (scope != None):
+            if (scope.estructuras.has(id)):
+                return scope.estructuras.get(id)
+            scope = scope.anterior
+        return None
 
 class Variables:
     def __init__(self):
@@ -121,6 +135,34 @@ class Funciones:
         if clave in self.diccionario:
             raise ValueError(
                 f"Ya existe una Funcion \"{str(clave)}\" ya esta definida en programa")
+        else:
+            self.diccionario[clave] = valor
+
+    def has(self, clave: str) -> bool:
+        return (clave in self.diccionario)
+
+    def get(self, clave: str):
+        if clave in self.diccionario:
+            return self.diccionario[clave]
+        else:
+            return None
+
+    def delete(self, clave: str) -> None:
+        if clave in self.diccionario:
+            del self.diccionario["clave"]
+
+    def get_diccionario(self):
+        return self.diccionario
+
+
+class Estructuras:
+    def __init__(self):
+        self.diccionario = {}
+
+    def add(self, clave: str, valor):
+        if clave in self.diccionario:
+            raise ValueError(
+                f"Ya existe un Struct \"{str(clave)}\" definido en el programa")
         else:
             self.diccionario[clave] = valor
 
