@@ -15,6 +15,7 @@ class SiContrario(Abstract):
         return f"SiContrario: resultado={self.resultado}, linea={self.linea}, columna={self.columna}, exprecion_condicion={self.exprecion_condicion}, sentencias_true={self.sentencias_true}, sentencias_false={self.sentencias_false}"
 
     def ejecutar(self, scope):
+        codigo_referencia = str(id(self))
         result = self.exprecion_condicion.ejecutar(scope)
         try:
             if result['tipo'] == TipoEnum.BOOLEAN:
@@ -22,11 +23,15 @@ class SiContrario(Abstract):
                     print('Else if -> Verdadero')
                     if self.sentencias_true != None:
                         new_scope = Scope(scope)
+                        # Registramos el entorno utilizado
+                        self.resultado.agregar_entorno(codigo_referencia, new_scope)
                         return self.sentencias_true.ejecutar(new_scope)
                 else:
                     print('Else if -> Falso')
                     if self.sentencias_false != None:
                         new_scope = Scope(scope)
+                        # Registramos el entorno utilizado
+                        self.resultado.agregar_entorno(codigo_referencia, new_scope)
                         return self.sentencias_false.ejecutar(new_scope)
             else:
                 self.resultado.add_error(

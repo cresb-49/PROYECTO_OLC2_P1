@@ -9,6 +9,7 @@ class Resultado:
         self.tabla_simbolos = tabla_simbolos
         self.consola = consola
         self.scope_global = None
+        self.entornos_variables = dict()
 
     def add_error(self, tipo, descripcion, linea, columna) -> None:
         fecha_hora_actual = datetime.now()
@@ -21,3 +22,6 @@ class Resultado:
 
     def get_scope_global(self):
         return self.scope_global
+
+    def agregar_entorno(self, clave, scope):
+        self.entornos_variables[clave] = scope

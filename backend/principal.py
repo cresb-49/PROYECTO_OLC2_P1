@@ -61,7 +61,10 @@ for n in result.errores:
     print(n)
 
 
-print('#### CODIGO AST')
-gv = GraficoDot()
-entorno.graficar(gv,None)
-print(gv.get_dot())
+# print('#### CODIGO AST')
+# gv = GraficoDot()
+# entorno.graficar(gv,None)
+# print(gv.get_dot())
+
+print('#### ENTORNOS RECUPERADOS')
+print(result.entornos_variables)

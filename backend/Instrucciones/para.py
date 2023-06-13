@@ -36,10 +36,13 @@ class Para(Abstract):
         return f"{type(self).__name__}: " + ", ".join(attributes)
 
     def ejecutar(self, scope):
+        codigo_referencia = str(id(self))
         if self.tipo_for == 1:
             # print('Ejecutamos for tipo 1')
             # Iniciamos un scope apartado del entorno del for
             scope_declarado_for: Scope = Scope(scope)
+            # Registramos el entorno utilizado
+            self.resultado.agregar_entorno(codigo_referencia, scope_declarado_for)
             # Declramos la variable asociada al for dentro del scope scope_declarado_for
             self.declaracion.ejecutar(scope_declarado_for)
             # Verificamos la exprecion condicional del for
@@ -50,6 +53,7 @@ class Para(Abstract):
                         res: bool = result['value']
                         while res:
                             scope_temporal: Scope = Scope(scope_declarado_for)
+                            self.resultado.agregar_entorno(codigo_referencia+'_sub2', scope_temporal)
                             if self.sentencias != None:
                                 resultado = self.sentencias.ejecutar(
                                     scope_temporal)
@@ -77,6 +81,8 @@ class Para(Abstract):
             # print('Ejecutamos for tipo 2')
             # Iniciamos un scope apartado del entorno del for
             scope_declarado_for: Scope = Scope(scope)
+            # Registramos el entorno utilizado
+            self.resultado.agregar_entorno(codigo_referencia, scope_declarado_for)
             # Declramos la variable asociada al for dentro del scope scope_declarado_for
             result_expresion = self.expresion.ejecutar(scope_declarado_for)
             if result_expresion['tipo'] == TipoEnum.STRING or result_expresion['tipo'] == TipoEnum.ARRAY:
@@ -145,6 +151,8 @@ class Para(Abstract):
                         # print('debuj')
                         asignacion.ejecutar(scope_declarado_for)
                         scope_temporal: Scope = Scope(scope_declarado_for)
+                        # Registramos el entorno utilizado
+                        self.resultado.agregar_entorno(codigo_referencia+'_sub2', scope_temporal)
                         if self.sentencias != None:
                             resultado = self.sentencias.ejecutar(
                                 scope_temporal)

@@ -16,26 +16,30 @@ class Mientras(Abstract):
         return f"While -> Condición: {self.condicion}, Sentencias: {self.sentencias}"
 
     def ejecutar(self, scope):
+        codigo_referencia = str(id(self))
         result = self.condicion.ejecutar(scope)
         if result != None:
             if result['tipo'] == TipoEnum.BOOLEAN:
                 try:
                     res: bool = result['value']
-                    print('debuj mientras',res)
+                    print('debuj mientras', res)
                     while res:
                         scope_temporal: Scope = Scope(scope)
+                        #Registramos el scope generado
+                        self.resultado.agregar_entorno(codigo_referencia, scope_temporal)
                         if self.sentencias != None:
-                            resultado = self.sentencias.ejecutar(scope_temporal)
+                            resultado = self.sentencias.ejecutar(
+                                scope_temporal)
                             if isinstance(resultado, dict):
                                 return resultado
                             elif isinstance(resultado, Continuar):
                                 r = self.condicion.ejecutar(scope)
                                 res = r['value']
                                 # TODO: [IMPORTANTE] Eliminar debuj
-                                print('debuj mientras:',resultado)
+                                print('debuj mientras:', resultado)
                             elif isinstance(resultado, Detener):
                                 # TODO: [IMPORTANTE] Eliminar debuj
-                                print('debuj mientras:',resultado)
+                                print('debuj mientras:', resultado)
                                 break
                         r = self.condicion.ejecutar(scope)
                         res = r['value']

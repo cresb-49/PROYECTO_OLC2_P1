@@ -12,9 +12,12 @@ class Contrario(Abstract):
         return f"Contrario: resultado={self.resultado}, linea={self.linea}, columna={self.columna}, sentencias={self.sentencias}"
 
     def ejecutar(self, scope):
+        codigo_referencia = str(id(self))
         try:
             if self.sentencias != None:
                 new_scope = Scope(scope)
+                # Registramos el entorno utilizado
+                self.resultado.agregar_entorno(codigo_referencia, new_scope)
                 return self.sentencias.ejecutar(new_scope)
         except Exception:
             self.resultado.add_error(

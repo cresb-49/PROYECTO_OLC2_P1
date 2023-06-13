@@ -14,6 +14,7 @@ class ValFuncion(Abstract):
         return f"ValFuncion: {self.id}, Parámetros: {self.parametros}"
 
     def ejecutar(self, scope):
+        codigo_referencia = str(id(self))
         fun = scope.obtener_funcion(self.id)
         if fun != None and isinstance(fun, Funcion):
             size = 0
@@ -27,8 +28,9 @@ class ValFuncion(Abstract):
                 if self.parametros == None:
                     # Ejecucion de funcion sin parametros
                     # Declaramos scope de tranajo pero debemos mandar el scope
-                    scope_funcion: Scope = Scope(
-                        self.resultado.get_scope_global())
+                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
+                    # Registramos el entorno utilizado
+                    self.resultado.agregar_entorno(codigo_referencia, scope_funcion)
                     resultado = fun.ejecutar(scope_funcion)
                     if isinstance(resultado, dict):
                         print(resultado)
@@ -36,8 +38,9 @@ class ValFuncion(Abstract):
                 else:
                     # Ejecucion de una funcion con parametros
                     # Declaracion del scope de trabajo
-                    scope_funcion: Scope = Scope(
-                        self.resultado.get_scope_global())
+                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
+                    # Registramos el entorno utilizado
+                    self.resultado.agregar_entorno(codigo_referencia, scope_funcion)
                     try:
                         # Hacemos la declaracion de variables en el scope de la funcion
                         if fun.parametros != None:

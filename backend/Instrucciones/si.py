@@ -14,6 +14,7 @@ class Si(Abstract):
         return f"If -> Expresión: {self.exprecion}, Sentencias: {self.sentencias}, Else: {self._else}"
 
     def ejecutar(self, scope):
+        codigo_referencia = str(id(self))
         result = self.exprecion.ejecutar(scope)
         try:
             if result['tipo'] == TipoEnum.BOOLEAN:
@@ -21,11 +22,15 @@ class Si(Abstract):
                     #print('If -> Verdadero')
                     if self.sentencias != None:
                         new_scope = Scope(scope)
+                        # Registramos el entorno utilizado
+                        self.resultado.agregar_entorno(codigo_referencia, new_scope)
                         return self.sentencias.ejecutar(new_scope)
                 else:
                     #print('If -> Falso')
                     if self._else != None:
                         new_scope = Scope(scope)
+                        # Registramos el entorno utilizado
+                        self.resultado.agregar_entorno(codigo_referencia, new_scope)
                         return self._else.ejecutar(new_scope)
             else:
                 self.resultado.add_error(
