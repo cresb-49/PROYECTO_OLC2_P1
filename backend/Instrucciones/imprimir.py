@@ -11,35 +11,43 @@ class Imprimir(Abstract):
         return f"Print -> Expresión: {self.exprecion}"
 
     def ejecutar(self, scope):
-        
+        concat = ""
         for diccionario in self.exprecion:
             resultado = diccionario.ejecutar(scope)
-            #print(self.exprecion)
             if (isinstance(resultado, dict)):
-                #si el tipo de dato es un array entonces debemos imprimirlo como tal
+                # si el tipo de dato es un array entonces debemos imprimirlo como tal
                 if (resultado['tipo'] == TipoEnum.ARRAY):
                     self.imprimir_array(resultado)
-                #si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
-                # elif (resultado['tipo'] == TipoEnum.ERROR):
-                #     print(resultado['value'])
-                #     self.resultado.consola.append(resultado['value'])
+                # si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
                 else:
                     print_val = resultado['value'] if resultado['value'] != None else 'Null'
-                    print(print_val)
-                    self.resultado.consola.append(print_val)
-            else:
-                print('Debuj imprimir -> ',resultado)
-                self.resultado.add_error('Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
+                    concat = concat + " " + print_val
 
-    # imprime un array en un formato correcto
+            else:
+                print('Debuj imprimir -> ', resultado)
+                self.resultado.add_error(
+                    'Semantico', 'Hubo un error previo ha imprimir el valor.', self.linea, self.columna)
+        self.resultado.consola.append(concat)
+        print(concat)
+
     def imprimir_array(self, resultado):
+        # mandamos ha guardar el string en la consola
+        printHecho = self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
+        self.resultado.consola.append(printHecho)
+        print(printHecho)
+
+    # crea un string de array imprimible, si un elemento del array es un array entonces se convierte en funcion recursiva
+    def imprimir_array_recu(self, resultado):
         contenido = []
-        #por cada uno de los stings contenidos en el aray de resultado ajuntamos el value del strin al array
+        concat = ""
+        # por cada uno de los stings contenidos en el aray de resultado ajuntamos el value del strin al array
         for string in resultado['value']:
-            contenido.append(string['value'])
-        #mandamos ha guardar el string en la consola
-        self.resultado.consola.append(str(contenido))
-        print(str(contenido))
+            if (string['tipo'] == TipoEnum.ARRAY):
+                concat = self.imprimir_array_recu(string)
+            else:
+                concat = string['value']
+            contenido.append(concat)
+        return str(contenido)
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo('console.log(', padre)
