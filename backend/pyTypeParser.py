@@ -28,6 +28,10 @@ from Expresiones.relacional import Relacional
 from Expresiones.arreglo import Arreglo
 from Expresiones.acceder_array import AccederArray
 from Expresiones.val_funcion import ValFuncion
+from Expresiones.estructura_val import EstructuraVal
+from Expresiones.acceder_estructura import AccederEstructura
+
+from Structs.estructura import Estructura
 
 from Nativas.concat import Concat
 from Nativas.to_string import ToString
@@ -37,6 +41,7 @@ from Nativas.concat import Concat
 # Clases referentes a las intrucciones
 from Instrucciones.asignacion import Asignacion
 from Instrucciones.asignar_array import AsignacionArray
+from Instrucciones.asignar_estructura import AsignacionEstructura
 from Instrucciones.callFuncion import CallFuncion
 from Instrucciones.declaracion import Declaracion
 
@@ -75,6 +80,68 @@ ESPACIO_SENTENCIA = 'SENTENCIA'
 INS_RETURN = 'RETURN'
 INS_BREAK = 'BREAK'
 INS_CONTINUE = 'CONTINUE'
+
+
+expreciones_estructuras = []
+variables_estrcuturas = []
+funciones_estrucuras = []
+
+
+def filtro_funciones_vars_estructuras(intruccion):
+    if isinstance(intruccion, Funcion):
+        if intruccion.tipo == TipoEnum.STRUCT:
+            funciones_estrucuras.append(intruccion)
+    elif isinstance(intruccion, Declaracion):
+        if intruccion.tipo == TipoEnum.STRUCT:
+            variables_estrcuturas.append(intruccion)
+
+
+def validacion_info_estructuras():
+    if isinstance(scope_global_fin_analisis, Scope):
+        scope_tmp = scope_global_fin_analisis.estructuras.get_diccionario()
+        for exprecion in expreciones_estructuras:
+            resultados = []
+            for estrucura in scope_tmp:
+                diccionario_tmp = ((scope_tmp[estrucura]).composicion)
+                if comparar_diccionarios(diccionario_tmp, exprecion.contenido):
+                    resultados.append(scope_tmp[estrucura])
+            if len(resultados) == 0:
+                # print('Generico')
+                resultado.add_error(
+                    'Semantico', 'El tipo de estructura no esta definina el proyecto', exprecion.linea, exprecion.columna)
+            elif len(resultados) == 1:
+                tipo_secundario = resultados[0].id
+                exprecion.tipo_secundario = tipo_secundario
+                # print(exprecion)
+            else:
+                resultado.add_error(
+                    'Semantico', 'Existe ambiguedad al deducir la estructura', exprecion.linea, exprecion.columna)
+                # print('Generico')
+        for funcion in funciones_estrucuras:
+            tipo_secundario = funcion.tipo_secundario
+            result = scope_global_fin_analisis.obtener_estructura(
+                tipo_secundario)
+            if result == None:
+                resultado.add_error(
+                    'Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la funcion', funcion.linea, funcion.columna)
+        for variable in variables_estrcuturas:
+            tipo_secundario = variable.tipo_secundario
+            result = scope_global_fin_analisis.obtener_estructura(
+                tipo_secundario)
+            if result == None:
+                resultado.add_error(
+                    'Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la variable', variable.linea, variable.columna)
+
+
+def comparar_diccionarios(diccionario1, diccionario2):
+    claves1 = diccionario1.keys()
+    claves2 = diccionario2.keys()
+    if len(claves1) != len(claves2):
+        return False
+    for clave in claves1:
+        if clave not in claves2:
+            return False
+    return True
 
 
 def set_memoria_funcion():
@@ -200,6 +267,7 @@ def invertir_solo_abstractos(items) -> list:
 
 
 def decla_var_fun(instruccion):
+    filtro_funciones_vars_estructuras(instruccion)
     if isinstance(instruccion, Declaracion):
         scope: Scope = memoria.obtener_tope()
         tipo_secundario = instruccion.tipo_secundario
@@ -218,15 +286,25 @@ def decla_var_fun(instruccion):
             resultado.add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
             print(str(error))
+    if isinstance(instruccion, Estructura):
+        scope: Scope = memoria.obtener_tope()
+        try:
+            scope.declarar_estructura(instruccion.id, instruccion)
+        except ValueError as error:
+            resultado.add_error('Semantico', str(
+                error), instruccion.linea, instruccion.columna)
+            print(str(error))
 
 
 def p_init(p):
     """init : limit_intrucciones"""
-    memoria.desapilar()
+    global scope_global_fin_analisis
+    scope_global_fin_analisis = memoria.desapilar()
     resultado.sentencias = p[1]
     resultado.tabla_simbolos = registro
     p[0] = resultado
     validar_interrupciones()
+    validacion_info_estructuras()
 
 # Intrucciones limitadas solo al ambito global
 
@@ -262,7 +340,8 @@ def p_limit_intrucciones_2(p):
 # ESTA PRODUCCION ES PARA INTRUCCIONES SOLO PARA EL AMBITO GLOBAL
 def p_limit_intruccion(p):
     """limit_intruccion : instruccion
-                        | funcion"""
+                        | funcion
+                        | struct"""
     p[0] = p[1]
 
 # Intrucciones que pueden estar dentro de sentencias de control, no podemos
@@ -295,10 +374,10 @@ def p_instrucciones_2(p):
 
 def p_instruccion(p):
     """instruccion : print
-                   | struct
                    | llamar_funcion
                    | declaracion
                    | asignar_array
+                   | asignar_struct
                    | asignacion
                    | interrupcion_funcion
                    | interrupcion_ciclo"""
@@ -320,6 +399,14 @@ def p_sub_array(p):
     else:
         p[0] = AccederArray(resultado, p.lineno(
             2), find_column(input, p.slice[2]), p[1], p[3])
+
+
+def p_asignar_struct(p):
+    """asignar_struct : ID DOT ID IGUAL exprecion SEMICOLON"""
+    acceder = Acceder(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[1])
+    p[0] = AsignacionEstructura(resultado, p.lineno(
+        2), find_column(input, p.slice[2]), acceder, p[3], p[5])
 
 
 def p_instruccion_2(p):
@@ -587,14 +674,48 @@ def p_continuacion_if(p):
 
 
 def p_struct(p):
-    """struct : INTERFACE ID LKEY valores RKEY"""
+    """struct : INTERFACE ID LKEY valores RKEY SEMICOLON"""
+    p[0] = Estructura(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[2], p[4])
 
 # Declarion del interior de la interfaz del programa
 
 
 def p_valores(p):
+    """valores : valores ID COLON tipo SEMICOLON
+               | valores ID SEMICOLON"""
+    if len(p) == 6:
+        p[0] = agregar_parametros_definicion_struct(p[1], p, p[4])
+    else:
+        p[0] = agregar_parametros_definicion_struct(
+            p[1], p, {"tipo": TipoEnum.ANY, "tipo_secundario": None})
+
+
+def agregar_parametros_definicion_struct(diccionario: dict, p, tipo):
+    if p[2] in diccionario:
+        resultado.add_error('Semantico', f'Ya existe un parametro {p[2]} en el struct', p.lineno(
+            2), find_column(input, p.slice[2]))
+    else:
+        if tipo['tipo'] != TipoEnum.STRUCT:
+            diccionario[p[2]] = tipo
+        else:
+            resultado.add_error('Semantico', 'No se pueden declarar parametros de tipo Struct', p.lineno(
+                2), find_column(input, p.slice[2]))
+    return diccionario
+
+
+def p_valores_2(p):
     """valores : ID COLON tipo SEMICOLON
-               | valores ID COLON tipo SEMICOLON"""
+               | ID SEMICOLON"""
+    if len(p) == 5:
+        diccionario_struct = dict()
+        diccionario_struct[p[1]] = p[3]
+        p[0] = diccionario_struct
+    else:
+        diccionario_struct = dict()
+        diccionario_struct[p[1]] = {
+            "tipo": TipoEnum.ANY, "tipo_secundario": None}
+        p[0] = diccionario_struct
 
 # Intruccion de llamado de funcion
 
@@ -1037,7 +1158,35 @@ def p_sub_exprecion_12(p):
                 p[0] = Length(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder)
             else:
-                print('Acceso a struct o funcion nativa')
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = AccederEstructura(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder, p[3])
+
+
+def p_sub_exprecion_13(p):
+    """sub_exprecion : LKEY asignacion_struct RKEY"""
+    p[0] = EstructuraVal(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), None, p[2])
+    expreciones_estructuras.append(p[0])
+
+
+def p_asignacion_struct(p):
+    """asignacion_struct : asignacion_struct COMMA ID COLON exprecion"""
+    dict_init: dict = p[1]
+    if p[3] in dict_init:
+        resultado.add_error('Semantico', f'Ya existe un parametro {p[3]} en la inicializacion del struct', p.lineno(
+            3), find_column(input, p.slice[3]))
+    else:
+        dict_init[p[3]] = p[5]
+    p[0] = dict_init
+
+
+def p_asignacion_struct_2(p):
+    """asignacion_struct : ID COLON exprecion"""
+    dict_init = dict()
+    dict_init[p[1]] = p[3]
+    p[0] = dict_init
 
 # Definicion de error del analisis sintactico
 

@@ -40,9 +40,10 @@ class ValFuncion(Abstract):
                         self.resultado.get_scope_global())
                     try:
                         # Hacemos la declaracion de variables en el scope de la funcion
-                        for param_fun, param_send in zip(fun.parametros, self.parametros):
-                            param_fun.valor = param_send
-                            param_fun.ejecutar(scope_funcion)
+                        if fun.parametros != None:
+                            for param_fun, param_send in zip(fun.parametros, self.parametros):
+                                param_fun.valor = param_send
+                                param_fun.ejecutar(scope_funcion)
                         return fun.ejecutar(scope_funcion)
                     except Exception as e:
                         print(
