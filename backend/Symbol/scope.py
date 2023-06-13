@@ -28,6 +28,8 @@ class Scope:
             print('  ', self.variables.get_diccionario()[x])
         for x in self.funciones.get_diccionario():
             print('  ', self.funciones.get_diccionario()[x])
+        for x in self.estructuras.get_diccionario():
+            print('  ', self.estructuras.get_diccionario()[x])
 
     def identificar(self, nombre, tipo):
         self.tipo = tipo
