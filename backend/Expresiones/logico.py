@@ -59,5 +59,6 @@ class Logico(Abstract):
 
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo(self.tipo_operacion, padre)
-        self.expresion_izquierda.graficar(graphviz, result)
+        if self.tipo_operacion != "!":
+            self.expresion_izquierda.graficar(graphviz, result)
         self.expresion_derecha.graficar(graphviz, result)

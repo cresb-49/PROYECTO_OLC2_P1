@@ -38,4 +38,4 @@ class TypeOf(Abstract):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
         result = graphviz.add_nodo("typeOf", padre)
         # mandmaos ha graficar os hijos
-        self.expreciones.graficar(graphviz, result)
+        self.expreciones[0].graficar(graphviz, result)

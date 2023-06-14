@@ -61,7 +61,10 @@ class Imprimir(Abstract):
         return str(contenido)
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo('print', padre)
+        main = graphviz.add_nodo('print', padre)
+        node_params = graphviz.add_nodo('params', main)
+        for param in self.exprecion:
+            param.graficar(graphviz,node_params)
         # self.exprecion.graficar(graphviz, padre)
         # graphviz.add_nodo(');', padre)
         pass
