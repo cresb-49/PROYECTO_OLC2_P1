@@ -685,22 +685,22 @@ def p_valores(p):
     """valores : valores ID COLON tipo SEMICOLON
                | valores ID SEMICOLON"""
     if len(p) == 6:
-        p[0] = agregar_parametros_definicion_struct(p[1], p, p[4])
+        p[0] = agregar_parametros_definicion_struct(p[1], p, 2, p[4])
     else:
         p[0] = agregar_parametros_definicion_struct(
-            p[1], p, {"tipo": TipoEnum.ANY, "tipo_secundario": None})
+            p[1], p, 2, {"tipo": TipoEnum.ANY, "tipo_secundario": None})
 
 
-def agregar_parametros_definicion_struct(diccionario: dict, p, tipo):
-    if p[2] in diccionario:
-        resultado.add_error('Semantico', f'Ya existe un parametro {p[2]} en el struct', p.lineno(
-            2), find_column(input, p.slice[2]))
+def agregar_parametros_definicion_struct(diccionario: dict, p, index, tipo):
+    if p[index] in diccionario:
+        resultado.add_error('Semantico', f'Ya existe un parametro {p[index]} en el struct', p.lineno(
+            index), find_column(input, p.slice[index]))
     else:
         if tipo['tipo'] != TipoEnum.STRUCT:
-            diccionario[p[2]] = tipo
+            diccionario[p[index]] = tipo
         else:
             resultado.add_error('Semantico', 'No se pueden declarar parametros de tipo Struct', p.lineno(
-                2), find_column(input, p.slice[2]))
+                index), find_column(input, p.slice[index]))
     return diccionario
 
 
@@ -709,13 +709,12 @@ def p_valores_2(p):
                | ID SEMICOLON"""
     if len(p) == 5:
         diccionario_struct = dict()
-        diccionario_struct[p[1]] = p[3]
-        p[0] = diccionario_struct
+        p[0] = agregar_parametros_definicion_struct(
+            diccionario_struct, p, 1, p[3])
     else:
         diccionario_struct = dict()
-        diccionario_struct[p[1]] = {
-            "tipo": TipoEnum.ANY, "tipo_secundario": None}
-        p[0] = diccionario_struct
+        p[0] = agregar_parametros_definicion_struct(
+            diccionario_struct, p, 1, {"tipo": TipoEnum.ANY, "tipo_secundario": None})
 
 # Intruccion de llamado de funcion
 
@@ -1212,14 +1211,14 @@ input = ''
 def parse(ip):
     global input
     global memoria
-    global contador 
-    global registro 
+    global contador
+    global registro
 
     global memoria_entornos_intrucciones_interrupcion
 
-    global expreciones_estructuras 
-    global variables_estrcuturas 
-    global funciones_estrucuras 
+    global expreciones_estructuras
+    global variables_estrcuturas
+    global funciones_estrucuras
 
     global resultado
 
@@ -1232,6 +1231,6 @@ def parse(ip):
     registro = []
     lexer.lineno = 1
     memoria_entornos_intrucciones_interrupcion = Pila()
-    resultado = Resultado([],[])
+    resultado = Resultado([], [])
 
     return parser.parse(ip)
