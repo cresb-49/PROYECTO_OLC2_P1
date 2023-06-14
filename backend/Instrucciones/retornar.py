@@ -13,6 +13,7 @@ class Retornar(Abstract):
     def ejecutar(self, scope):
         if self.exprecion != None:
             valor = self.exprecion.ejecutar(scope)
+            print(self,valor)
             return valor
         else:
             return None
@@ -20,4 +21,4 @@ class Retornar(Abstract):
     def graficar(self, graphviz, padre):
         node_result = graphviz.add_nodo('return', padre)
         if self.exprecion != None:
-            self.exprecion.ejecutar(graphviz, node_result)
+            self.exprecion.graficar(graphviz, node_result)

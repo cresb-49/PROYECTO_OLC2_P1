@@ -38,3 +38,4 @@ class Asignacion(Abstract):
         igual = graphviz.add_nodo('=', padre)
         graphviz.add_nodo(self.id, igual)
         self.valor.graficar(graphviz, igual)
+        

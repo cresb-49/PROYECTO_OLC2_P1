@@ -1,6 +1,7 @@
 from Abstract.abstract import Abstract
 from Symbol.scope import Scope
 from Instrucciones.funcion import Funcion
+from Symbol.tipoEnum import TipoEnum
 import traceback
 
 
@@ -49,9 +50,12 @@ class ValFuncion(Abstract):
                         # Hacemos la declaracion de variables en el scope de la funcion
                         if fun.parametros != None:
                             for param_fun, param_send in zip(fun.parametros, self.parametros):
-                                param_fun.valor = param_send
                                 param_fun.ejecutar(scope_funcion)
-                        return fun.ejecutar(scope_funcion)
+                                result = param_send.ejecutar(scope)
+                                self.asignacion_valor_funcion(param_fun.id,scope_funcion,result)
+                        scope_funcion.imprimir()
+                        value = fun.ejecutar(scope_funcion)
+                        return value
                     except Exception as e:
                         print(
                             'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)
@@ -73,3 +77,23 @@ class ValFuncion(Abstract):
         result = graphviz.add_nodo('function', padre)
         graphviz.add_nodo(self.id, result)
         node_params = graphviz.add_nodo('params', result)
+
+    def asignacion_valor_funcion(self, id, scope_funcion, result_exprecion):
+        variable_recuperada = scope_funcion.obtener_variable(id)
+        if variable_recuperada != None:
+            # Verificamos una variable any ya que a esta le debemos cambiar su tipo secundario
+            if variable_recuperada.tipo == TipoEnum.ANY:
+                variable_recuperada.tipo_secundario = result_exprecion['tipo'].value
+                variable_recuperada.valor = result_exprecion['value']
+            else:
+                # Verificamos que la variable recuperada coincida en tipo como es resultado de la exprecio
+                if variable_recuperada.tipo == result_exprecion['tipo']:
+                    variable_recuperada.valor = result_exprecion['value']
+                else:
+                    concat = f"No se puede asignar un: {result_exprecion['tipo'].value}, a la variable: {self.id}: {variable_recuperada.tipo.value} , linea: {self.linea}, columna: {self.columna}"
+                    self.resultado.add_error(
+                        'Semantico', concat, self.linea, self.columna)
+        else:
+            concat = 'No se puede encontrar la variable: ', self.id, ', linea: ', self.linea, ', columna: ', self.columna
+            self.resultado.add_error(
+                'Semantico', concat, self.linea, self.columna)
