@@ -61,7 +61,7 @@ class Imprimir(Abstract):
         return str(contenido)
 
     def graficar(self, graphviz, padre):
-        # graphviz.add_nodo('console.log(', padre)
+        graphviz.add_nodo('print', padre)
         # self.exprecion.graficar(graphviz, padre)
         # graphviz.add_nodo(');', padre)
         pass

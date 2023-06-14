@@ -41,4 +41,8 @@ class EstructuraVal(Abstract):
             return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
+        #TODO: Realizar el codigo dot
+        # result = graphviz.add_nodo('value_struct', padre)
+        # self.expresion_izquierda.graficar(graphviz, result)
+        # self.expresion_izquierda.graficar(graphviz, result)
         pass

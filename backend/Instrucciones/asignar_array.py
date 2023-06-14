@@ -26,13 +26,17 @@ class AsignacionArray(Abstract):
                     index_agregate = result_index['value']
                     if index_agregate < len(result_array['value']):
                         try:
-                            result_array['value'][self.convertir_float_a_int(index_agregate)] = result_value
+                            result_array['value'][self.convertir_float_a_int(
+                                index_agregate)] = result_value
                         except Exception:
-                            self.resultado.add_error('Semantico', 'El index debe ser un numero entero', self.linea, self.columna)
+                            self.resultado.add_error(
+                                'Semantico', 'El index debe ser un numero entero', self.linea, self.columna)
                     else:
-                        self.resultado.add_error('Semantico', f'No existe un index {index_agregate} para el array a modificar', self.linea, self.columna)
+                        self.resultado.add_error(
+                            'Semantico', f'No existe un index {index_agregate} para el array a modificar', self.linea, self.columna)
                 else:
-                    self.resultado.add_error('Semantico', 'Para acceder a un array se necesita un index numerico', self.linea, self.columna)
+                    self.resultado.add_error(
+                        'Semantico', 'Para acceder a un array se necesita un index numerico', self.linea, self.columna)
             elif result_array['tipo_secundario'] == TipoEnum.STRUCT.value:
                 print('####Asignacion a un array tipo struct')
             else:
@@ -78,9 +82,12 @@ class AsignacionArray(Abstract):
                 'Semantico', f'No puede acceder a un index en un variable tipo: {result_array["tipo"].value}', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo(self.id, padre)
+        result = graphviz.add_nodo('Asignar', padre)
+        index = graphviz.add_nodo('Index', result)
+        self.index_exprecion.graficar(graphviz,index)
         igual = graphviz.add_nodo('=', result)
-        self.valor.graficar(graphviz, igual)
+        self.array.graficar(graphviz, igual)
+        self.value_exprecion.graficar(graphviz, igual)
 
     def convertir_float_a_int(self, numero_float):
         parte_decimal = numero_float % 1

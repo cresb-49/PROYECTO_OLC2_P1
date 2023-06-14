@@ -24,14 +24,16 @@ class SiContrario(Abstract):
                     if self.sentencias_true != None:
                         new_scope = Scope(scope)
                         # Registramos el entorno utilizado
-                        self.resultado.agregar_entorno(codigo_referencia, new_scope)
+                        self.resultado.agregar_entorno(
+                            codigo_referencia, new_scope)
                         return self.sentencias_true.ejecutar(new_scope)
                 else:
                     print('Else if -> Falso')
                     if self.sentencias_false != None:
                         new_scope = Scope(scope)
                         # Registramos el entorno utilizado
-                        self.resultado.agregar_entorno(codigo_referencia, new_scope)
+                        self.resultado.agregar_entorno(
+                            codigo_referencia, new_scope)
                         return self.sentencias_false.ejecutar(new_scope)
             else:
                 self.resultado.add_error(
@@ -41,15 +43,12 @@ class SiContrario(Abstract):
                 'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo('else if', padre)
-        graphviz.add_nodo('(', padre)
-        if self.exprecion_condicion != None:
-            self.exprecion_condicion.graficar(graphviz,padre)
-        graphviz.add_nodo(')', padre)
-        graphviz.add_nodo('{', padre)
+        result = graphviz.add_nodo('else if', padre)
+        node_condition = graphviz.add_nodo('condicion', result)
+        self.exprecion_condicion.graficar(graphviz, node_condition)
         if self.sentencias_true != None:
-            self.sentencias_true.graficar(graphviz,padre)
-        graphviz.add_nodo('}', padre)
-        if self.sentencias_false != None:
-            self.sentencias_false.graficar(graphviz,padre)
-        
+            ct = graphviz.add_nodo('true', result)
+            self.sentencias_true.graficar(graphviz, ct)
+        if self.codigo_false != None:
+            ct = graphviz.add_nodo('false', result)
+            self.codigo_false.graficar(graphviz, ct)

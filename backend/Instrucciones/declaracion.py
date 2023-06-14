@@ -148,7 +148,8 @@ class Declaracion(Abstract):
                 return {"value": resultado, "tipo": TipoEnum.ARRAY, "tipo_secundario": TipoEnum.ANY.value, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo(self.id, padre)
-        igual = graphviz.add_nodo('=', padre)
+        node_result = graphviz.add_nodo("Declaracion", padre)
+        graphviz.add_nodo(self.id, node_result)
+        igual = graphviz.add_nodo('=', node_result)
         if (self.valor != None):
             self.valor.graficar(graphviz, igual)

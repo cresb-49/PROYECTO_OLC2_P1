@@ -28,9 +28,11 @@ class ValFuncion(Abstract):
                 if self.parametros == None:
                     # Ejecucion de funcion sin parametros
                     # Declaramos scope de tranajo pero debemos mandar el scope
-                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
+                    scope_funcion: Scope = Scope(
+                        self.resultado.get_scope_global())
                     # Registramos el entorno utilizado
-                    self.resultado.agregar_entorno(codigo_referencia, scope_funcion)
+                    self.resultado.agregar_entorno(
+                        codigo_referencia, scope_funcion)
                     resultado = fun.ejecutar(scope_funcion)
                     if isinstance(resultado, dict):
                         print(resultado)
@@ -38,9 +40,11 @@ class ValFuncion(Abstract):
                 else:
                     # Ejecucion de una funcion con parametros
                     # Declaracion del scope de trabajo
-                    scope_funcion: Scope = Scope(self.resultado.get_scope_global())
+                    scope_funcion: Scope = Scope(
+                        self.resultado.get_scope_global())
                     # Registramos el entorno utilizado
-                    self.resultado.agregar_entorno(codigo_referencia, scope_funcion)
+                    self.resultado.agregar_entorno(
+                        codigo_referencia, scope_funcion)
                     try:
                         # Hacemos la declaracion de variables en el scope de la funcion
                         if fun.parametros != None:
@@ -60,12 +64,12 @@ class ValFuncion(Abstract):
                 print(
                     'Semantico', f'La funcion que desea ejecutar necesita {size_funcion} parametros, pero la esta ejecutando con {size} parametros', self.linea, self.columna)
         else:
-            print('Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
+            print('Semantico', 'Esta invocando un funcion que no existe en el programa',
+                  self.linea, self.columna)
             self.resultado.add_error(
                 'Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo(self.id, padre)
-        graphviz.add_nodo('(', padre)
-        self.parametros.graficar(graphviz, padre)
-        graphviz.add_nodo(')', padre)
+        result = graphviz.add_nodo('Funcion', padre)
+        graphviz.add_nodo(self.id, result)
+        node_params = graphviz.add_nodo('Parametros', result)
