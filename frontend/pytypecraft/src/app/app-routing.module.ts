@@ -6,6 +6,7 @@ import { HomePageComponent } from './components/home-page/home-page.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { ReportesPageComponent } from './components/reportes-page/reportes-page.component';
+import { DireccionesPageComponent } from './components/direcciones-page/direcciones-page.component';
 
 
 const routes: Routes = [
@@ -25,6 +26,10 @@ const routes: Routes = [
       {
         path: 'reportes',
         component: ReportesPageComponent,
+      },
+      {
+        path: 'direcciones',
+        component: DireccionesPageComponent,
       }
     ],
   },
