@@ -1,5 +1,6 @@
 import pyTypeParser as parser
 from pyTypeParser import Scope
+from pyTypeParser import TipoEnum
 # from pyTypeParser import Sentencias
 from pyTypeParser import Resultado
 from Instrucciones.entorno import Entorno
@@ -45,9 +46,6 @@ class Principal:
         for n in result.errores:
             print(n)
 
-        # mandamos ha graficar el resultado
-        # gv = GraficoDot()
-        # entorno.graficar(gv,None)
         print('#### TABLA DE SIMBOLOS')
         # print(result.entornos_variables)
 
@@ -74,7 +72,25 @@ class Principal:
                                           'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
             for key2 in diccionario_estructuras:
                 variable = diccionario_estructuras[key2]
-                tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Estructura', 'tipo': variable.tipo.value,
+                tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Estructura', 'tipo': TipoEnum.STRUCT.value,
                                           'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
+        for simbolos in tabla_de_simbolos:
+            print(simbolos)
 
-        return {"result": result, "dot": "", "simbolos": tabla_de_simbolos}
+        # GENERACION DEL CODIGO DOT PARA REALZIAR EL GRAFICO DEL AST
+        gv = GraficoDot()
+        entorno.graficar(gv, None)
+        code_dot = gv.get_dot()
+        self.escribir_salida_dot(code_dot)
+
+        respuesta = {"result": result, "dot": "","simbolos": tabla_de_simbolos}
+        # print('RESULTADO FINAL -> ', respuesta)
+        return respuesta
+
+    def escribir_salida_dot(self, code):
+        # Abrir el archivo en modo escritura
+        archivo = open("salida_dot.txt", "w")
+        # Escribir en el archivo
+        archivo.write(code)
+        # Cerrar el archivo
+        archivo.close()

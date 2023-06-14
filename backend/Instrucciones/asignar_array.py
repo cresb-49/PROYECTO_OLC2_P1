@@ -82,11 +82,10 @@ class AsignacionArray(Abstract):
                 'Semantico', f'No puede acceder a un index en un variable tipo: {result_array["tipo"].value}', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo('Asignar', padre)
-        index = graphviz.add_nodo('Index', result)
+        igual = graphviz.add_nodo('=', padre)
+        index = graphviz.add_nodo('[]', igual)
+        self.array.graficar(graphviz, index)
         self.index_exprecion.graficar(graphviz,index)
-        igual = graphviz.add_nodo('=', result)
-        self.array.graficar(graphviz, igual)
         self.value_exprecion.graficar(graphviz, igual)
 
     def convertir_float_a_int(self, numero_float):

@@ -42,10 +42,10 @@ class Si(Abstract):
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo('if', padre)
         node_condition = graphviz.add_nodo('condicion', result)
-        self.exprecion_condicion.graficar(graphviz, node_condition)
-        if self.exprecion != None:
+        self.exprecion.graficar(graphviz, node_condition)
+        if self.sentencias != None:
             ct = graphviz.add_nodo('true', result)
-            self.exprecion.graficar(graphviz, ct)
+            self.sentencias.graficar(graphviz, ct)
         if self._else != None:
             cf = graphviz.add_nodo('false', result)
             self._else.graficar(graphviz, cf)

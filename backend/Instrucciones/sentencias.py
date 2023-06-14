@@ -35,7 +35,7 @@ class Sentencias(Abstract):
                     return result
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo('instruction', padre)
+        result = graphviz.add_nodo('instr', padre)
         if self.intr_izquierda != None:
             self.intr_izquierda.graficar(graphviz, result)
         if self.instr_derecha != None:

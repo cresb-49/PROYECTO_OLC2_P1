@@ -1013,7 +1013,7 @@ def p_sub_exprecion_3(p):
     """sub_exprecion : NUM"""
     result = 0
     try:
-        result = float(p[1])
+        result = int(p[1])
     except ValueError:
         print("Float value too large %d", p[1])
         resultado.add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(

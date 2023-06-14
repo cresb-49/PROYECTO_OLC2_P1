@@ -22,6 +22,7 @@ class ToString(Abstract):
 
     def graficar(self, graphviz, padre):
         #agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("toString", padre)
+        result = graphviz.add_nodo(".", padre)
         #mandmaos ha graficar el hijo (acceder)
         self.numero.graficar(graphviz, result)
+        graphviz.add_nodo("toString", result)

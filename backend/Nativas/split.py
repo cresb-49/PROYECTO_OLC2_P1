@@ -54,6 +54,7 @@ class Split(Abstract):
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("Split", padre)
+        result = graphviz.add_nodo(".", padre)
         # mandmaos ha graficar el hijo (acceder)
         self.cadena.graficar(graphviz, result)
+        graphviz.add_nodo("split", result)

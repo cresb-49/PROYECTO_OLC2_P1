@@ -174,23 +174,16 @@ class Para(Abstract):
 
     def graficar(self, graphviz, padre):
         if self.tipo_for == 1:
-            graphviz.add_nodo('for', padre)
-            graphviz.add_nodo('(', padre)
-            self.declaracion.graficar(graphviz, padre)
-            graphviz.add_nodo(';', padre)
-            self.condicion.graficar(graphviz, padre)
-            graphviz.add_nodo(';', padre)
-            self.expresion.graficar(graphviz, padre)
-            graphviz.add_nodo(')', padre)
-            graphviz.add_nodo('{', padre)
+            node_for = graphviz.add_nodo('for', padre)
+            self.declaracion.graficar(graphviz, node_for)
+            node_condicion = graphviz.add_nodo('condicion', node_for)
+            self.condicion.graficar(graphviz, node_condicion)
             if (self.sentencias != None):
-                self.sentencias.graficar(graphviz, padre)
-            graphviz.add_nodo('}', padre)
+                self.sentencias.graficar(graphviz, node_for)
+            node_accion_final = graphviz.add_nodo('accion final', node_for)
+            self.expresion.graficar(graphviz, node_accion_final)
         else:
-            graphviz.add_nodo('for', padre)
-            graphviz.add_nodo('(', padre)
-            graphviz.add_nodo(')', padre)
-            graphviz.add_nodo('{', padre)
+            node_for = graphviz.add_nodo('for', padre)
+            self.declaracion.graficar(graphviz, node_for)
             if (self.sentencias != None):
-                self.sentencias.graficar(graphviz, padre)
-            graphviz.add_nodo('}', padre)
+                self.sentencias.graficar(graphviz, node_for)

@@ -70,6 +70,6 @@ class ValFuncion(Abstract):
                 'Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo('Funcion', padre)
+        result = graphviz.add_nodo('function', padre)
         graphviz.add_nodo(self.id, result)
-        node_params = graphviz.add_nodo('Parametros', result)
+        node_params = graphviz.add_nodo('params', result)

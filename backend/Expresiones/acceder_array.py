@@ -27,11 +27,9 @@ class AccederArray(Abstract):
             self.resultado.add_error('Semantico', 'No esta operando un array', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        node_padre = graphviz.add_nodo('Acceder', padre)
-        node_array = graphviz.add_nodo('Array', node_padre)
-        node_index = graphviz.add_nodo('Index', node_padre)
-        self.exprecion(graphviz, node_array)
-        self.index_exprecion(graphviz, node_index)
+        node_padre = graphviz.add_nodo('[]', padre)
+        self.exprecion.graficar(graphviz, node_padre)
+        self.index_exprecion.graficar(graphviz, node_padre)
 
     def convertir_float_a_int(self, numero_float):
         parte_decimal = numero_float % 1

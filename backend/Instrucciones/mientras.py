@@ -25,8 +25,9 @@ class Mientras(Abstract):
                     print('debuj mientras', res)
                     while res:
                         scope_temporal: Scope = Scope(scope)
-                        #Registramos el scope generado
-                        self.resultado.agregar_entorno(codigo_referencia, scope_temporal)
+                        # Registramos el scope generado
+                        self.resultado.agregar_entorno(
+                            codigo_referencia, scope_temporal)
                         if self.sentencias != None:
                             resultado = self.sentencias.ejecutar(
                                 scope_temporal)
@@ -55,8 +56,7 @@ class Mientras(Abstract):
                 'Semantico', 'No se puede ejecutar la sentencia hay un error anterior', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo('while', padre)
-        graphviz.add_nodo('{', padre)
+        mientras_node = graphviz.add_nodo('while', padre)
+        self.condicion.graficar(graphviz, mientras_node)
         if (self.sentencias != None):
-            self.sentencias.graficar(graphviz, padre)
-        graphviz.add_nodo('}', padre)
+            self.sentencias.graficar(graphviz, mientras_node)

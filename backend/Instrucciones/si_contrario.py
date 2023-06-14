@@ -49,6 +49,6 @@ class SiContrario(Abstract):
         if self.sentencias_true != None:
             ct = graphviz.add_nodo('true', result)
             self.sentencias_true.graficar(graphviz, ct)
-        if self.codigo_false != None:
+        if self.sentencias_false != None:
             ct = graphviz.add_nodo('false', result)
-            self.codigo_false.graficar(graphviz, ct)
+            self.sentencias_false.graficar(graphviz, ct)

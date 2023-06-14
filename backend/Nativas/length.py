@@ -37,7 +37,7 @@ class Length(Abstract):
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("Length", padre)
+        result = graphviz.add_nodo(".", padre)
         # mandmaos ha graficar os hijos
-        self.numero.graficar(graphviz, result)
         self.acceder.graficar(graphviz, result)
+        graphviz.add_nodo("length", result)

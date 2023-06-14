@@ -26,7 +26,6 @@ class AccederEstructura(Abstract):
                 'Semantico', f"La variable es de tipo: \"{resultado_id_acc['tipo'].value}\" no tiene parametros de acceso \"{self.parametro}\"", self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        # result = graphviz.add_nodo(self.tipo_operacion, padre)
-        # self.expresion_izquierda.graficar(graphviz, result)
-        # self.expresion_izquierda.graficar(graphviz, result)
-        pass
+        result = graphviz.add_nodo('.', padre)
+        graphviz.add_nodo(self.id_acceso, result)
+        graphviz.add_nodo(self.parametro, result)

@@ -18,7 +18,7 @@ class ToFixed(Abstract):
         if (tipo == TipoEnum.NUMBER):
             return True
         else:
-            concat = f'Tipos no coinciden para la operacion split(), Se esperaba String y recibio {tipo.value}'
+            concat = f'Tipos no coinciden para la operacion toFixed(), Se esperaba String y recibio {tipo.value}'
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
             return False
@@ -43,7 +43,8 @@ class ToFixed(Abstract):
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("toFixed", padre)
+        result = graphviz.add_nodo(".", padre)
         # mandmaos ha graficar os hijos
         self.numero.graficar(graphviz, result)
-        self.expreciones.graficar(graphviz, result)
+        node_fixed = graphviz.add_nodo("toFixed", result)
+        self.expreciones.graficar(graphviz, node_fixed)

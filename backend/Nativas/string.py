@@ -30,7 +30,6 @@ class String(Abstract):
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("toFixed", padre)
+        result = graphviz.add_nodo("String", padre)
         # mandmaos ha graficar os hijos
-        self.numero.graficar(graphviz, result)
-        self.expreciones.graficar(graphviz, result)
+        self.expreciones[0].graficar(graphviz, result)

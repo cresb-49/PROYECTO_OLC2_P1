@@ -12,12 +12,12 @@ class TypeOf(Abstract):
         return "TypeOf"
 
     def ejecutar(self, scope):
-        
+
         # Verificar que solo venga un parametro
         if (len(self.expreciones) == 1):
-            expresion = self.expreciones[0]       
+            expresion = self.expreciones[0]
             # Enviar ha ejecutar la exprecion para obtener su diccionario
-            ejecutarExpresion = expresion.ejecutar(scope) 
+            ejecutarExpresion = expresion.ejecutar(scope)
             # calor del saparador de split
             tipo = ejecutarExpresion['tipo']
             tipo_secundario = ejecutarExpresion['tipo_secundario']
@@ -36,7 +36,6 @@ class TypeOf(Abstract):
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("toFixed", padre)
+        result = graphviz.add_nodo("typeOf", padre)
         # mandmaos ha graficar os hijos
-        self.numero.graficar(graphviz, result)
         self.expreciones.graficar(graphviz, result)
