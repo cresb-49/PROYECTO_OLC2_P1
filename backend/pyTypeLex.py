@@ -6,7 +6,7 @@ from Errores.Errores import TablaErrores
 import re
 
 tabla_errores = TablaErrores()
-resultado = Resultado(None, [], None, [])
+resultado = Resultado([], [])
 
 
 # Definicion de tokens

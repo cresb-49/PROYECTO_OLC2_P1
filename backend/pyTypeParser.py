@@ -1211,5 +1211,26 @@ input = ''
 
 def parse(ip):
     global input
+    global memoria
+    global contador 
+    global registro 
+
+    global memoria_entornos_intrucciones_interrupcion
+
+    global expreciones_estructuras 
+    global variables_estrcuturas 
+    global funciones_estrucuras 
+
+    global resultado
+
+    expreciones_estructuras = []
+    variables_estrcuturas = []
+    funciones_estrucuras = []
     input = ip
+    memoria = Pila()
+    contador = 0
+    registro = []
+    memoria_entornos_intrucciones_interrupcion = Pila()
+    resultado = Resultado([],[])
+
     return parser.parse(ip)

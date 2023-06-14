@@ -3,10 +3,10 @@ from Errores.Errores import Error
 
 
 class Resultado:
-    def __init__(self, sentencias, errores, tabla_simbolos, consola) -> None:
-        self.sentencias = sentencias
+    def __init__(self, errores, consola) -> None:
+        self.sentencias = None
         self.errores = errores
-        self.tabla_simbolos = tabla_simbolos
+        self.tabla_simbolos = None
         self.consola = consola
         self.scope_global = None
         self.entornos_variables = dict()

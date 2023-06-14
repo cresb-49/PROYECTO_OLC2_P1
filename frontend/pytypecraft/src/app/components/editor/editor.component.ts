@@ -25,7 +25,7 @@ export class EditorComponent implements AfterViewInit {
   @Input() resultConsole!: EditorComponent;
 
   nombreArchivo: string = 'Codigo_PyTypeCraft';
-  codigo: string = '';
+  @Input() codigo: string = '';
   ubicacionEditor: string = 'Linea: 1, Columna: 1';
 
   @Output() sendCodigo = new EventEmitter<string>();
