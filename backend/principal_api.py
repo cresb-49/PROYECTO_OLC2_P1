@@ -89,8 +89,8 @@ class Principal:
         else:
             result.consola = []
 
-        respuesta = {"result": result, "dot": "","simbolos": tabla_de_simbolos}
-        
+        respuesta = {"result": result, "dot": code_dot,"simbolos": tabla_de_simbolos}
+
         return respuesta
 
     def escribir_salida_dot(self, code):

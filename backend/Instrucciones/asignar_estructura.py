@@ -21,7 +21,6 @@ class AsignacionEstructura(Abstract):
                 valor_asignar = self.expresion.ejecutar(scope)
                 struct_respectivo = scope.obtener_estructura(var_acceso['tipo_secundario'])
                 tipo_referencia = ((struct_respectivo.composicion)[self.parametro])['tipo']
-                
                 if tipo_referencia == TipoEnum.ANY or tipo_referencia == valor_asignar['tipo']:
                     valor_recuperado[self.parametro] = valor_asignar
                 else:

@@ -42,8 +42,10 @@ class Imprimir(Abstract):
         # por cada uno de los elementos principales en el value (titulos de propiedades del struct)
         for parametro in resultado['value']:
             # adjuntar al concat el titulo del parametro "parametro" y el value del parametro
-            concat = concat + ' ' + parametro+': ' + \
-                resultado['value'][parametro]['value'] + '\n'
+            if resultado['value'][parametro]['tipo'] == TipoEnum.ARRAY:
+                concat = concat + ' ' + str(parametro) + ': ' + str(self.imprimir_array(resultado['value'][parametro])) + '\n'
+            else:
+                concat = concat + ' ' + str(parametro) + ': ' + str(resultado['value'][parametro]['value']) + '\n'
         return concat + "}"
 
     # crea un string de array imprimible, si un elemento del array es un array entonces se convierte en funcion recursiva
