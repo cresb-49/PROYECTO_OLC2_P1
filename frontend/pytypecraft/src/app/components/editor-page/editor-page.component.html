@@ -1,6 +1,6 @@
 <div class="row editors-container">
   <div class="col">
-    <app-editor [nombreBoton]="'Descargar Codigo'" (sendCodigo)="setCodigo($event)" [codigo]="codigo" [isLoadFile]="true" [resultConsole]="codeConsole"></app-editor>
+    <app-editor #consoleCode [nombreBoton]="'Descargar Codigo'" (sendCodigo)="setCodigo($event)" [codigo]="codigo" [isLoadFile]="true" [resultConsole]="codeConsole"></app-editor>
   </div>
   <div class="col">
     <app-editor #consoleResult [nombreBoton]="'Descargar Resultado'" [isEditable]="false" [resultConsole]="resultConsole"></app-editor>

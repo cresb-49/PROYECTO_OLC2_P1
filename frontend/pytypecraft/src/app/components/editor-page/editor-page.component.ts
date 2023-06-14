@@ -11,7 +11,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class EditorPageComponent implements AfterViewInit {
   @ViewChild('consoleResult') resultConsole!: EditorComponent;
 
-  @ViewChild('consoleResult') codeConsole!: EditorComponent;
+  @ViewChild('consoleCode') codeConsole!: EditorComponent;
 
   public codigo = '';
   public consola = '';
@@ -28,7 +28,7 @@ export class EditorPageComponent implements AfterViewInit {
    */
   ngAfterViewInit(): void {
      //si la cookie de codigo existe entonces debemos cargar el codigo en la consola
-     if (this.cookieService.check('code')) {        
+     if (this.cookieService.check('code')) {
       this.codigo = this.cookieService.get('code');
       this.codeConsole.setCode(this.codigo);
     }
