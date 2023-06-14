@@ -35,7 +35,7 @@ class Logico(Abstract):
                 return False
 
     def ejecutar(self, scope):
-        print(self)
+        #print(self)
         val_derecho = self.expresion_derecha.ejecutar(scope)
         if self.expresion_izquierda != None:
             val_izq = self.expresion_izquierda.ejecutar(scope)
