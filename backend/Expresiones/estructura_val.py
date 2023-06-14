@@ -28,11 +28,18 @@ class EstructuraVal(Abstract):
                 # print(val_correspondiente['tipo'])
                 if (not (val_correspondiente['tipo'] == val_asignar['tipo'] or val_correspondiente['tipo'] == TipoEnum.ANY)):
                     concat = f'Error al asignar valor al struct el parametro es de tipo: {val_correspondiente["tipo"].value} y recibio un parametro de tipo: {val_asignar["tipo"]}'
-                    self.resultado.add_error(
-                        'Semantico', concat, self.linea, self.columna)
-                    val_asignar = {"value": None, "tipo": TipoEnum.ERROR,
-                                   "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-                diccionario_values[clave] = val_asignar
+                    self.resultado.add_error('Semantico', concat, self.linea, self.columna)
+                    val_asignar = {"value": None, "tipo": TipoEnum.ERROR,"tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                else:
+                    if val_correspondiente['tipo'] == TipoEnum.ARRAY:
+                        if val_correspondiente['tipo_secundario'] == val_asignar['tipo_secundario']:
+                            diccionario_values[clave] = val_asignar
+                        else:
+                            concat = f'Error al asignar valor al struct el parametro "{clave}" es de tipo: {val_correspondiente["tipo_secundario"]} y recibio un parametro de tipo: {val_asignar["tipo_secundario"]}'
+                            self.resultado.add_error('Semantico', concat, self.linea, self.columna)
+                            val_asignar = {"value": None, "tipo": TipoEnum.ERROR,"tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                    else:
+                        diccionario_values[clave] = val_asignar
             # Termino de la verificacion ahora debemos de retornar el valor del strut para ser declarado\
             return {"value": diccionario_values, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario, "linea": self.linea, "columna": self.columna}
         except Exception as e:
