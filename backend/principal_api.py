@@ -12,6 +12,8 @@ class Principal:
     def leer(self, codigo):
         # Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
         codigo = codigo + '\n'
+
+        print('#### CODIGO A PROCESAR\n', codigo)
         print('#### PARSER EJECUTADO')
         result: Resultado = parser.parse(codigo)
         print('#### PARSER FINALIZADO')
@@ -35,8 +37,11 @@ class Principal:
         for n in result.errores:
             print(n)
 
-        print('#### EJECUCION DEL CODIGO')
-        entorno.ejecutar(None)
+        if len(result.errores) == 0:
+            print('#### EJECUCION DEL CODIGO')
+            entorno.ejecutar(None)
+        else:
+            print('#### NO SE PUEDE EJECUTAR EL CODIGO HAY ERRORES')
 
         print('#### CONSOLA DE SALIDA')
         for n in result.consola:
@@ -46,45 +51,46 @@ class Principal:
         for n in result.errores:
             print(n)
 
-        print('#### TABLA DE SIMBOLOS')
-        # print(result.entornos_variables)
-
         tabla_de_simbolos = []
+        code_dot = ""
 
-        # FORMATO PARA INGRESAR LA INFORMACION AL DICCIONARIO
-        # {'nombre': value , 'clase': value , 'tipo': value , 'ambito': value ,'fila':value , 'columna': value}
-        for key in result.entornos_variables:
-            if result.entornos_variables[key].tipo != 'Global':
-                result.entornos_variables[key].tipo = 'Local'
-            diccionario_vars = result.entornos_variables[key].variables.get_diccionario(
-            )
-            diccionario_funciones = result.entornos_variables[key].funciones.get_diccionario(
-            )
-            diccionario_estructuras = result.entornos_variables[key].estructuras.get_diccionario(
-            )
-            for key2 in diccionario_vars:
-                variable = diccionario_vars[key2]
-                tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Variable', 'tipo': variable.tipo.value,
-                                          'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
-            for key2 in diccionario_funciones:
-                variable = diccionario_funciones[key2]
-                tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Funcion', 'tipo': variable.tipo.value,
-                                          'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
-            for key2 in diccionario_estructuras:
-                variable = diccionario_estructuras[key2]
-                tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Estructura', 'tipo': TipoEnum.STRUCT.value,
-                                          'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
-        for simbolos in tabla_de_simbolos:
-            print(simbolos)
-
-        # GENERACION DEL CODIGO DOT PARA REALZIAR EL GRAFICO DEL AST
-        gv = GraficoDot()
-        entorno.graficar(gv, None)
-        code_dot = gv.get_dot()
-        self.escribir_salida_dot(code_dot)
+        if len(result.errores) == 0:
+            print('#### TABLA DE SIMBOLOS')
+            # FORMATO PARA INGRESAR LA INFORMACION AL DICCIONARIO
+            # {'nombre': value , 'clase': value , 'tipo': value , 'ambito': value ,'fila':value , 'columna': value}
+            for key in result.entornos_variables:
+                if result.entornos_variables[key].tipo != 'Global':
+                    result.entornos_variables[key].tipo = 'Local'
+                diccionario_vars = result.entornos_variables[key].variables.get_diccionario(
+                )
+                diccionario_funciones = result.entornos_variables[key].funciones.get_diccionario(
+                )
+                diccionario_estructuras = result.entornos_variables[key].estructuras.get_diccionario(
+                )
+                for key2 in diccionario_vars:
+                    variable = diccionario_vars[key2]
+                    tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Variable', 'tipo': variable.tipo.value,
+                                              'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
+                for key2 in diccionario_funciones:
+                    variable = diccionario_funciones[key2]
+                    tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Funcion', 'tipo': variable.tipo.value,
+                                              'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
+                for key2 in diccionario_estructuras:
+                    variable = diccionario_estructuras[key2]
+                    tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Estructura', 'tipo': TipoEnum.STRUCT.value,
+                                              'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
+            for simbolos in tabla_de_simbolos:
+                print(simbolos)
+            # GENERACION DEL CODIGO DOT PARA REALZIAR EL GRAFICO DEL AST
+            gv = GraficoDot()
+            entorno.graficar(gv, None)
+            code_dot = gv.get_dot()
+            self.escribir_salida_dot(code_dot)
+        else:
+            result.consola = []
 
         respuesta = {"result": result, "dot": "","simbolos": tabla_de_simbolos}
-        # print('RESULTADO FINAL -> ', respuesta)
+        
         return respuesta
 
     def escribir_salida_dot(self, code):

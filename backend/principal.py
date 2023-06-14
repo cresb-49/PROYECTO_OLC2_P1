@@ -87,7 +87,7 @@ for key in result.entornos_variables:
         tabla_de_simbolos.append({'nombre': variable.id , 'clase': 'Funcion' , 'tipo': variable.tipo.value , 'ambito': result.entornos_variables[key].tipo ,'linea':variable.linea , 'columna': variable.columna})
     for key2 in diccionario_estructuras:
         variable = diccionario_estructuras[key2] 
-        tabla_de_simbolos.append({'nombre': variable.id , 'clase': 'Estructura' , 'tipo': variable.tipo.value , 'ambito': result.entornos_variables[key].tipo ,'linea':variable.linea , 'columna': variable.columna})
+        tabla_de_simbolos.append({'nombre': variable.id , 'clase': 'Estructura' , 'tipo': 'interface' , 'ambito': result.entornos_variables[key].tipo ,'linea':variable.linea , 'columna': variable.columna})
     
     
 for simbolos in tabla_de_simbolos:

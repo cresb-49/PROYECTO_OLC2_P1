@@ -43,7 +43,7 @@ class Acceder(Abstract):
             elif (recuperacion.tipo == TipoEnum.ARRAY):
                 return {"value": recuperacion.valor, "tipo": TipoEnum.ARRAY, "tipo_secundario": recuperacion.tipo_secundario, "linea": self.linea, "columna": self.columna}
             else:
-                return {"value": recuperacion.valor, "tipo": recuperacion.tipo, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                return {"value": recuperacion.valor, "tipo": recuperacion.tipo, "tipo_secundario": recuperacion.tipo_secundario, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo(self.id, padre)
@@ -58,6 +58,8 @@ class Acceder(Abstract):
             if len(resultados) == 0:
                 self.resultado.add_error('Semantico', 'El tipo de estructura no esta definina el proyecto', self.linea, self.columna)
             elif len(resultados) == 1:
+                tipo_secundario = resultados[0].id
+                print(tipo_secundario)
                 return resultados[0].id
             else:
                 self.resultado.add_error('Semantico', 'Existe ambiguedad al deducir la estructura', self.linea, self.columna)

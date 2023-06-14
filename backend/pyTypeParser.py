@@ -414,11 +414,10 @@ def p_instruccion_2(p):
                    | ciclo_while SEMICOLON"""
     p[0] = p[1]
 
-
-def p_instruccion_3(p):
-    """instruccion : error"""  # produccion de error
-    p[0] = IntruccionError(resultado, p.lineno(
-        1), find_column(input, p.slice[1]))
+#TODO: manejo de errores produccion
+# def p_instruccion_3(p):
+#     """instruccion : error"""  # produccion de error
+#     p[0] = IntruccionError(resultado, p.lineno(1), find_column(input, p.slice[1]))
 
 
 def p_instruccion_4(p):
@@ -1195,11 +1194,9 @@ def p_error(t):
     print('Error Parser p_error ->', t, type(t))
     print("Error sintáctico en '%s'" % t.value)
     if isinstance(t, LexToken):
-        resultado.add_error(
-            'Sintactico', "Error sintáctico en '%s'" % t.value,  t.lineno, 'n/a')
+        resultado.add_error('Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
     else:
-        resultado.add_error(
-            'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+        resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
 
 
 # Declaracion de inicio del parser

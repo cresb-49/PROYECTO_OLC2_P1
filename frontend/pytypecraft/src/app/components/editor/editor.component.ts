@@ -68,6 +68,8 @@ export class EditorComponent implements AfterViewInit {
     } else {
       aceEditor.session.setMode('ace/mode/plaintext');
     }
+    // Configurar el conjunto de caracteres
+    //aceEditor.session.setMode('utf-8');
     aceEditor.setReadOnly(!this.isEditable);
     aceEditor.setValue(this.codigo);
     aceEditor.on('change', () => {
