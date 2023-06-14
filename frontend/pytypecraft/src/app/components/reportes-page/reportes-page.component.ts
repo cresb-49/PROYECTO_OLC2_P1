@@ -1,18 +1,35 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-reportes-page',
   templateUrl: './reportes-page.component.html',
-  styleUrls: ['./reportes-page.component.css']
+  styleUrls: ['./reportes-page.component.css'],
 })
-export class ReportesPageComponent {
+export class ReportesPageComponent implements AfterViewInit {
   displayedColumns: string[] = [
-    'numero',
-    'descripcion',
+    'nombre',
+    'tipo',
+    'clase',
+    'ambito',
     'linea',
     'columna',
-    'fechaHora',
   ];
 
   dataSource = [];
+
+  constructor(private cookieService:CookieService) {
+    
+  }
+
+  ngAfterViewInit(): void {
+    if (this.cookieService.check('compile')) {
+      this.setTablaSimbolos();
+    }
+  }
+
+  public setTablaSimbolos(): void {
+    let simbolos = JSON.parse(this.cookieService.get('compile')).simbolos;
+    this.dataSource = simbolos;
+  }
 }

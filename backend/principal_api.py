@@ -4,6 +4,7 @@ from pyTypeParser import Scope
 from pyTypeParser import Resultado
 from Instrucciones.entorno import Entorno
 from Modulos.grafico_dot import GraficoDot
+import ply.yacc as yacc
 
 
 class Principal:

@@ -13,8 +13,17 @@ export class EditorPageComponent implements AfterViewInit {
 
   @ViewChild('consoleCode') codeConsole!: EditorComponent;
 
+  displayedColumns: string[] = [
+    'tipo',
+    'descripcion',
+    'linea',
+    'columna',
+    'fechaHora',
+  ];
+
+  dataSource = [];
+
   public codigo = '';
-  public consola = '';
 
   constructor(
     private compileService: CompileService,
@@ -35,30 +44,33 @@ export class EditorPageComponent implements AfterViewInit {
 
     if (this.cookieService.check('compile')) {
       this.setConsola();
+      this.setTablaErrores();
     }
   }
 
   public setConsola(): void {
     //borramos el contenido de la consola
-    this.consola = "";
+    let consola = "";
 
     let nuevaSalida = JSON.parse(this.cookieService.get('compile')).consola;
 
     nuevaSalida.forEach((element: any) => {
-      this.consola += element + '\n';
+      consola += element + '\n';
     });
 
-    this.resultConsole.setCode(this.consola)
+    this.resultConsole.setCode(consola)
   }
 
   public sendCode(): void {
     //Envia el codigo escrito en la consola hacia el backend
     this.compileService.sendCode(this.codigo).subscribe((r) => {
+      console.log(r);
       this.cookieService.delete('compile');
       this.cookieService.delete('code');
       this.cookieService.set('compile', JSON.stringify(r));
       this.cookieService.set('code', this.codigo);
       this.setConsola();
+      this.setTablaErrores();
     });
   }
 
@@ -69,5 +81,10 @@ export class EditorPageComponent implements AfterViewInit {
   public setCodigo(codigo: string): void {
     //eteamos el codigo local con el escrito por el usuario
     this.codigo = codigo;
+  }
+
+  private setTablaErrores():void{
+    let errores = JSON.parse(this.cookieService.get('compile')).errores;
+    this.dataSource = errores;
   }
 }

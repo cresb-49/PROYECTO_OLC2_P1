@@ -1230,6 +1230,7 @@ def parse(ip):
     memoria = Pila()
     contador = 0
     registro = []
+    lexer.lineno = 1
     memoria_entornos_intrucciones_interrupcion = Pila()
     resultado = Resultado([],[])
 
