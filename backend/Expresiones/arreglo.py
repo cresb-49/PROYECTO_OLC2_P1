@@ -26,7 +26,6 @@ class Arreglo(Abstract):
             return {"value": results, "tipo": self.tipo, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo('[', padre)
+        node_padre = graphviz.add_nodo('Array', padre)
         for parte in self.arreglo:
-            parte.graficar(graphviz, padre)
-        graphviz.add_nodo(']', padre)
+            parte.graficar(graphviz, node_padre)

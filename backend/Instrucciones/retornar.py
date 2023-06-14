@@ -18,6 +18,6 @@ class Retornar(Abstract):
             return None
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo('return', padre)
+        node_result = graphviz.add_nodo('return', padre)
         if self.exprecion != None:
-            self.exprecion.ejecutar(graphviz, padre)
+            self.exprecion.ejecutar(graphviz, node_result)

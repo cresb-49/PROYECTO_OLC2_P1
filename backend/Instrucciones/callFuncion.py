@@ -63,7 +63,6 @@ class CallFuncion(Abstract):
                 'Semantico', 'Esta invocando un funcion que no existe en el programa', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        graphviz.add_nodo(self.id, padre)
-        graphviz.add_nodo('(', padre)
-        self.parametros.graficar(graphviz, padre)
-        graphviz.add_nodo(')', padre)
+        node_funcion = graphviz.add_nodo('Funcion', padre)
+        graphviz.add_nodo(self.id, node_funcion)
+        graphviz.add_nodo('Parametros', node_funcion)

@@ -27,13 +27,14 @@ class Asignacion(Abstract):
                     variable_recuperada.valor = result_exprecion['value']
                 else:
                     concat = f"No se puede asignar un: {result_exprecion['tipo'].value}, a la variable: {self.id}: {variable_recuperada.tipo.value} , linea: {self.linea}, columna: {self.columna}"
-                    self.resultado.add_error('Semantico', concat, self.linea, self.columna)
+                    self.resultado.add_error(
+                        'Semantico', concat, self.linea, self.columna)
         else:
             concat = 'No se puede encontrar la variable: ', self.id, ', linea: ', self.linea, ', columna: ', self.columna
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo(self.id, padre)
-        igual = graphviz.add_nodo('=', result)
+        igual = graphviz.add_nodo('=', padre)
+        graphviz.add_nodo(self.id, igual)
         self.valor.graficar(graphviz, igual)
