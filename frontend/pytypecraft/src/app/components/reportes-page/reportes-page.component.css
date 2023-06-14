@@ -1,7 +1,15 @@
-.reportes-container{
+.reportes-container {
     display: flex;
     flex-direction: column;
     gap: 30px;
     align-items: center;
     padding: 20px;
+}
+
+.img-container {
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: -6px 0px 31px -3px rgba(0, 0, 0, 0.65);
+    -webkit-box-shadow: -6px 0px 31px -3px rgba(0, 0, 0, 0.65);
+    -moz-box-shadow: -6px 0px 31px -3px rgba(0, 0, 0, 0.65);
 }

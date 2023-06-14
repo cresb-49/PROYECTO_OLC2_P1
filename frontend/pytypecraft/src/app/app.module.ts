@@ -16,6 +16,8 @@ import { ContainerComponent } from './components/container/container.component';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { DireccionesPageComponent } from './components/direcciones-page/direcciones-page.component';
+
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReportesPageComponent,
     NavComponent,
     ContainerComponent,
+    DireccionesPageComponent,
   ],
   imports: [
     BrowserModule,
