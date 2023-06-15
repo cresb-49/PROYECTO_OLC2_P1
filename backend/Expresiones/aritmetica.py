@@ -1,5 +1,7 @@
 from Abstract.abstract import Abstract
 from Symbol.tipoEnum import TipoEnum
+from Symbol.generador import Generador
+from Abstract.return__ import Return
 
 
 class Aritmetica(Abstract):
@@ -14,7 +16,7 @@ class Aritmetica(Abstract):
         tipo_exprecion_izquierda = val_izquierdo["tipo"]
         # extraemos el tipo de la exprecion derecha de la op
         tipo_exprecion_der = val_derecho["tipo"]
-        
+
         # print('debuj val izquierdo -> ',val_izquierdo)
         # print('debuj val derecho -> ',val_derecho)
 
@@ -89,5 +91,32 @@ class Aritmetica(Abstract):
         self.expresion_izquierda.graficar(graphviz, result)
         self.expresion_izquierda.graficar(graphviz, result)
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self, scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        temporal = ''
+        operador = ''
+
+        val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
+        val_der: Return = self.expresion_derecha.generar_c3d(scope)
+
+        print('val_izq',val_izq)
+        print('val_der',val_der)
+        
+        # TODO: Falta por implementar operaciones
+        if (self.tipo_operacion == "+"):
+            operador = '+'
+            temporal = generador.add_temp()
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+        elif (self.tipo_operacion == "-"):
+            operador = '-'
+            temporal = generador.add_temp()
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+        elif (self.tipo_operacion == "*"):
+            operador = '*'
+            temporal = generador.add_temp()
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+        elif (self.tipo_operacion == "/"):
+            operador = '/'
+            temporal = generador.add_temp()
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
