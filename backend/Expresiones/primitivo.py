@@ -1,4 +1,6 @@
 from Abstract.abstract import Abstract
+from Symbol.generador import Generador
+from Abstract.return__ import Return
 
 
 class Primitivo(Abstract):
@@ -26,5 +28,7 @@ class Primitivo(Abstract):
     def graficar(self, graphviz, padre):
         graphviz.add_nodo(self.valor, padre)
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self, scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        return Return(str(self.valor), self.tipo, False)
