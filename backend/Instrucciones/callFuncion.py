@@ -32,10 +32,7 @@ class CallFuncion(Abstract):
                     scope_funcion: Scope = Scope(self.resultado.get_scope_global())
                     # Registro del entorno generado 
                     self.resultado.agregar_entorno(codigo_referencia,scope_funcion)
-                    resultado = fun.ejecutar(scope_funcion)
-                    if isinstance(resultado, dict):
-                        print(resultado)
-                        return resultado
+                    fun.ejecutar(scope_funcion)
                 else:
                     # Ejecucion de una funcion con parametros
                     # Declaracion del scope de trabajo
@@ -50,8 +47,7 @@ class CallFuncion(Abstract):
                                 result = param_send.ejecutar(scope)
                                 self.asignacion_valor_funcion(param_fun.id,scope_funcion,result)
                         scope_funcion.imprimir()
-                        value = fun.ejecutar(scope_funcion)
-                        return value
+                        fun.ejecutar(scope_funcion)
                     except Exception as e:
                         print(
                             'Semantico', f'Error al ejecutar la funcion {str(e)}', self.linea, self.columna)

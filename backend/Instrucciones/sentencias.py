@@ -23,7 +23,7 @@ class Sentencias(Abstract):
                 result = self.intr_izquierda.ejecutar(scope)
                 if isinstance(result, dict) or isinstance(result, Continuar) or isinstance(result, Detener):
                     # TODO: [IMPORTANTE] Eliminar debuj
-                    print('debuj sentencias:', result)
+                    #print('debuj sentencias:', result)
                     return result
 
         if self.instr_derecha != None:
@@ -31,7 +31,7 @@ class Sentencias(Abstract):
                 result = self.instr_derecha.ejecutar(scope)
                 if isinstance(result, dict) or isinstance(result, Continuar) or isinstance(result, Detener):
                     # TODO: [IMPORTANTE] Eliminar debuj
-                    print('debuj sentencias:', result)
+                    #print('debuj sentencias:', result)
                     return result
 
     def graficar(self, graphviz, padre):

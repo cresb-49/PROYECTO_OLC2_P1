@@ -13,7 +13,6 @@ class Retornar(Abstract):
     def ejecutar(self, scope):
         if self.exprecion != None:
             valor = self.exprecion.ejecutar(scope)
-            print(self,valor)
             return valor
         else:
             return None

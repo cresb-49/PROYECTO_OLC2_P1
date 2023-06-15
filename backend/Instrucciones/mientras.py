@@ -22,7 +22,7 @@ class Mientras(Abstract):
             if result['tipo'] == TipoEnum.BOOLEAN:
                 try:
                     res: bool = result['value']
-                    print('debuj mientras', res)
+                    #print('debuj mientras', res)
                     while res:
                         scope_temporal: Scope = Scope(scope)
                         # Registramos el scope generado
@@ -37,10 +37,10 @@ class Mientras(Abstract):
                                 r = self.condicion.ejecutar(scope)
                                 res = r['value']
                                 # TODO: [IMPORTANTE] Eliminar debuj
-                                print('debuj mientras:', resultado)
+                                #print('debuj mientras:', resultado)
                             elif isinstance(resultado, Detener):
                                 # TODO: [IMPORTANTE] Eliminar debuj
-                                print('debuj mientras:', resultado)
+                                #print('debuj mientras:', resultado)
                                 break
                         r = self.condicion.ejecutar(scope)
                         res = r['value']
