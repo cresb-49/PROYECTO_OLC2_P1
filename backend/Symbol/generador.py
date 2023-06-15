@@ -38,11 +38,13 @@ class Generador:
     ############
     
     def set_import(self,lib):
-        if lib in self.imports2:
-            self.imports2.remove(lib)
-        else:
-            return 
-        code = f'import(\n\t"{lib}"\n)\n'
+        if lib not in self.imports:
+            self.imports.append(lib)
+        # if lib in self.imports2:
+        #     self.imports2.remove(lib)
+        # else:
+        #     return 
+        # self.code = f'import(\n\t"{lib}"\n)\n'
     
      #############
     # CODE
@@ -50,9 +52,12 @@ class Generador:
     
     def get_header(self):
         code = '/* ---- HEADER ----- */\npackage main;\n\n'
+        print('debuj imports -> ',self.imports)
         if len(self.imports) > 0:
+            tmp_import = ''
             for temp in self.imports:
-                code += temp
+                tmp_import += f'\t"{temp}"\n'
+            code += f'import(\n{tmp_import})\n'
         if len(self.temps) > 0:
             code += 'var '
             for temp in self.temps:
@@ -60,6 +65,7 @@ class Generador:
             code = code[:-1]
             code += " float64;\n\n"
         code += "var P, H float64;\nvar stack[30101999] float64;\nvar heap[30101999] float64;\n\n"
+        return code
 
     def get_code(self):
         return f'{self.get_header()}\nfunc main(){{\n{self.codigo}\n}}'
@@ -99,7 +105,11 @@ class Generador:
     ###################
     
     def add_exp(self, result, left, right, op):
-        self.codigo += f'{result} = {left} {op} {right};\n'
+        if op == '^':
+            self.set_import('math')
+            self.codigo += f'{result} =  math.Pow({left}, {right});\n'
+        else:
+            self.codigo += f'{result} = {left} {op} {right};\n'
     
     def add_asig(self, result, left):
         self.codigo += f'{result} = {left};\n'

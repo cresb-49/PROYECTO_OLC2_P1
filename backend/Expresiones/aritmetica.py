@@ -108,15 +108,29 @@ class Aritmetica(Abstract):
             operador = '+'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+            return Return(temporal, TipoEnum.NUMBER, True)
         elif (self.tipo_operacion == "-"):
             operador = '-'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+            return Return(temporal, TipoEnum.NUMBER, True)
         elif (self.tipo_operacion == "*"):
             operador = '*'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+            return Return(temporal, TipoEnum.NUMBER, True)
         elif (self.tipo_operacion == "/"):
             operador = '/'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+            return Return(temporal, TipoEnum.NUMBER, True)
+        elif (self.tipo_operacion == "%"):
+            operador = '%'
+            temporal = generador.add_temp()
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+            return Return(temporal, TipoEnum.NUMBER, True)
+        elif (self.tipo_operacion == "^"):
+            operador = '^'
+            temporal = generador.add_temp()
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+            return Return(temporal, TipoEnum.NUMBER, True)
