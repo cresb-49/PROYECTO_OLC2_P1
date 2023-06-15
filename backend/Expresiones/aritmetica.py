@@ -97,40 +97,46 @@ class Aritmetica(Abstract):
         temporal = ''
         operador = ''
 
+        # Al ejecutar obtenemos los tipos de los datos automaticamanete, 
+        # no debemos realizar verificaciones porque ya el interprete hizo lo necesario
+        val_izquierdo = self.expresion_izquierda.ejecutar(scope)
+        val_derecho = self.expresion_derecha.ejecutar(scope)
+        
+        #Recuperamos los valores
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
         val_der: Return = self.expresion_derecha.generar_c3d(scope)
 
-        print('val_izq',val_izq)
-        print('val_der',val_der)
+        print('val_izquierdo',val_izquierdo)
+        print('val_derecho',val_derecho)
         
         # TODO: Falta por implementar operaciones
         if (self.tipo_operacion == "+"):
             operador = '+'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.NUMBER, True)
+            return Return(temporal, val_izquierdo['tipo'], True)
         elif (self.tipo_operacion == "-"):
             operador = '-'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.NUMBER, True)
+            return Return(temporal, val_izquierdo['tipo'], True)
         elif (self.tipo_operacion == "*"):
             operador = '*'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.NUMBER, True)
+            return Return(temporal, val_izquierdo['tipo'], True)
         elif (self.tipo_operacion == "/"):
             operador = '/'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.NUMBER, True)
+            return Return(temporal, val_izquierdo['tipo'], True)
         elif (self.tipo_operacion == "%"):
             operador = '%'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.NUMBER, True)
+            return Return(temporal, val_izquierdo['tipo'], True)
         elif (self.tipo_operacion == "^"):
             operador = '^'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.NUMBER, True)
+            return Return(temporal, val_izquierdo['tipo'], True)
