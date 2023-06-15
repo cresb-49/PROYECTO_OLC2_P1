@@ -22,4 +22,4 @@ class Entorno(Abstract):
         self.intrucciones.graficar(graphviz, result)
 
     def generar_c3d(self,scope):
-        pass
+        self.intrucciones.generar_c3d(self.scope_global)
