@@ -14,8 +14,8 @@ class Principal:
     def leer(self, codigo):
         # Clases y metodos para la generacion de codigo en 3 direcciones
         gen_aux = Generador()
-        gen_aux.cleanAll()  # Limpia todos los archivos anteriores
-        generador = gen_aux.getInstance()
+        gen_aux.clean_all()  # Limpia todos los archivos anteriores
+        generador = gen_aux.get_instance()
 
         # Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
         codigo = codigo + '\n'
@@ -94,12 +94,14 @@ class Principal:
             entorno.graficar(gv, None)
             code_dot = gv.get_dot()
             self.escribir_salida_dot(code_dot)
+            print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
+            entorno.generar_c3d(None)
             codigo_3_direcciones = generador.get_code()
+            print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
         else:
             result.consola = []
 
         respuesta = {"result": result, "dot": code_dot,"simbolos": tabla_de_simbolos, "c3d": codigo_3_direcciones}
-
         return respuesta
 
     def escribir_salida_dot(self, code):
