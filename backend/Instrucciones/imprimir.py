@@ -2,6 +2,10 @@ from Abstract.abstract import Abstract
 from Symbol.tipoEnum import TipoEnum
 
 
+from Symbol.generador import Generador
+from Abstract.return__ import Return
+
+
 class Imprimir(Abstract):
     def __init__(self, resultado, linea, columna, exprecion):
         super().__init__(resultado, linea, columna)
@@ -43,9 +47,14 @@ class Imprimir(Abstract):
         for parametro in resultado['value']:
             # adjuntar al concat el titulo del parametro "parametro" y el value del parametro
             if resultado['value'][parametro]['tipo'] == TipoEnum.ARRAY:
-                concat = concat + ' ' + str(parametro) + ': ' + str(self.imprimir_array(resultado['value'][parametro])) + '\n'
+                concat = concat + ' ' + \
+                    str(parametro) + ': ' + \
+                    str(self.imprimir_array(
+                        resultado['value'][parametro])) + '\n'
             else:
-                concat = concat + ' ' + str(parametro) + ': ' + str(resultado['value'][parametro]['value']) + '\n'
+                concat = concat + ' ' + \
+                    str(parametro) + ': ' + \
+                    str(resultado['value'][parametro]['value']) + '\n'
         return concat + "}"
 
     # crea un string de array imprimible, si un elemento del array es un array entonces se convierte en funcion recursiva
@@ -66,10 +75,17 @@ class Imprimir(Abstract):
         main = graphviz.add_nodo('print', padre)
         node_params = graphviz.add_nodo('params', main)
         for param in self.exprecion:
-            param.graficar(graphviz,node_params)
+            param.graficar(graphviz, node_params)
         # self.exprecion.graficar(graphviz, padre)
         # graphviz.add_nodo(');', padre)
-    
-    def generar_c3d(self,scope):
-        pass
-    
+
+    def generar_c3d(self, scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+
+        # TODO: por el momento solo el print del primer parametro
+        result = self.exprecion[0].generar_c3d(scope)
+
+        if isinstance(result, Return):
+            if result.get_tipo() == TipoEnum.NUMBER:
+                generador.add_print('f', result.get_value())
