@@ -16,3 +16,6 @@ class Estructura(Abstract):
 
     def graficar(self, graphviz, padre):
         pass
+    
+    def generar_c3d(self,scope):
+        pass

@@ -20,3 +20,6 @@ class Entorno(Abstract):
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo('Inicio', padre)
         self.intrucciones.graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        pass

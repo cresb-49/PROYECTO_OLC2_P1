@@ -48,3 +48,6 @@ class ToFixed(Abstract):
         self.numero.graficar(graphviz, result)
         node_fixed = graphviz.add_nodo("toFixed", result)
         self.expreciones.graficar(graphviz, node_fixed)
+    
+    def generar_c3d(self,scope):
+        pass

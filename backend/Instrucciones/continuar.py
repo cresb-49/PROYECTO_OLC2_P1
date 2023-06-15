@@ -13,3 +13,6 @@ class Continuar(Abstract):
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo('continue', padre)
+
+    def generar_c3d(self,scope):
+        pass

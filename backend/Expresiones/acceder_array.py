@@ -37,3 +37,6 @@ class AccederArray(Abstract):
             return int(numero_float)
         else:
             return numero_float
+        
+    def generar_c3d(self,scope):
+        pass

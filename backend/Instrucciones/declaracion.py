@@ -152,3 +152,6 @@ class Declaracion(Abstract):
         graphviz.add_nodo(self.id, node_result)
         if (self.valor != None):
             self.valor.graficar(graphviz, node_result)
+
+    def generar_c3d(self,scope):
+        pass

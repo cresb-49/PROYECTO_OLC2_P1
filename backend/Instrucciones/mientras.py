@@ -60,3 +60,6 @@ class Mientras(Abstract):
         self.condicion.graficar(graphviz, mientras_node)
         if (self.sentencias != None):
             self.sentencias.graficar(graphviz, mientras_node)
+
+    def generar_c3d(self,scope):
+        pass

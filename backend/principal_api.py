@@ -5,11 +5,18 @@ from pyTypeParser import TipoEnum
 from pyTypeParser import Resultado
 from Instrucciones.entorno import Entorno
 from Modulos.grafico_dot import GraficoDot
+from Symbol.generador import Generador
+
 import ply.yacc as yacc
 
 
 class Principal:
     def leer(self, codigo):
+        # Clases y metodos para la generacion de codigo en 3 direcciones
+        gen_aux = Generador()
+        gen_aux.cleanAll()  # Limpia todos los archivos anteriores
+        generador = gen_aux.getInstance()
+
         # Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
         codigo = codigo + '\n'
 
@@ -53,6 +60,7 @@ class Principal:
 
         tabla_de_simbolos = []
         code_dot = ""
+        codigo_3_direcciones = ""
 
         if len(result.errores) == 0:
             print('#### TABLA DE SIMBOLOS')
@@ -86,10 +94,11 @@ class Principal:
             entorno.graficar(gv, None)
             code_dot = gv.get_dot()
             self.escribir_salida_dot(code_dot)
+            codigo_3_direcciones = generador.get_code()
         else:
             result.consola = []
 
-        respuesta = {"result": result, "dot": code_dot,"simbolos": tabla_de_simbolos}
+        respuesta = {"result": result, "dot": code_dot,"simbolos": tabla_de_simbolos, "c3d": codigo_3_direcciones}
 
         return respuesta
 

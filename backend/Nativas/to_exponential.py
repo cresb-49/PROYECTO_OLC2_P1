@@ -47,4 +47,7 @@ class ToExponential(Abstract):
         # mandmaos ha graficar os hijos
         self.numero.graficar(graphviz, result)
         node_expo = graphviz.add_nodo("toExponential", result)
-        self.expreciones.graficar(graphviz, node_expo)
+        self.expreciones.graficar(graphviz, node_expo) 
+    
+    def generar_c3d(self,scope):
+        pass

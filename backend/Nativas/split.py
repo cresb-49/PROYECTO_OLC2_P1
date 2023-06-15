@@ -58,3 +58,6 @@ class Split(Abstract):
         # mandmaos ha graficar el hijo (acceder)
         self.cadena.graficar(graphviz, result)
         graphviz.add_nodo("split", result)
+
+    def generar_c3d(self,scope):
+        pass

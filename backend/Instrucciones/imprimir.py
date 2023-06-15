@@ -69,4 +69,7 @@ class Imprimir(Abstract):
             param.graficar(graphviz,node_params)
         # self.exprecion.graficar(graphviz, padre)
         # graphviz.add_nodo(');', padre)
+    
+    def generar_c3d(self,scope):
         pass
+    

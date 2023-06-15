@@ -49,3 +49,6 @@ class Si(Abstract):
         if self._else != None:
             cf = graphviz.add_nodo('false', result)
             self._else.graficar(graphviz, cf)
+
+    def generar_c3d(self,scope):
+        pass

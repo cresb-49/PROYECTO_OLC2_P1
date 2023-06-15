@@ -49,3 +49,6 @@ class Concat(Abstract):
         result = graphviz.add_nodo("toLowerCase", padre)
         # mandmaos ha graficar el hijo (acceder)
         self.numero.graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        pass

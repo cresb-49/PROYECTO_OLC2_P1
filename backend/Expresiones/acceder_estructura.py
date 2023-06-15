@@ -29,3 +29,6 @@ class AccederEstructura(Abstract):
         result = graphviz.add_nodo('.', padre)
         graphviz.add_nodo(self.id_acceso, result)
         graphviz.add_nodo(self.parametro, result)
+
+    def generar_c3d(self,scope):
+        pass

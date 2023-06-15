@@ -40,3 +40,6 @@ class Sentencias(Abstract):
             self.intr_izquierda.graficar(graphviz, result)
         if self.instr_derecha != None:
             self.instr_derecha.graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        pass
