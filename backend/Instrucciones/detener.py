@@ -13,3 +13,6 @@ class Detener(Abstract):
 
     def graficar(self, graphviz, padre):
         graphviz.add_nodo('break', padre)
+
+    def generar_c3d(self,scope):
+        pass

@@ -187,3 +187,6 @@ class Para(Abstract):
             self.declaracion.graficar(graphviz, node_for)
             if (self.sentencias != None):
                 self.sentencias.graficar(graphviz, node_for)
+
+    def generar_c3d(self,scope):
+        pass

@@ -39,3 +39,6 @@ class TypeOf(Abstract):
         result = graphviz.add_nodo("typeOf", padre)
         # mandmaos ha graficar os hijos
         self.expreciones[0].graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        pass

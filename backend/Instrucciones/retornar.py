@@ -21,3 +21,6 @@ class Retornar(Abstract):
         node_result = graphviz.add_nodo('return', padre)
         if self.exprecion != None:
             self.exprecion.graficar(graphviz, node_result)
+
+    def generar_c3d(self,scope):
+        pass

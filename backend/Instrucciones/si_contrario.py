@@ -52,3 +52,6 @@ class SiContrario(Abstract):
         if self.sentencias_false != None:
             ct = graphviz.add_nodo('false', result)
             self.sentencias_false.graficar(graphviz, ct)
+
+    def generar_c3d(self,scope):
+        pass

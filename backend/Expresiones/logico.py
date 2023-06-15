@@ -62,3 +62,6 @@ class Logico(Abstract):
         if self.tipo_operacion != "!":
             self.expresion_izquierda.graficar(graphviz, result)
         self.expresion_derecha.graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        pass

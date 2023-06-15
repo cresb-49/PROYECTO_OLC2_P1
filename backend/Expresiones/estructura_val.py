@@ -53,3 +53,6 @@ class EstructuraVal(Abstract):
         # self.expresion_izquierda.graficar(graphviz, result)
         # self.expresion_izquierda.graficar(graphviz, result)
         pass
+    
+    def generar_c3d(self,scope):
+        pass

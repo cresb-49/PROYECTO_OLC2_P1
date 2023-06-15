@@ -15,3 +15,7 @@ class Abstract(ABC):
     @abstractclassmethod
     def graficar(self, graphviz, padre):
         pass
+    
+    @abstractclassmethod
+    def generar_c3d(self,scope):
+        pass

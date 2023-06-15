@@ -26,3 +26,6 @@ class Contrario(Abstract):
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo('else',padre)
         self.sentencias.graficar(graphviz,result)
+
+    def generar_c3d(self,scope):
+        pass

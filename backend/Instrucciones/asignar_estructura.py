@@ -58,3 +58,6 @@ class AsignacionEstructura(Abstract):
         else:
             print('Realizar el calculo del tipo de array')
             return None
+
+    def generar_c3d(self,scope):
+        pass
