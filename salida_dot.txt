@@ -2,464 +2,159 @@ digraph arbol {
 nodo1[label="Inicio"];
 nodo2[label="instr"];
 nodo3[label="instr"];
-nodo4[label="instr"];
-nodo5[label="instr"];
-nodo6[label="instr"];
-nodo7[label="instr"];
-nodo8[label="instr"];
+nodo4[label="ackermann"];
+nodo5[label="("];
+nodo6[label="parametros"];
+nodo7[label=")"];
+nodo8[label="{"];
 nodo9[label="instr"];
-nodo10[label="instr"];
-nodo11[label="instr"];
-nodo12[label="instr"];
-nodo13[label="instr"];
-nodo14[label="instr"];
-nodo15[label="instr"];
+nodo10[label="if"];
+nodo11[label="condicion"];
+nodo12[label="==="];
+nodo13[label="m"];
+nodo14[label="0"];
+nodo15[label="true"];
 nodo16[label="instr"];
-nodo17[label="instr"];
-nodo18[label="instr"];
-nodo19[label="instr"];
-nodo20[label="instr"];
-nodo21[label="instr"];
-nodo22[label="instr"];
-nodo23[label="instr"];
-nodo24[label="instr"];
-nodo25[label="instr"];
-nodo26[label="instr"];
-nodo27[label="instr"];
-nodo28[label="instr"];
-nodo29[label="instr"];
-nodo30[label="instr"];
-nodo31[label="instr"];
-nodo32[label="declarar"];
-nodo33[label="val1"];
-nodo34[label="1"];
-nodo35[label="declarar"];
-nodo36[label="val2"];
-nodo37[label="10"];
-nodo38[label="declarar"];
-nodo39[label="val3"];
-nodo40[label="2021.202"];
-nodo41[label="print"];
-nodo42[label="params"];
-nodo43[label="Probando declaracion de variables 
-"];
-nodo44[label="print"];
-nodo45[label="params"];
-nodo46[label="val1"];
-nodo47[label=" "];
-nodo48[label="val2"];
-nodo49[label=" "];
-nodo50[label="val3"];
-nodo51[label="print"];
-nodo52[label="params"];
-nodo53[label="---------------------------------"];
-nodo54[label="="];
-nodo55[label="val1"];
-nodo56[label="-"];
+nodo17[label="return"];
+nodo18[label="+"];
+nodo19[label="n"];
+nodo20[label="n"];
+nodo21[label="false"];
+nodo22[label="else if"];
+nodo23[label="condicion"];
+nodo24[label="&&"];
+nodo25[label=">"];
+nodo26[label="m"];
+nodo27[label="0"];
+nodo28[label="==="];
+nodo29[label="n"];
+nodo30[label="0"];
+nodo31[label="true"];
+nodo32[label="instr"];
+nodo33[label="return"];
+nodo34[label="function"];
+nodo35[label="ackermann"];
+nodo36[label="params"];
+nodo37[label="-"];
+nodo38[label="m"];
+nodo39[label="m"];
+nodo40[label="1"];
+nodo41[label="false"];
+nodo42[label="else if"];
+nodo43[label="condicion"];
+nodo44[label="&&"];
+nodo45[label=">"];
+nodo46[label="m"];
+nodo47[label="0"];
+nodo48[label=">"];
+nodo49[label="n"];
+nodo50[label="0"];
+nodo51[label="true"];
+nodo52[label="instr"];
+nodo53[label="return"];
+nodo54[label="function"];
+nodo55[label="ackermann"];
+nodo56[label="params"];
 nodo57[label="-"];
-nodo58[label="+"];
-nodo59[label="val1"];
-nodo60[label="val1"];
-nodo61[label="+"];
-nodo62[label="val1"];
-nodo63[label="val1"];
+nodo58[label="m"];
+nodo59[label="m"];
+nodo60[label="function"];
+nodo61[label="ackermann"];
+nodo62[label="params"];
+nodo63[label="m"];
 nodo64[label="-"];
-nodo65[label="+"];
-nodo66[label="val1"];
-nodo67[label="val1"];
-nodo68[label="+"];
-nodo69[label="val1"];
-nodo70[label="val1"];
-nodo71[label="="];
-nodo72[label="val2"];
-nodo73[label="+"];
-nodo74[label="*"];
-nodo75[label="11"];
-nodo76[label="11"];
-nodo77[label="*"];
-nodo78[label="11"];
-nodo79[label="11"];
-nodo80[label="="];
-nodo81[label="val3"];
-nodo82[label="+"];
-nodo83[label="^"];
-nodo84[label="2"];
-nodo85[label="2"];
-nodo86[label="^"];
-nodo87[label="2"];
-nodo88[label="2"];
-nodo89[label="print"];
-nodo90[label="params"];
-nodo91[label="Probando asignaciÃ³n de variables y aritmeticas"];
-nodo92[label="print"];
-nodo93[label="params"];
-nodo94[label="val1"];
-nodo95[label=" "];
-nodo96[label="val2"];
-nodo97[label=" "];
-nodo98[label="val3"];
-nodo99[label="print"];
-nodo100[label="params"];
-nodo101[label="---------------------------------"];
-nodo102[label="declarar"];
-nodo103[label="rel1"];
-nodo104[label="||"];
-nodo105[label="&&"];
-nodo106[label="=="];
-nodo107[label="-"];
-nodo108[label="val1"];
-nodo109[label="val1"];
-nodo110[label="24"];
-nodo111[label="&&"];
-nodo112[label="True"];
-nodo113[label="||"];
-nodo114[label="False"];
-nodo115[label=">="];
-nodo116[label="5"];
-nodo117[label="5"];
-nodo118[label="||"];
-nodo119[label="!="];
-nodo120[label="*"];
-nodo121[label="7"];
-nodo122[label="7"];
-nodo123[label="+"];
-nodo124[label="15"];
-nodo125[label="15"];
-nodo126[label=">"];
-nodo127[label="*"];
-nodo128[label="-1"];
-nodo129[label="-1"];
-nodo130[label="51"];
-nodo131[label="declarar"];
-nodo132[label="rel2"];
-nodo133[label="&&"];
-nodo134[label="<="];
-nodo135[label="*"];
-nodo136[label="7"];
-nodo137[label="7"];
-nodo138[label="+"];
-nodo139[label="15"];
-nodo140[label="15"];
-nodo141[label="<"];
-nodo142[label="1"];
-nodo143[label="2"];
-nodo144[label="declarar"];
-nodo145[label="rel3"];
-nodo146[label="&&"];
-nodo147[label="==="];
-nodo148[label="!=="];
-nodo149[label="=="];
-nodo150[label="0"];
-nodo151[label="0"];
-nodo152[label=">"];
-nodo153[label="532"];
-nodo154[label="532"];
-nodo155[label="==="];
-nodo156[label="Hola"];
-nodo157[label="Hola"];
-nodo158[label="||"];
-nodo159[label="False"];
-nodo160[label="!"];
-nodo161[label="False"];
-nodo162[label="print"];
-nodo163[label="params"];
-nodo164[label="Probando relacionales y logicas"];
-nodo165[label="print"];
-nodo166[label="params"];
-nodo167[label="rel1"];
-nodo168[label=" "];
-nodo169[label="rel2"];
-nodo170[label=" "];
-nodo171[label="rel3"];
-nodo172[label="print"];
-nodo173[label="params"];
-nodo174[label="---------------------------------"];
-nodo175[label="print"];
-nodo176[label="params"];
-nodo177[label="OPERACIONES "];
-nodo178[label="+"];
-nodo179[label="CON "];
-nodo180[label="CON "];
-nodo181[label="declarar"];
-nodo182[label="despedida"];
-nodo183[label="Adios mundo :c"];
-nodo184[label="declarar"];
-nodo185[label="saludo"];
-nodo186[label="Hola Mundo! "];
-nodo187[label="print"];
-nodo188[label="params"];
-nodo189[label="."];
-nodo190[label="saludo"];
-nodo191[label="toLowerCase"];
-nodo192[label="."];
-nodo193[label="despedida"];
-nodo194[label="toUpperCase"];
-nodo195[label="print"];
-nodo196[label="params"];
-nodo197[label="Probando algunas funciones nativas de PyTypeCraft"];
-nodo198[label="print"];
-nodo199[label="params"];
-nodo200[label="Funciones relacionadas a conversiones"];
-nodo201[label="declarar"];
-nodo202[label="aprox_1"];
-nodo203[label="3.141516"];
-nodo204[label="print"];
-nodo205[label="params"];
-nodo206[label="."];
-nodo207[label="aprox_1"];
-nodo208[label="toFixed"];
-nodo209[label="3"];
-nodo210[label="."];
-nodo211[label="aprox_1"];
-nodo212[label="toExponential"];
-nodo213[label="3"];
-nodo214[label="declarar"];
-nodo215[label="carnet"];
-nodo216[label="201903865"];
-nodo217[label="print"];
-nodo218[label="params"];
-nodo219[label="+"];
-nodo220[label="Hola "];
-nodo221[label="Hola "];
-nodo222[label="print"];
-nodo223[label="params"];
-nodo224[label="typeOf"];
-nodo225[label="val1"];
-nodo226[label=" "];
-nodo227[label="typeOf"];
-nodo228[label="rel1"];
-nodo229[label="print"];
-nodo230[label="params"];
-nodo231[label="---------------------------------"];
+nodo65[label="n"];
+nodo66[label="n"];
+nodo67[label="false"];
+nodo68[label="else"];
+nodo69[label="instr"];
+nodo70[label="return"];
+nodo71[label="0"];
+nodo72[label="}"];
+nodo73[label="print"];
+nodo74[label="params"];
+nodo75[label="function"];
+nodo76[label="ackermann"];
+nodo77[label="params"];
+nodo78[label="1"];
+nodo79[label="2"];
 
 nodo1 -> nodo2
 nodo2 -> nodo3
 nodo3 -> nodo4
-nodo4 -> nodo5
-nodo5 -> nodo6
-nodo6 -> nodo7
-nodo7 -> nodo8
-nodo8 -> nodo9
+nodo3 -> nodo5
+nodo3 -> nodo6
+nodo3 -> nodo7
+nodo3 -> nodo8
+nodo3 -> nodo9
 nodo9 -> nodo10
 nodo10 -> nodo11
 nodo11 -> nodo12
 nodo12 -> nodo13
-nodo13 -> nodo14
-nodo14 -> nodo15
+nodo12 -> nodo14
+nodo10 -> nodo15
 nodo15 -> nodo16
 nodo16 -> nodo17
 nodo17 -> nodo18
 nodo18 -> nodo19
-nodo19 -> nodo20
-nodo20 -> nodo21
+nodo18 -> nodo20
+nodo10 -> nodo21
 nodo21 -> nodo22
 nodo22 -> nodo23
 nodo23 -> nodo24
 nodo24 -> nodo25
 nodo25 -> nodo26
-nodo26 -> nodo27
-nodo27 -> nodo28
+nodo25 -> nodo27
+nodo24 -> nodo28
 nodo28 -> nodo29
-nodo29 -> nodo30
-nodo30 -> nodo31
+nodo28 -> nodo30
+nodo22 -> nodo31
 nodo31 -> nodo32
 nodo32 -> nodo33
-nodo32 -> nodo34
-nodo31 -> nodo35
-nodo35 -> nodo36
-nodo35 -> nodo37
-nodo30 -> nodo38
-nodo38 -> nodo39
-nodo38 -> nodo40
-nodo29 -> nodo41
+nodo33 -> nodo34
+nodo34 -> nodo35
+nodo34 -> nodo36
+nodo36 -> nodo37
+nodo37 -> nodo38
+nodo37 -> nodo39
+nodo36 -> nodo40
+nodo22 -> nodo41
 nodo41 -> nodo42
 nodo42 -> nodo43
-nodo28 -> nodo44
+nodo43 -> nodo44
 nodo44 -> nodo45
 nodo45 -> nodo46
 nodo45 -> nodo47
-nodo45 -> nodo48
-nodo45 -> nodo49
-nodo45 -> nodo50
-nodo27 -> nodo51
+nodo44 -> nodo48
+nodo48 -> nodo49
+nodo48 -> nodo50
+nodo42 -> nodo51
 nodo51 -> nodo52
 nodo52 -> nodo53
-nodo26 -> nodo54
+nodo53 -> nodo54
 nodo54 -> nodo55
 nodo54 -> nodo56
 nodo56 -> nodo57
 nodo57 -> nodo58
-nodo58 -> nodo59
-nodo58 -> nodo60
-nodo57 -> nodo61
-nodo61 -> nodo62
-nodo61 -> nodo63
-nodo56 -> nodo64
+nodo57 -> nodo59
+nodo56 -> nodo60
+nodo60 -> nodo61
+nodo60 -> nodo62
+nodo62 -> nodo63
+nodo62 -> nodo64
 nodo64 -> nodo65
-nodo65 -> nodo66
-nodo65 -> nodo67
-nodo64 -> nodo68
+nodo64 -> nodo66
+nodo42 -> nodo67
+nodo67 -> nodo68
 nodo68 -> nodo69
-nodo68 -> nodo70
-nodo25 -> nodo71
-nodo71 -> nodo72
-nodo71 -> nodo73
+nodo69 -> nodo70
+nodo70 -> nodo71
+nodo3 -> nodo72
+nodo3 -> nodo73
 nodo73 -> nodo74
 nodo74 -> nodo75
-nodo74 -> nodo76
-nodo73 -> nodo77
+nodo75 -> nodo76
+nodo75 -> nodo77
 nodo77 -> nodo78
 nodo77 -> nodo79
-nodo24 -> nodo80
-nodo80 -> nodo81
-nodo80 -> nodo82
-nodo82 -> nodo83
-nodo83 -> nodo84
-nodo83 -> nodo85
-nodo82 -> nodo86
-nodo86 -> nodo87
-nodo86 -> nodo88
-nodo23 -> nodo89
-nodo89 -> nodo90
-nodo90 -> nodo91
-nodo22 -> nodo92
-nodo92 -> nodo93
-nodo93 -> nodo94
-nodo93 -> nodo95
-nodo93 -> nodo96
-nodo93 -> nodo97
-nodo93 -> nodo98
-nodo21 -> nodo99
-nodo99 -> nodo100
-nodo100 -> nodo101
-nodo20 -> nodo102
-nodo102 -> nodo103
-nodo102 -> nodo104
-nodo104 -> nodo105
-nodo105 -> nodo106
-nodo106 -> nodo107
-nodo107 -> nodo108
-nodo107 -> nodo109
-nodo106 -> nodo110
-nodo105 -> nodo111
-nodo111 -> nodo112
-nodo111 -> nodo113
-nodo113 -> nodo114
-nodo113 -> nodo115
-nodo115 -> nodo116
-nodo115 -> nodo117
-nodo104 -> nodo118
-nodo118 -> nodo119
-nodo119 -> nodo120
-nodo120 -> nodo121
-nodo120 -> nodo122
-nodo119 -> nodo123
-nodo123 -> nodo124
-nodo123 -> nodo125
-nodo118 -> nodo126
-nodo126 -> nodo127
-nodo127 -> nodo128
-nodo127 -> nodo129
-nodo126 -> nodo130
-nodo19 -> nodo131
-nodo131 -> nodo132
-nodo131 -> nodo133
-nodo133 -> nodo134
-nodo134 -> nodo135
-nodo135 -> nodo136
-nodo135 -> nodo137
-nodo134 -> nodo138
-nodo138 -> nodo139
-nodo138 -> nodo140
-nodo133 -> nodo141
-nodo141 -> nodo142
-nodo141 -> nodo143
-nodo18 -> nodo144
-nodo144 -> nodo145
-nodo144 -> nodo146
-nodo146 -> nodo147
-nodo147 -> nodo148
-nodo148 -> nodo149
-nodo149 -> nodo150
-nodo149 -> nodo151
-nodo148 -> nodo152
-nodo152 -> nodo153
-nodo152 -> nodo154
-nodo147 -> nodo155
-nodo155 -> nodo156
-nodo155 -> nodo157
-nodo146 -> nodo158
-nodo158 -> nodo159
-nodo158 -> nodo160
-nodo160 -> nodo161
-nodo17 -> nodo162
-nodo162 -> nodo163
-nodo163 -> nodo164
-nodo16 -> nodo165
-nodo165 -> nodo166
-nodo166 -> nodo167
-nodo166 -> nodo168
-nodo166 -> nodo169
-nodo166 -> nodo170
-nodo166 -> nodo171
-nodo15 -> nodo172
-nodo172 -> nodo173
-nodo173 -> nodo174
-nodo14 -> nodo175
-nodo175 -> nodo176
-nodo176 -> nodo177
-nodo176 -> nodo178
-nodo178 -> nodo179
-nodo178 -> nodo180
-nodo13 -> nodo181
-nodo181 -> nodo182
-nodo181 -> nodo183
-nodo12 -> nodo184
-nodo184 -> nodo185
-nodo184 -> nodo186
-nodo11 -> nodo187
-nodo187 -> nodo188
-nodo188 -> nodo189
-nodo189 -> nodo190
-nodo189 -> nodo191
-nodo188 -> nodo192
-nodo192 -> nodo193
-nodo192 -> nodo194
-nodo10 -> nodo195
-nodo195 -> nodo196
-nodo196 -> nodo197
-nodo9 -> nodo198
-nodo198 -> nodo199
-nodo199 -> nodo200
-nodo8 -> nodo201
-nodo201 -> nodo202
-nodo201 -> nodo203
-nodo7 -> nodo204
-nodo204 -> nodo205
-nodo205 -> nodo206
-nodo206 -> nodo207
-nodo206 -> nodo208
-nodo208 -> nodo209
-nodo205 -> nodo210
-nodo210 -> nodo211
-nodo210 -> nodo212
-nodo212 -> nodo213
-nodo6 -> nodo214
-nodo214 -> nodo215
-nodo214 -> nodo216
-nodo5 -> nodo217
-nodo217 -> nodo218
-nodo218 -> nodo219
-nodo219 -> nodo220
-nodo219 -> nodo221
-nodo4 -> nodo222
-nodo222 -> nodo223
-nodo223 -> nodo224
-nodo224 -> nodo225
-nodo223 -> nodo226
-nodo223 -> nodo227
-nodo227 -> nodo228
-nodo3 -> nodo229
-nodo229 -> nodo230
-nodo230 -> nodo231
 }

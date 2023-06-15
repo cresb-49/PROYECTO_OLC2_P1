@@ -77,6 +77,10 @@ class ValFuncion(Abstract):
         result = graphviz.add_nodo('function', padre)
         graphviz.add_nodo(self.id, result)
         node_params = graphviz.add_nodo('params', result)
+        #si los parametros no son nulos entonces mandamos ha graficar
+        if(self.parametros != None):
+            for nodo in self.parametros:
+                nodo.graficar(graphviz, node_params)
 
     def asignacion_valor_funcion(self, id, scope_funcion, result_exprecion):
         variable_recuperada = scope_funcion.obtener_variable(id)
