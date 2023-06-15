@@ -64,7 +64,10 @@ class CallFuncion(Abstract):
     def graficar(self, graphviz, padre):
         node_funcion = graphviz.add_nodo('Funcion', padre)
         graphviz.add_nodo(self.id, node_funcion)
-        graphviz.add_nodo('Parametros', node_funcion)
+        node_params = graphviz.add_nodo('Parametros', node_funcion)
+        if self.parametros != None:
+            for param in self.parametros:
+                param.graficar(graphviz,node_params)
 
     def asignacion_valor_funcion(self, id, scope_funcion, result_exprecion):
         variable_recuperada = scope_funcion.obtener_variable(id)
