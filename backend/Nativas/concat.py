@@ -46,9 +46,9 @@ class Concat(Abstract):
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
-        result = graphviz.add_nodo("toLowerCase", padre)
+        result = graphviz.add_nodo("Concat", padre)
         # mandmaos ha graficar el hijo (acceder)
-        self.numero.graficar(graphviz, result)
+        self.expreciones.graficar(graphviz, result)
 
     def generar_c3d(self,scope):
         pass
