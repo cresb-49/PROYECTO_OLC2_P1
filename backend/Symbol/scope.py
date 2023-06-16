@@ -1,14 +1,30 @@
 from Symbol.tipoEnum import TipoEnum
 
 
+class SimboloC3D:
+    def __init__(self, in_heap):
+        self.pos = 0  # Ubicacion en el stack
+        self.is_global = False  # Sabemos si la variable es de tipo global
+        self.in_heap = in_heap  # Si su valor esta contenido en el heap del programa
+        self.value = None
+        self.tipo_aux = ''
+        self.length = 0
+        self.referencia = False
+        self.params = None
+
+    def __str__(self):
+        return f"Pos: {self.pos}, Is Global: {self.is_global}, In Heap: {self.in_heap}, Value: {self.value}, Tipo Aux: {self.tipo_aux}, Length: {self.length}, Referencia: {self.referencia}, Params: {self.params}"
+
+
 class Simbolo:
-    def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna):
+    def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna, simbolo_c3d):
         self.valor = valor
         self.id = id_
         self.tipo = tipo
         self.tipo_secundario = tipo_secundario
         self.linea = linea
         self.columna = columna
+        self.simbolo_c3d = simbolo_c3d
 
     def __str__(self) -> str:
         return f"Variable: {self.id}, Tipo: {self.tipo}, Tipo_Secundario: {self.tipo_secundario}, Valor: {self.valor}, Línea: {self.linea}, Columna: {self.columna}"
@@ -22,6 +38,10 @@ class Scope:
         self.estructuras = Estructuras()
         self.nombre = id(self)
         self.tipo = ''
+        # NUEVOS PARAMETROS PARA LA FASE 2
+        self.size: int = 0
+        if anterior != None:
+            self.size = self.anterior.size
 
     def imprimir(self):
         for x in self.variables.get_diccionario():
@@ -43,10 +63,30 @@ class Scope:
 
     def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario, linea, columna):
         try:
-            self.variables.add(id, Simbolo(
-                valor, id, tipo, tipo_secundario, linea, columna))
+            # Calculo si los datos esta ubicados en el heap o en el stack
+            # Lo hacemos por medio del tipo principal y secundario de la variable
+            is_heap = False
+            if tipo == TipoEnum.ARRAY or TipoEnum.STRING:
+                is_heap = True
+            # Generacion de parametros del simbolo en 3 direcciones
+            simbolo_c3d: SimboloC3D = SimboloC3D(is_heap)
+            new_symbol = Simbolo(
+                valor, id, tipo, tipo_secundario, linea, columna, simbolo_c3d)
+            self.variables.add(id, new_symbol)
+            # Asignamos la direccion del stack a la variable ingresada
+            variable = self.get_size()
+            simbolo_c3d.pos = "pos_"+str(variable)
+            # Aqui asignamos automaticamente si la variable a declarar es de tipo global
+            if self.anterior == None:
+                simbolo_c3d.is_global = True
         except ValueError as error:
             raise ValueError(str(error))
+
+    def get_size(self):
+        return self.size
+
+    def sum_size(self):
+        self.size += 1
 
     def modificar_variable(self, id: str, valor: any, tipo_secundario):
         if self.variables.has(id):
@@ -90,6 +130,7 @@ class Scope:
                 return scope.estructuras.get(id)
             scope = scope.anterior
         return None
+
 
 class Variables:
     def __init__(self):

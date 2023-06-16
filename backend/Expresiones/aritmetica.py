@@ -10,6 +10,10 @@ class Aritmetica(Abstract):
         self.expresion_izquierda = expresion_izquierda
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
+        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        self.resultado_valor_izq = None
+        self.resultado_valor_der = None
+        self.last_scope = None
 
     def verificarTipos(self, val_izquierdo, val_derecho):
         # extraemos el tipo de la exprecion izquierda de la op
@@ -55,7 +59,10 @@ class Aritmetica(Abstract):
 
         val_izquierdo = self.expresion_izquierda.ejecutar(scope)
         val_derecho = self.expresion_derecha.ejecutar(scope)
-
+        
+        self.resultado_valor_izq = val_izquierdo
+        self.resultado_valor_der = val_derecho
+        self.last_scope = scope
         # print('Debuj-> Aritmetica -> tipo_operacion: ',self.tipo_operacion)
         # print('Debuj-> Aritmetica -> Izquierdo: ',val_izquierdo)
         # print('Debuj-> Aritmetica -> Derecho: ',val_derecho)
@@ -99,44 +106,44 @@ class Aritmetica(Abstract):
 
         # Al ejecutar obtenemos los tipos de los datos automaticamanete, 
         # no debemos realizar verificaciones porque ya el interprete hizo lo necesario
-        val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-        val_derecho = self.expresion_derecha.ejecutar(scope)
+        #val_izquierdo = self.expresion_izquierda.ejecutar(scope)
+        #val_derecho = self.expresion_derecha.ejecutar(scope)
         
         #Recuperamos los valores
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
         val_der: Return = self.expresion_derecha.generar_c3d(scope)
 
-        print('val_izquierdo',val_izquierdo)
-        print('val_derecho',val_derecho)
+        #print('val_izquierdo',val_izquierdo)
+        #print('val_derecho',val_derecho)
         
         # TODO: Falta por implementar operaciones
         if (self.tipo_operacion == "+"):
             operador = '+'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, val_izquierdo['tipo'], True)
+            return Return(temporal, self.resultado_valor_izq['tipo'], True)
         elif (self.tipo_operacion == "-"):
             operador = '-'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, val_izquierdo['tipo'], True)
+            return Return(temporal, self.resultado_valor_izq['tipo'], True)
         elif (self.tipo_operacion == "*"):
             operador = '*'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, val_izquierdo['tipo'], True)
+            return Return(temporal, self.resultado_valor_izq['tipo'], True)
         elif (self.tipo_operacion == "/"):
             operador = '/'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, val_izquierdo['tipo'], True)
+            return Return(temporal, self.resultado_valor_izq['tipo'], True)
         elif (self.tipo_operacion == "%"):
             operador = '%'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, val_izquierdo['tipo'], True)
+            return Return(temporal, self.resultado_valor_izq['tipo'], True)
         elif (self.tipo_operacion == "^"):
             operador = '^'
             temporal = generador.add_temp()
             generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, val_izquierdo['tipo'], True)
+            return Return(temporal, self.resultado_valor_izq['tipo'], True)

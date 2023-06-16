@@ -12,11 +12,18 @@ class Declaracion(Abstract):
         self.tipo = tipo
         self.valor = valor
         self.tipo_secundario = tipo_secundario
+        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        self.resultado_valor = None
+        self.last_scope = None
+        self.find = True
+        self.ghost = -1
 
     def __str__(self):
         return f"Declaracion: {self.id}, Tipo: {self.tipo}, Valor: {self.valor}"
 
     def ejecutar(self, scope):
+        #Guardado del scope de trabajo
+        self.last_scope = scope
         result_expresion = None
         if (self.valor != None):
             result_expresion = self.valor.ejecutar(scope)
@@ -27,12 +34,14 @@ class Declaracion(Abstract):
             else:
                 result_expresion = {"value": None, "tipo": self.tipo,
                                     "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        #Asignacion del resultado obtenido en esta intruccion
+        self.resultado_valor = result_expresion
         if self.tipo == TipoEnum.ANY:
             tipo_secundario: TipoEnum = result_expresion['tipo']
             # print(f'Declaro variable "{self.id}" con ->',result_expresion)
             try:
-                scope.declarar_variable(
-                    self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
+                scope.declarar_variable(self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
+                self.last_scope.sum_size()
             except ValueError as error:
                 self.resultado.add_error('Semantico', str(
                     error), self.linea, self.columna)
@@ -44,8 +53,8 @@ class Declaracion(Abstract):
                 if len(self.valor.arreglo) == len(result_expresion['value']):
                     if self.tipo_secundario == result_expresion['tipo_secundario']:
                         try:
-                            scope.declarar_variable(
-                                self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                            scope.declarar_variable(self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                            self.last_scope.sum_size()
                         except ValueError as error:
                             self.resultado.add_error('Semantico', str(
                                 error), self.linea, self.columna)
@@ -66,8 +75,8 @@ class Declaracion(Abstract):
                         arreglo = self.calculo_tipo_array(
                             result_expresion['value'], self.tipo_secundario)
                         if arreglo['tipo_secundario'] == self.tipo_secundario:
-                            scope.declarar_variable(
-                                self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                            scope.declarar_variable(self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                            self.last_scope.sum_size()
                         else:
                             error = f'No puede declarar un varaible array de tipo: {self.tipo_secundario} y asignar un tipo: ' + str(
                                 arreglo['tipo_secundario'])
@@ -78,8 +87,8 @@ class Declaracion(Abstract):
 
                     elif result_expresion['tipo_secundario'] == self.tipo_secundario or self.tipo_secundario == TipoEnum.ANY.value:
 
-                        scope.declarar_variable(
-                            self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                        scope.declarar_variable(self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
+                        self.last_scope.sum_size()
 
                     else:
 
@@ -99,8 +108,8 @@ class Declaracion(Abstract):
             if self.tipo == result_expresion['tipo']:
                 if result_expresion['tipo_secundario'] == self.tipo_secundario:
                     try:
-                        scope.declarar_variable(
-                            self.id, result_expresion['value'], result_expresion['tipo'], result_expresion['tipo_secundario'], self.linea, self.columna)
+                        scope.declarar_variable(self.id, result_expresion['value'], result_expresion['tipo'], result_expresion['tipo_secundario'], self.linea, self.columna)
+                        self.last_scope.sum_size()
                     except ValueError as error:
                         self.resultado.add_error('Semantico', str(
                             error), self.linea, self.columna)
@@ -121,8 +130,8 @@ class Declaracion(Abstract):
                 # TODO: Verificar por si hay errores mas adelante en la asignacion
                 if self.tipo == result_expresion['tipo'] or self.tipo == None:
                     try:
-                        scope.declarar_variable(
-                            self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+                        scope.declarar_variable(self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
+                        self.last_scope.sum_size()
                     except ValueError as error:
                         self.resultado.add_error('Semantico', str(
                             error), self.linea, self.columna)
@@ -158,5 +167,22 @@ class Declaracion(Abstract):
     def generar_c3d(self,scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        generador.add_comment('Compilacion de una variable')
-        pass
+        #generamos el codigo 3 direccines de la asignacion si es que existe
+        result = None
+        if self.valor != None:
+            result = self.valor.generar_c3d(scope)
+        generador.add_comment(f'** compilacion de variable {self.id} **')
+        #Primero obtenermos la variable desde el scope generado por ultimo
+        variable_recuperada = self.last_scope.obtener_variable(self.id)
+        print('debuj pos',variable_recuperada.simbolo_c3d.pos[4:])
+        tempPos = variable_recuperada.simbolo_c3d.pos[4:]
+        temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
+        if not variable_recuperada.simbolo_c3d.is_global:
+            tempPos = generador.add_temp()
+            generador.add_expression(tempPos, 'P', temp_Pos, '+')
+        if result != None:
+            generador.set_stack(tempPos, result.value)
+        else:
+            generador.set_stack(tempPos, 0)
+        generador.add_comment(f'** fin de compilacion variable {self.id} **')
+        self.last_scope.sum_size()        

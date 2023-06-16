@@ -10,6 +10,9 @@ class Imprimir(Abstract):
     def __init__(self, resultado, linea, columna, exprecion):
         super().__init__(resultado, linea, columna)
         self.exprecion = exprecion
+        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        self.resultado_valor = None #Esto de aca es un array
+        self.last_scope = None      # Referencia del ultimo scope generado
 
     def __str__(self):
         return f"Print -> Expresión: {self.exprecion}"
