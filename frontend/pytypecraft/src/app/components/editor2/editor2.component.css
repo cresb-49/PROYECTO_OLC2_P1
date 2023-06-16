@@ -1,0 +1,60 @@
+.app-ace-editor {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  padding: 10px, 10px;
+}
+
+.contenedor-herramientas {
+  margin-top: 10px;
+}
+
+.btn-descargar {
+  background-color: #48b258;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
+}
+
+.btn-descargar:hover {
+  background-color: #59c268;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
+}
+
+.btn-upload {
+  background-color: #7220b9;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
+}
+
+.btn-upload:hover {
+  background-color: #8e2de2;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  color: white;
+}
+
+.tab-ubicacion {
+  background-color: orange;
+  padding-bottom: 1px;
+  padding-top: 1px;
+  transform: translate(4px, 0px);
+  color: white;
+}
+
+.display-false {
+  display: none;
+}
+
+.contenedor-editor {
+  padding: 10px;
+  background-color: #232323;
+  border-radius: 10px;
+}
+
+.tag-editor {
+  color: orange;
+  margin-bottom: 12px;
+  font-size: 17px;
+}

@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { DireccionesPageComponent } from './components/direcciones-page/direcciones-page.component';
+import { Editor2Component } from './components/editor2/editor2.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { DireccionesPageComponent } from './components/direcciones-page/direccio
     NavComponent,
     ContainerComponent,
     DireccionesPageComponent,
+    Editor2Component
   ],
   imports: [
     BrowserModule,
