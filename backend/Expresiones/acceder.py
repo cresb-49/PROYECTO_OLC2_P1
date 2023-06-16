@@ -73,3 +73,6 @@ class Acceder(Abstract):
             if clave not in claves2:
                 return False
         return True
+
+    def generar_c3d(self,scope):
+        pass

@@ -101,3 +101,6 @@ class ValFuncion(Abstract):
             concat = 'No se puede encontrar la variable: ', self.id, ', linea: ', self.linea, ', columna: ', self.columna
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
+
+    def generar_c3d(self,scope):
+        pass

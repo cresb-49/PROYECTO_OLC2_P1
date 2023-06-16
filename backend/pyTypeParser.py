@@ -1198,15 +1198,14 @@ def p_asignacion_struct_2(p):
 
 def p_error(t):
     print('Error Parser p_error ->', t, type(t))
-    print("Error sintáctico en '%s'" % t.value)
-    if isinstance(t, LexToken):
-        resultado.add_error(
-            'Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
-    else:
-        resultado.add_error(
-            'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
-
-
+    try:
+        if isinstance(t, LexToken):
+            resultado.add_error('Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
+            print("Error sintáctico en '%s'" % t.value)
+        else:
+            resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+    except Exception as e:
+        resultado.add_error('Sintactico', f"Error en parser {str(e)}",  0, 0)
 # Declaracion de inicio del parser
 parser = yacc.yacc()
 

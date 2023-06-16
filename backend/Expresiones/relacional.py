@@ -56,3 +56,6 @@ class Relacional(Abstract):
         result = graphviz.add_nodo(self.tipo_operacion, padre)
         self.expresion_izquierda.graficar(graphviz, result)
         self.expresion_derecha.graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        pass

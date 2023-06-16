@@ -44,3 +44,6 @@ class ToLowerCase(Abstract):
         #mandmaos ha graficar el hijo (acceder)
         self.numero.graficar(graphviz, result)
         graphviz.add_nodo("toLowerCase", result)
+
+    def generar_c3d(self,scope):
+        pass

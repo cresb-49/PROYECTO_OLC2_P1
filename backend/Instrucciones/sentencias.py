@@ -1,4 +1,5 @@
 from Abstract.abstract import Abstract
+from Abstract.return__ import Return
 from Symbol.scope import Scope
 
 from Instrucciones.funcion import Funcion
@@ -40,3 +41,13 @@ class Sentencias(Abstract):
             self.intr_izquierda.graficar(graphviz, result)
         if self.instr_derecha != None:
             self.instr_derecha.graficar(graphviz, result)
+
+    def generar_c3d(self,scope):
+        if self.intr_izquierda != None:
+            result = self.intr_izquierda.generar_c3d(scope)
+            if isinstance(result, Return):
+                return result
+        if self.instr_derecha != None:
+            result = self.instr_derecha.generar_c3d(scope)
+            if isinstance(result, Return):
+                return result

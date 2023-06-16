@@ -41,3 +41,6 @@ class Length(Abstract):
         # mandmaos ha graficar os hijos
         self.acceder.graficar(graphviz, result)
         graphviz.add_nodo("length", result)
+
+    def generar_c3d(self,scope):
+        pass

@@ -29,3 +29,6 @@ class Arreglo(Abstract):
         node_padre = graphviz.add_nodo('[]', padre)
         for parte in self.arreglo:
             parte.graficar(graphviz, node_padre)
+
+    def generar_c3d(self,scope):
+        pass

@@ -26,3 +26,6 @@ class ToString(Abstract):
         #mandmaos ha graficar el hijo (acceder)
         self.numero.graficar(graphviz, result)
         graphviz.add_nodo("toString", result)
+
+    def generar_c3d(self,scope):
+        pass

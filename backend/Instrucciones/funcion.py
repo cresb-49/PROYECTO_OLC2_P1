@@ -81,3 +81,6 @@ class Funcion(Abstract):
                 param.graficar(graphviz,node_parametros)
         if (self.sentencias != None):
             self.sentencias.graficar(graphviz, mode_funcion)
+
+    def generar_c3d(self,scope):
+        pass
