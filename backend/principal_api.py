@@ -21,7 +21,7 @@ class Principal:
         # Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
         codigo = codigo + '\n'
 
-        print('#### CODIGO A PROCESAR\n', codigo)
+        # print('#### CODIGO A PROCESAR\n', codigo)
         print('#### PARSER EJECUTADO')
         result: Resultado = parser.parse(codigo)
         if result != None:
@@ -65,7 +65,6 @@ class Principal:
             codigo_3_direcciones = ""
 
             if len(result.errores) == 0:
-                print('#### TABLA DE SIMBOLOS')
                 # FORMATO PARA INGRESAR LA INFORMACION AL DICCIONARIO
                 # {'nombre': value , 'clase': value , 'tipo': value , 'ambito': value ,'fila':value , 'columna': value}
                 for key in result.entornos_variables:
@@ -89,14 +88,17 @@ class Principal:
                         variable = diccionario_estructuras[key2]
                         tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Estructura', 'tipo': TipoEnum.STRUCT.value,
                                                 'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
-                for simbolos in tabla_de_simbolos:
-                    print(simbolos)
+                # print('#### TABLA DE SIMBOLOS')
+                # for simbolos in tabla_de_simbolos:
+                #     print(simbolos)
+                
                 # GENERACION DEL CODIGO DOT PARA REALZIAR EL GRAFICO DEL AST
                 gv = GraficoDot()
                 entorno.graficar(gv, None)
                 code_dot = gv.get_dot()
-                self.escribir_salida_dot(code_dot)
-                print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
+                
+                # GENERACION DEL CODIGO 3 DIRECCIONES EN GO
+                ambito_global.size = 0
                 entorno.generar_c3d(None)
                 codigo_3_direcciones = generador.get_code()
                 print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
@@ -109,10 +111,3 @@ class Principal:
             resultado.add_error('Sintactico','Existe un error al final del archivo',0,0)
             respuesta = {"result": resultado, "dot": '',"simbolos": dict(), "c3d": ''}
             return respuesta
-    def escribir_salida_dot(self, code):
-        # Abrir el archivo en modo escritura
-        archivo = open("salida_dot.txt", "w")
-        # Escribir en el archivo
-        archivo.write(code)
-        # Cerrar el archivo
-        archivo.close()

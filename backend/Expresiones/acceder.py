@@ -1,14 +1,21 @@
 from Abstract.abstract import Abstract
+from Abstract.return__ import Return
 from Symbol.tipoEnum import TipoEnum
+from Symbol.generador import Generador
 
 
 class Acceder(Abstract):
     def __init__(self, resultado, linea, columna, id):
         super().__init__(resultado, linea, columna)
         self.id = id
+        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        self.resultado_valor = None
+        self.last_scope = None
 
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)
+        self.resultado_valor = recuperacion
+        self.last_scope = scope
         if (recuperacion == None):
             self.resultado.add_error(
                 'Semantico', f"La variable {self.id} no existe", self.linea, self.columna)
@@ -75,4 +82,26 @@ class Acceder(Abstract):
         return True
 
     def generar_c3d(self,scope):
-        pass
+        #inicializamos las variables que hacen la generacion de codigo 3 direcciones
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        generador.add_comment(f"** compilacion de acceso de variable {self.id} **")
+        # Recuperamos variable desde el ultimo scope generado
+        result = self.last_scope.obtener_variable(self.id)
+        # Generamos un contenedor temporal para la variable que vamos a recuperar
+        temp = generador.add_temp()
+        # Generamos un variable para recuperar las posicion en el stack de la variable
+        # Eliminamos los primeros 3 caracteres de lo recuperado
+        temporal_pos = result.simbolo_c3d.pos[4:]
+        temp_pos = result.simbolo_c3d.pos[4:]
+        # Verificamos si la variable es global
+        if not result.simbolo_c3d.is_global:
+            temp_pos = generador.add_temp()
+            generador.add_exp(temp_pos,'P',temporal_pos,'+')
+        # Intruccion para obtener la referencia del stack
+        generador.get_stack(temp,temp_pos)
+        generador.add_comment(f"** fin compilacion de acceso de variable {self.id} **")
+        # Retornamos los datos temp -> el valor que tomo del stack
+        # El tipo de valor retornado en la ejecucion del codigo
+        # Si la variable es temporal
+        return Return(temp,self.resultado_valor.tipo,True)
