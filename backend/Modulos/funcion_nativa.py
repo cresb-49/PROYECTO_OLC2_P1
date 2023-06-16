@@ -46,3 +46,7 @@ class FuncionNativa():
 
     def length(self, param):
         return len(param)
+
+        # devuelve la conversion ha string de algo
+    def push(self, array, param):
+        array.append(param)
