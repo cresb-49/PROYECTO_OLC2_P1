@@ -14,7 +14,9 @@ class Push(Abstract):
 
     def verificar_tipos(self,array, param):
         if (array['tipo_secundario'] != None):
-            if (array['tipo_secundario'] == param['tipo'].value):
+            if(array['tipo_secundario'] == 'any'):
+                 return True
+            elif (array['tipo_secundario'] == param['tipo'].value):
                 return True
             else:
                 return False
