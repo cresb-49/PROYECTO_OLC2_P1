@@ -10,7 +10,7 @@ class ToLowerCase(Abstract):
         self.numero = numero
 
     def __str__(self):
-        return "Concat"
+        return "toLowerCase"
 
     def verificarTipos(self, val):
         # extremos el tipo de la variable

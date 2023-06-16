@@ -10,7 +10,7 @@ class ToString(Abstract):
         self.numero = numero
 
     def __str__(self):
-        return "Concat"
+        return "toString"
 
     def ejecutar(self, scope):
         # ejecutamos el diccionario

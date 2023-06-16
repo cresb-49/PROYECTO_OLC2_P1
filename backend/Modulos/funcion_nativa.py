@@ -47,6 +47,11 @@ class FuncionNativa():
     def length(self, param):
         return len(param)
 
-        # devuelve la conversion ha string de algo
+    #devulve el push de un array
     def push(self, array, param):
         array.append(param)
+
+
+    #devuelve el pop de un array
+    def pop(self, array, param):
+        array.pop(param)

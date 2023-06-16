@@ -10,7 +10,7 @@ class ToFixed(Abstract):
         self.numero = numero
 
     def __str__(self):
-        return "Concat"
+        return "toFixed"
 
     def verificarTipos(self, val):
         # extremos el tipo de la variable

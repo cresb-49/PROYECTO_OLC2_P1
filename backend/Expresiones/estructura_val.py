@@ -48,11 +48,15 @@ class EstructuraVal(Abstract):
             return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
-        #TODO: Realizar el codigo dot
-        # result = graphviz.add_nodo('value_struct', padre)
-        # self.expresion_izquierda.graficar(graphviz, result)
-        # self.expresion_izquierda.graficar(graphviz, result)
-        pass
+        #anadimos un nodo padre que indique que el nodo es un stuct
+        node_padre = graphviz.add_nodo('struct', padre)
+        #por cada uno de los elementos que conforman el contenido:
+        for clave in self.contenido:
+            #creamos un nodo padre que contrendra el titulo del elemento en cuetion
+            node_padre_elemento = graphviz.add_nodo(clave, node_padre)
+            #al nodo con eltitulo agregamos un nodo con el valor del titulo
+            self.contenido[clave].graficar(graphviz, node_padre_elemento)
+
     
     def generar_c3d(self,scope):
         pass

@@ -9,7 +9,7 @@ class Length(Abstract):
         self.acceder = acceder
 
     def __str__(self):
-        return "Number"
+        return "length"
 
     def validar_tipos(self, tipo_exprecion):
         # si se trata de una suma debemos verificar que los dos tipos sean iguales y sean string o number

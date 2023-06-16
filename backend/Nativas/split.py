@@ -10,7 +10,7 @@ class Split(Abstract):
         self.cadena = cadena
 
     def __str__(self):
-        return "Concat"
+        return "split"
 
     def verificarTipos(self, val):
         # extremos el tipo de la variable
