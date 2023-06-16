@@ -95,7 +95,7 @@ class Principal:
                 gv = GraficoDot()
                 entorno.graficar(gv, None)
                 code_dot = gv.get_dot()
-                self.escribir_salida_dot(code_dot)
+                
                 print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
                 ambito_global.size = 0
                 entorno.generar_c3d(None)
@@ -110,11 +110,3 @@ class Principal:
             resultado.add_error('Sintactico','Existe un error al final del archivo',0,0)
             respuesta = {"result": resultado, "dot": '',"simbolos": dict(), "c3d": ''}
             return respuesta
-        
-    def escribir_salida_dot(self, code):
-        # Abrir el archivo en modo escritura
-        archivo = open("salida_dot.txt", "w")
-        # Escribir en el archivo
-        archivo.write(code)
-        # Cerrar el archivo
-        archivo.close()
