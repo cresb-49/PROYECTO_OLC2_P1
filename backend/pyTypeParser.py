@@ -380,10 +380,14 @@ def p_instruccion(p):
                    | asignar_array
                    | asignar_struct
                    | asignacion
+                   | manipulacion_array
                    | interrupcion_funcion
                    | interrupcion_ciclo"""
     p[0] = p[1]
 
+def p_manipulacion_array(p):
+    '''manipulacion_array : ID DOT ID LPAR exprecion RPAR'''
+    #TODO: aqui se agrega la instrucciones para el pop y push
 
 def p_asignar_array(p):
     """asignar_array : sub_array LBRA exprecion RBRA IGUAL exprecion SEMICOLON"""
