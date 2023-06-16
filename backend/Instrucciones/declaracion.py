@@ -1,5 +1,7 @@
 from Abstract.abstract import Abstract
+from Abstract.return__ import Return
 from Symbol.tipoEnum import TipoEnum
+from Symbol.generador import Generador
 from Expresiones.arreglo import Arreglo
 
 
@@ -154,4 +156,7 @@ class Declaracion(Abstract):
             self.valor.graficar(graphviz, node_result)
 
     def generar_c3d(self,scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        generador.add_comment('Compilacion de una variable')
         pass
