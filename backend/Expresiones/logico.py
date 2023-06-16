@@ -13,6 +13,8 @@ class Logico(Abstract):
         return f"Resultado: {self.resultado}\nLínea: {self.linea}\nColumna: {self.columna}\nExpresión Izquierda: {self.expresion_izquierda}\nExpresión Derecha: {self.expresion_derecha}\nTipo de Operación: {self.tipo_operacion}"
 
     def verificarTipos(self, val_izq, val_derecho):
+        if (val_izq == None or val_derecho == None):
+            return False
         # extraemos el tipo de la exprecion izquierda de la op
         tipo_exprecion_der = val_derecho["tipo"]
         if self.tipo_operacion == "!":
@@ -35,7 +37,7 @@ class Logico(Abstract):
                 return False
 
     def ejecutar(self, scope):
-        #print(self)
+        # print(self)
         val_derecho = self.expresion_derecha.ejecutar(scope)
         if self.expresion_izquierda != None:
             val_izq = self.expresion_izquierda.ejecutar(scope)
@@ -63,5 +65,5 @@ class Logico(Abstract):
             self.expresion_izquierda.graficar(graphviz, result)
         self.expresion_derecha.graficar(graphviz, result)
 
-    def generar_c3d(self,scope):
+    def generar_c3d(self, scope):
         pass

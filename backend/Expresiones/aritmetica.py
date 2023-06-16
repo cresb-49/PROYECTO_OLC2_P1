@@ -12,6 +12,10 @@ class Aritmetica(Abstract):
         self.tipo_operacion = tipo_operacion
 
     def verificarTipos(self, val_izquierdo, val_derecho):
+
+        if(val_izquierdo == None or val_derecho == None):
+            return False
+
         # extraemos el tipo de la exprecion izquierda de la op
         tipo_exprecion_izquierda = val_izquierdo["tipo"]
         # extraemos el tipo de la exprecion derecha de la op
