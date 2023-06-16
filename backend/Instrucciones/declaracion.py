@@ -41,7 +41,7 @@ class Declaracion(Abstract):
             # print(f'Declaro variable "{self.id}" con ->',result_expresion)
             try:
                 scope.declarar_variable(self.id, result_expresion['value'], self.tipo, tipo_secundario.value, self.linea, self.columna)
-                self.last_scope.sum_size()
+                
             except ValueError as error:
                 self.resultado.add_error('Semantico', str(
                     error), self.linea, self.columna)
@@ -54,7 +54,7 @@ class Declaracion(Abstract):
                     if self.tipo_secundario == result_expresion['tipo_secundario']:
                         try:
                             scope.declarar_variable(self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
-                            self.last_scope.sum_size()
+                            
                         except ValueError as error:
                             self.resultado.add_error('Semantico', str(
                                 error), self.linea, self.columna)
@@ -76,7 +76,7 @@ class Declaracion(Abstract):
                             result_expresion['value'], self.tipo_secundario)
                         if arreglo['tipo_secundario'] == self.tipo_secundario:
                             scope.declarar_variable(self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
-                            self.last_scope.sum_size()
+                            
                         else:
                             error = f'No puede declarar un varaible array de tipo: {self.tipo_secundario} y asignar un tipo: ' + str(
                                 arreglo['tipo_secundario'])
@@ -88,7 +88,7 @@ class Declaracion(Abstract):
                     elif result_expresion['tipo_secundario'] == self.tipo_secundario or self.tipo_secundario == TipoEnum.ANY.value:
 
                         scope.declarar_variable(self.id, result_expresion['value'], self.tipo, self.tipo_secundario, self.linea, self.columna)
-                        self.last_scope.sum_size()
+                        
 
                     else:
 
@@ -109,7 +109,7 @@ class Declaracion(Abstract):
                 if result_expresion['tipo_secundario'] == self.tipo_secundario:
                     try:
                         scope.declarar_variable(self.id, result_expresion['value'], result_expresion['tipo'], result_expresion['tipo_secundario'], self.linea, self.columna)
-                        self.last_scope.sum_size()
+                        
                     except ValueError as error:
                         self.resultado.add_error('Semantico', str(
                             error), self.linea, self.columna)
@@ -131,7 +131,7 @@ class Declaracion(Abstract):
                 if self.tipo == result_expresion['tipo'] or self.tipo == None:
                     try:
                         scope.declarar_variable(self.id, result_expresion['value'], tipo, None, self.linea, self.columna)
-                        self.last_scope.sum_size()
+                        
                     except ValueError as error:
                         self.resultado.add_error('Semantico', str(
                             error), self.linea, self.columna)
@@ -174,7 +174,8 @@ class Declaracion(Abstract):
         generador.add_comment(f'** compilacion de variable {self.id} **')
         #Primero obtenermos la variable desde el scope generado por ultimo
         variable_recuperada = self.last_scope.obtener_variable(self.id)
-        print('debuj pos',variable_recuperada.simbolo_c3d.pos[4:])
+        recu_pos = self.last_scope.get_size()
+        variable_recuperada.simbolo_c3d.pos = "pos_"+str(recu_pos)
         tempPos = variable_recuperada.simbolo_c3d.pos[4:]
         temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
         if not variable_recuperada.simbolo_c3d.is_global:
@@ -185,4 +186,5 @@ class Declaracion(Abstract):
         else:
             generador.set_stack(tempPos, 0)
         generador.add_comment(f'** fin de compilacion variable {self.id} **')
-        self.last_scope.sum_size()        
+        self.last_scope.sum_size()
+                
