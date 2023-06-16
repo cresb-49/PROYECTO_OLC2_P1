@@ -52,7 +52,7 @@ class Generador:
     
     def get_header(self):
         code = '/* ---- HEADER ----- */\npackage main;\n\n'
-        print('debuj imports -> ',self.imports)
+        # print('debuj imports -> ',self.imports)
         if len(self.imports) > 0:
             tmp_import = ''
             for temp in self.imports:
