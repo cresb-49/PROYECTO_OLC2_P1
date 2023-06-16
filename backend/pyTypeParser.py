@@ -6,6 +6,7 @@ from Nativas.number import Number
 from Nativas.type_of import TypeOf
 from Nativas.length import Length
 from Nativas.push import Push
+from Nativas.pop import Pop
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -386,8 +387,18 @@ def p_instruccion(p):
     p[0] = p[1]
 
 def p_manipulacion_array(p):
-    '''manipulacion_array : ID DOT ID LPAR exprecion RPAR'''
+    '''manipulacion_array : ID DOT ID LPAR exprecion RPAR SEMICOLON'''
     #TODO: aqui se agrega la instrucciones para el pop y push
+    if (p[3] == 'push'):
+        acceder = Acceder(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[1])
+        p[0] = Push(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), acceder, p[5])
+    elif (p[3] == 'pop'):
+        acceder = Acceder(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), p[1])
+        p[0] = Pop(resultado, p.lineno(1), find_column(
+        input, p.slice[1]), acceder, p[5])
 
 def p_asignar_array(p):
     """asignar_array : sub_array LBRA exprecion RBRA IGUAL exprecion SEMICOLON"""
@@ -1154,11 +1165,6 @@ def p_sub_exprecion_12(p):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), acceder, p[5])
-            elif (p[3] == 'push'):
-                acceder = Acceder(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), p[1])
-                p[0] = Push(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
         elif (len(p) == 4):
             if (p[3] == 'length'):
