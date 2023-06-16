@@ -1,7 +1,11 @@
 .direcciones-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 5px;
     align-items: center;
     padding: 20px;
+}
+
+.editor-container{
+    width: 100%;
 }

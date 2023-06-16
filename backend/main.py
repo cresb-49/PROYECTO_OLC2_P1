@@ -23,6 +23,7 @@ def compile():
         'errores': [p.__dict__ for p in compilacion['result'].errores],
         'dot': compilacion['dot'],
         'simbolos':  compilacion['simbolos'],
+        'c3d': compilacion['c3d']
     }
 
     json2 = json.dumps(convertir_a_json)

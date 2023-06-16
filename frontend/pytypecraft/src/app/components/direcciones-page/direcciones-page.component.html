@@ -1,4 +1,8 @@
 <div class="direcciones-container">
   <h2>Codigo en 3 direcciones</h2>
+  <div class="editor-container">
+    <app-editor2 #consoleCode [nombreBoton]="'Descargar Resultado'" [isEditable]="false"
+    [resultConsole]="codeConsole"></app-editor2>
+  </div>
+  
 </div>
-<app-editor2 nombreBoton="Descargar Codigo"></app-editor2>

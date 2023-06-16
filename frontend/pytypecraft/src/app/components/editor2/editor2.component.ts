@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import * as ace from 'ace-builds';
+import { EditorComponent } from '../editor/editor.component';
 
 @Component({
   selector: 'app-editor2',
@@ -23,6 +24,7 @@ export class Editor2Component implements AfterViewInit {
   @Input() nombreBoton: string = 'button';
   @Input() isLoadFile: boolean = false;
 
+  @Input() resultConsole!: EditorComponent;
   nombreArchivo: string = 'C3D_GO';
   @Input() codigo: string = '';
   ubicacionEditor: string = 'Linea: 1, Columna: 1';
