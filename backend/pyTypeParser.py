@@ -5,6 +5,7 @@ from Nativas.string import String
 from Nativas.number import Number
 from Nativas.type_of import TypeOf
 from Nativas.length import Length
+from Nativas.push import Push
 import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from pyTypeLex import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -414,7 +415,7 @@ def p_instruccion_2(p):
                    | ciclo_while SEMICOLON"""
     p[0] = p[1]
 
-#TODO: manejo de errores produccion
+# TODO: manejo de errores produccion
 # def p_instruccion_3(p):
 #     """instruccion : error"""  # produccion de error
 #     p[0] = IntruccionError(resultado, p.lineno(1), find_column(input, p.slice[1]))
@@ -1149,6 +1150,11 @@ def p_sub_exprecion_12(p):
                 acceder = Acceder(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[1])
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), acceder, p[5])
+            elif (p[3] == 'push'):
+                acceder = Acceder(resultado, p.lineno(1), find_column(
+                    input, p.slice[1]), p[1])
+                p[0] = Push(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
         elif (len(p) == 4):
             if (p[3] == 'length'):
