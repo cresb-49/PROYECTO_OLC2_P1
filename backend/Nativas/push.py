@@ -35,27 +35,15 @@ class Push(Abstract):
                 if (self.verificar_tipos(result_id, ejecucionDeExpresion)):
                     array = result_id['value']
                     FuncionNativa.push(None, array, ejecucionDeExpresion)
-
-                    if len(array) == 0:
-                        return {"value": [], "tipo": result_id['tipo'], "tipo_secundario": result_id['tipo_secundario'], "linea": self.linea, "columna": self.columna}
-                    else:
-                        base = array[0]['tipo']
-                        if all(base == exp['tipo'] for exp in array):
-                            return {"value": array, "tipo": TipoEnum.ARRAY, "tipo_secundario": base.value, "linea": self.linea, "columna": self.columna}
-                        else:
-                            return {"value": array, "tipo": TipoEnum.ARRAY, "tipo_secundario": TipoEnum.ANY.value, "linea": self.linea, "columna": self.columna}
                 else:
                     self.resultado.add_error(
                         'Semantico', 'Tipos no coinciden', self.linea, self.columna)
-                    return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             else:
                 self.resultado.add_error(
                     'Semantico', 'push solo funciona con Arrays', self.linea, self.columna)
-                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             self.resultado.add_error(
                 'Semantico', f'Concat, no se puede operar con el identificador {self.id_arreglo.id}', self.linea, self.columna)
-            return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
