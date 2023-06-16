@@ -31,4 +31,11 @@ class Primitivo(Abstract):
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        return Return(str(self.valor), self.tipo, False)
+
+        if(isinstance(self.valor, bool)):
+            if(self.valor == True):
+                return Return(str(1), self.tipo, False)
+            else:
+                return Return(str(0), self.tipo, False)
+        else:
+          return Return(str(self.valor), self.tipo, False)         

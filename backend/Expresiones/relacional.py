@@ -1,6 +1,7 @@
 from Abstract.abstract import Abstract
 from Symbol.tipoEnum import TipoEnum
-
+from Symbol.generador import Generador
+from Abstract.return__  import Return
 
 class Relacional(Abstract):
     def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
@@ -58,4 +59,40 @@ class Relacional(Abstract):
         self.expresion_derecha.graficar(graphviz, result)
 
     def generar_c3d(self,scope):
-        pass
+            gen_aux = Generador()
+            generador = gen_aux.get_instance()
+            temporal = ''
+            operador = ''
+            val_der: Return = self.expresion_derecha.generar_c3d(scope)  
+            val_izq: Return = self.expresion_izquierda.generar_c3d(scope)  
+
+            if (self.tipo_operacion == "==="):  
+                operador = '=='
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+                return Return(temporal, TipoEnum.BOOLEAN, True)
+            elif (self.tipo_operacion == "!=="):
+                operador = '!='
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+                return Return(temporal, TipoEnum.BOOLEAN, True)
+            elif (self.tipo_operacion == "<"):
+                operador = '<'
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+                return Return(temporal, TipoEnum.BOOLEAN, True)
+            elif (self.tipo_operacion == ">"):
+                operador = '>'
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+                return Return(temporal, TipoEnum.BOOLEAN, True)
+            elif (self.tipo_operacion == "<="):
+                operador = '<='
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+                return Return(temporal, TipoEnum.BOOLEAN, True)
+            elif (self.tipo_operacion == ">="):
+                operador = '>='
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
+                return Return(temporal, TipoEnum.BOOLEAN, True)

@@ -92,3 +92,5 @@ class Imprimir(Abstract):
         if isinstance(result, Return):
             if result.get_tipo() == TipoEnum.NUMBER:
                 generador.add_print('f', result.get_value())
+            elif result.get_tipo() == TipoEnum.BOOLEAN:
+                generador.add_print('f', result.get_value())
