@@ -27,6 +27,9 @@ export class Editor2Component implements AfterViewInit {
   @Input() codigo: string = '';
   ubicacionEditor: string = 'Linea: 1, Columna: 1';
 
+  copiarTextoText = 'Copiar Codigo';
+
+
   @Output() sendCodigo = new EventEmitter<string>();
 
   onKeyDownEvent(event: any) {
@@ -122,6 +125,20 @@ export class Editor2Component implements AfterViewInit {
     aceEditor.setValue(this.codigo);
   }
 
+  public copiarCodigo() {
+    const aceEditor = ace.edit(this.editor.nativeElement);
+    aceEditor.selectAll();
+    var selectedText = aceEditor.getCopyText();
+    let self = this;
+    navigator.clipboard.writeText(selectedText).then(() => {
+      self.copiarTextoText = 'Codigo Copiado!!!'
+      setTimeout(() => {
+        self.copiarTextoText = 'Copiar Codigo'
+      }, 5000);
+    }).catch((err) => {
+      console.error("Error al copiar el texto: ", err)
+    })
+  }
   public cargarCodigo() {
     let input: HTMLInputElement = document.createElement('input');
     input.type = 'file';
