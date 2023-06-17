@@ -1,5 +1,6 @@
 from Abstract.abstract import Abstract
 from Symbol.generador import Generador
+from Symbol.tipoEnum import TipoEnum
 from Abstract.return__ import Return
 
 
@@ -32,18 +33,19 @@ class Primitivo(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
 
-        if(isinstance(self.valor, bool)):
-            if(self.valor == True):
+        if self.tipo == TipoEnum.BOOLEAN:
+            if (self.valor == True):
                 return Return(str(1), self.tipo, False)
             else:
                 return Return(str(0), self.tipo, False)
-        elif isinstance(self,str):
+        elif self.tipo == TipoEnum.STRING:
             temporal = generador.add_temp()
-            generador.add_asig(temporal,'H')
+            generador.add_asig(temporal, 'H')
             for char in str(self.valor):
-                generador.set_heap('H',ord(char))
+                generador.set_heap('H', ord(char))
                 generador.next_heap()
-            generador.set_heap('H',-1)
+            generador.set_heap('H', -1)
+            generador.next_heap()
             return Return(temporal, self.tipo, True)
         else:
-          return Return(str(self.valor), self.tipo, False)         
+            return Return(str(self.valor), self.tipo, False)

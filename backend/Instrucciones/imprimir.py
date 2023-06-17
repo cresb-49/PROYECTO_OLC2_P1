@@ -10,17 +10,19 @@ class Imprimir(Abstract):
     def __init__(self, resultado, linea, columna, exprecion):
         super().__init__(resultado, linea, columna)
         self.exprecion = exprecion
-        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
-        self.resultado_valor = None #Esto de aca es un array
+        # CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        self.resultado_valor = []  # Esto de aca es un array
         self.last_scope = None      # Referencia del ultimo scope generado
 
     def __str__(self):
         return f"Print -> Expresión: {self.exprecion}"
 
     def ejecutar(self, scope):
+        self.last_scope = scope
         concat = ""
         for diccionario in self.exprecion:
             resultado = diccionario.ejecutar(scope)
+            self.resultado_valor.append(resultado)
             if (isinstance(resultado, dict)):
                 # si el tipo de dato es un array entonces debemos imprimirlo como tal
                 if (resultado['tipo'] == TipoEnum.ARRAY):
@@ -94,3 +96,20 @@ class Imprimir(Abstract):
                 generador.add_print('f', result.get_value())
             elif result.get_tipo() == TipoEnum.BOOLEAN:
                 generador.add_print('f', result.get_value())
+            elif result.get_tipo() == TipoEnum.STRING:
+                # Generamos la funcion nativa para imprimir cadenas
+                generador.f_print_string()
+                param_temp = generador.add_temp()
+                # Recuperamos el tamanio actual del stack
+                size = self.last_scope.get_size();
+                # Agregamos vairbales temporales para recibir el valor del strign guardado con anterioridad
+                generador.add_exp(param_temp, 'P',size,'+')
+                generador.add_exp(param_temp,param_temp,'1','+')
+                generador.set_stack(param_temp,result.get_value())
+                # Generacion de un nuevo entorno para el llamado de la funcion
+                generador.new_env(size)
+                generador.call_fun('printString')
+                
+                temp = generador.add_temp()
+                generador.get_stack(temp,'P')
+                generador.ret_env(size)
