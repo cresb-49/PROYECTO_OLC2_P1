@@ -37,5 +37,13 @@ class Primitivo(Abstract):
                 return Return(str(1), self.tipo, False)
             else:
                 return Return(str(0), self.tipo, False)
+        elif isinstance(self,str):
+            temporal = generador.add_temp()
+            generador.add_asig(temporal,'H')
+            for char in str(self.valor):
+                generador.set_heap('H',ord(char))
+                generador.next_heap()
+            generador.set_heap('H',-1)
+            return Return(temporal, self.tipo, True)
         else:
           return Return(str(self.valor), self.tipo, False)         
