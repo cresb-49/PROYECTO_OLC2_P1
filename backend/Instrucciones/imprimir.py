@@ -99,27 +99,33 @@ class Imprimir(Abstract):
         generador = gen_aux.get_instance()
 
         # TODO: por el momento solo el print del primer parametro
-        result = self.exprecion[0].generar_c3d(scope)
-
-        if isinstance(result, Return):
-            if result.get_tipo() == TipoEnum.NUMBER:
-                generador.add_print('f', result.get_value())
-            elif result.get_tipo() == TipoEnum.BOOLEAN:
-                generador.add_print('f', result.get_value())
-            elif result.get_tipo() == TipoEnum.STRING:
-                # Generamos la funcion nativa para imprimir cadenas
-                generador.f_print_string()
-                param_temp = generador.add_temp()
-                # Recuperamos el tamanio actual del stack
-                size = self.last_scope.get_size();
-                # Agregamos vairbales temporales para recibir el valor del strign guardado con anterioridad
-                generador.add_exp(param_temp, 'P',size,'+')
-                generador.add_exp(param_temp,param_temp,'1','+')
-                generador.set_stack(param_temp,result.get_value())
-                # Generacion de un nuevo entorno para el llamado de la funcion
-                generador.new_env(size)
-                generador.call_fun('printString')
-                
-                temp = generador.add_temp()
-                generador.get_stack(temp,'P')
-                generador.ret_env(size)
+        
+        for expr in self.exprecion:
+            result = expr.generar_c3d(scope)
+            if len(self.exprecion) >= 2:
+                generador.add_print_espacio()
+            if isinstance(result, Return):
+                if result.get_tipo() == TipoEnum.NUMBER:
+                    generador.add_print_number('f', result.get_value())
+                elif result.get_tipo() == TipoEnum.BOOLEAN:
+                    generador.add_print_number('f', result.get_value())
+                elif result.get_tipo() == TipoEnum.STRING:
+                    # Generamos la funcion nativa para imprimir cadenas
+                    generador.f_print_string()
+                    param_temp = generador.add_temp()
+                    # Recuperamos el tamanio actual del stack
+                    size = self.last_scope.get_size();
+                    # Agregamos vairbales temporales para recibir el valor del strign guardado con anterioridad
+                    generador.add_exp(param_temp, 'P',size,'+')
+                    generador.add_exp(param_temp,param_temp,'1','+')
+                    generador.set_stack(param_temp,result.get_value())
+                    # Generacion de un nuevo entorno para el llamado de la funcion
+                    generador.new_env(size)
+                    generador.call_fun('printString')
+                    
+                    temp = generador.add_temp()
+                    generador.get_stack(temp,'P')
+                    generador.ret_env(size)
+                else:
+                    print(result)
+        generador.add_print_salto_linea()

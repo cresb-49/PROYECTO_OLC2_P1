@@ -214,6 +214,17 @@ class Generador:
         self.set_import('fmt')
         self.code_in(f'fmt.Printf("%{type}", int({value}));\n')  # %d %f %c %s
 
+    def add_print_number(self, type, value):
+        self.set_import('fmt')
+        self.code_in(f'fmt.Printf("%{type}", {value});\n')  # %d %f %c %s
+    
+    def add_print_salto_linea(self):
+        self.set_import('fmt')
+        self.code_in('fmt.Println("")\n')
+        
+    def add_print_espacio(self):
+        self.set_import('fmt')
+        self.code_in('fmt.Print(" ")\n')
     ###############
     # NATIVAS
     ###############
