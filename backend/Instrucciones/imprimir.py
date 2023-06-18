@@ -43,7 +43,8 @@ class Imprimir(Abstract):
 
     def imprimir_array(self, resultado):
         # mandamos ha guardar el string en la consola
-        return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
+        #return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
+        return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '')
 
     def imprimir_struct(self, resultado):
         # concat es la variable que alojara todos los string del struct
@@ -56,6 +57,10 @@ class Imprimir(Abstract):
                     str(parametro) + ': ' + \
                     str(self.imprimir_array(
                         resultado['value'][parametro])) +','
+            if resultado['value'][parametro]['tipo'] == TipoEnum.STRING:
+                concat = concat + ' ' + \
+                    str(parametro) + ': \"' + \
+                    str(resultado['value'][parametro]['value'])+'\",'
             else:
                 concat = concat + ' ' + \
                     str(parametro) + ': ' + \
@@ -74,6 +79,8 @@ class Imprimir(Abstract):
                 concat = self.imprimir_array_recu(string)
             elif (string['tipo'] == TipoEnum.STRUCT):
                 concat = self.imprimir_struct(string)
+            elif (string['tipo'] == TipoEnum.STRING):
+                concat = "\""+string['value']+"\""
             else:
                 concat = string['value']
             contenido.append(concat)
