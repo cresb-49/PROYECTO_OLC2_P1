@@ -139,7 +139,7 @@ class Imprimir(Abstract):
         generador.ret_env(size)
 
     def imprimir_number(self, generador, result):
-        generador.add_print_number('f', result.get_value())
+        generador.add_print_number('f', result)
 
     def imprimir_opciones_any(self,generador,tipo_aux,result):
         if tipo_aux == TipoEnum.NUMBER:

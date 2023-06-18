@@ -109,7 +109,11 @@ class Acceder(Abstract):
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
         #print('Debuj->', result)
-        return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
+        tipo_variable = self.resultado_valor.tipo
+        if tipo_variable !=TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
+            return Return(temp, self.resultado_valor.tipo, True, None)
+        else:
+            return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
     
     def calculo_tipo_aux(self,tipo_secundario):
         if tipo_secundario == TipoEnum.BOOLEAN.value:

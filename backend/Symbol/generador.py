@@ -148,6 +148,8 @@ class Generador:
         if op == '^':
             self.set_import('math')
             self.code_in(f'{result} =  math.Pow({left}, {right});\n')
+        elif op == '%':
+            self.code_in(f'{result} =  float64(int({left}) {op} int({right}));\n')
         else:
             self.code_in(f'{result} = {left} {op} {right};\n')
 
