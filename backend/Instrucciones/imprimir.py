@@ -47,7 +47,7 @@ class Imprimir(Abstract):
 
     def imprimir_struct(self, resultado):
         # concat es la variable que alojara todos los string del struct
-        concat = "{\n"
+        concat = "{"
         # por cada uno de los elementos principales en el value (titulos de propiedades del struct)
         for parametro in resultado['value']:
             # adjuntar al concat el titulo del parametro "parametro" y el value del parametro
@@ -55,12 +55,13 @@ class Imprimir(Abstract):
                 concat = concat + ' ' + \
                     str(parametro) + ': ' + \
                     str(self.imprimir_array(
-                        resultado['value'][parametro])) + '\n'
+                        resultado['value'][parametro])) +','
             else:
                 concat = concat + ' ' + \
                     str(parametro) + ': ' + \
-                    str(resultado['value'][parametro]['value']) + '\n'
-        return concat + "}"
+                    str(resultado['value'][parametro]['value'])+','
+        concat = concat[:-1]
+        return concat + " }"
 
     # crea un string de array imprimible, si un elemento del array es un array entonces se convierte en funcion recursiva
 
@@ -71,6 +72,8 @@ class Imprimir(Abstract):
         for string in resultado['value']:
             if (string['tipo'] == TipoEnum.ARRAY):
                 concat = self.imprimir_array_recu(string)
+            elif (string['tipo'] == TipoEnum.STRUCT):
+                concat = self.imprimir_struct(string)
             else:
                 concat = string['value']
             contenido.append(concat)
