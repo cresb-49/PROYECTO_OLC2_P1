@@ -35,9 +35,9 @@ class Primitivo(Abstract):
 
         if self.tipo == TipoEnum.BOOLEAN:
             if (self.valor == True):
-                return Return(str(1), self.tipo, False)
+                return Return(str(1), self.tipo, False, None)
             else:
-                return Return(str(0), self.tipo, False)
+                return Return(str(0), self.tipo, False, None)
         elif self.tipo == TipoEnum.STRING:
             temporal = generador.add_temp()
             generador.add_asig(temporal, 'H')
@@ -46,6 +46,6 @@ class Primitivo(Abstract):
                 generador.next_heap()
             generador.set_heap('H', -1)
             generador.next_heap()
-            return Return(temporal, self.tipo, True)
+            return Return(temporal, self.tipo, True, None)
         else:
-            return Return(str(self.valor), self.tipo, False)
+            return Return(str(self.valor), self.tipo, False, None)

@@ -1,5 +1,5 @@
 class Return:
-    def __init__(self, val, ret_type, is_temp, aux_type="", length=0, referencia=''):
+    def __init__(self, val, ret_type, is_temp, aux_type, length=0, referencia=''):
         self.value = val
         self.type = ret_type
         self.aux_type = aux_type

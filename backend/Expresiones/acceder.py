@@ -8,7 +8,7 @@ class Acceder(Abstract):
     def __init__(self, resultado, linea, columna, id):
         super().__init__(resultado, linea, columna)
         self.id = id
-        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        # CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
         self.resultado_valor = None
         self.last_scope = None
 
@@ -63,13 +63,15 @@ class Acceder(Abstract):
             if self.comparar_diccionarios(diccionario_tmp, valor_recuperado):
                 resultados.append(scope_tmp[estrucura])
             if len(resultados) == 0:
-                self.resultado.add_error('Semantico', 'El tipo de estructura no esta definina el proyecto', self.linea, self.columna)
+                self.resultado.add_error(
+                    'Semantico', 'El tipo de estructura no esta definina el proyecto', self.linea, self.columna)
             elif len(resultados) == 1:
                 tipo_secundario = resultados[0].id
                 print(tipo_secundario)
                 return resultados[0].id
             else:
-                self.resultado.add_error('Semantico', 'Existe ambiguedad al deducir la estructura', self.linea, self.columna)
+                self.resultado.add_error(
+                    'Semantico', 'Existe ambiguedad al deducir la estructura', self.linea, self.columna)
 
     def comparar_diccionarios(self, diccionario1, diccionario2):
         claves1 = diccionario1.keys()
@@ -81,11 +83,12 @@ class Acceder(Abstract):
                 return False
         return True
 
-    def generar_c3d(self,scope):
-        #inicializamos las variables que hacen la generacion de codigo 3 direcciones
+    def generar_c3d(self, scope):
+        # inicializamos las variables que hacen la generacion de codigo 3 direcciones
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        generador.add_comment(f"** compilacion de acceso de variable {self.id} **")
+        generador.add_comment(
+            f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
         result = self.last_scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
@@ -97,11 +100,25 @@ class Acceder(Abstract):
         # Verificamos si la variable es global
         if not result.simbolo_c3d.is_global:
             temp_pos = generador.add_temp()
-            generador.add_exp(temp_pos,'P',temporal_pos,'+')
+            generador.add_exp(temp_pos, 'P', temporal_pos, '+')
         # Intruccion para obtener la referencia del stack
-        generador.get_stack(temp,temp_pos)
-        generador.add_comment(f"** fin compilacion de acceso de variable {self.id} **")
+        generador.get_stack(temp, temp_pos)
+        generador.add_comment(
+            f"** fin compilacion de acceso de variable {self.id} **")
         # Retornamos los datos temp -> el valor que tomo del stack
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
-        return Return(temp,self.resultado_valor.tipo,True)
+        #print('Debuj->', result)
+        return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
+    
+    def calculo_tipo_aux(self,tipo_secundario):
+        if tipo_secundario == TipoEnum.BOOLEAN.value:
+            return TipoEnum.BOOLEAN
+        elif tipo_secundario == TipoEnum.NUMBER.value:
+            return TipoEnum.NUMBER
+        elif tipo_secundario == TipoEnum.STRING.value:
+            return TipoEnum.STRING
+        elif tipo_secundario == TipoEnum.STRUCT.value:
+            return TipoEnum.NUMBER
+        else:
+            print("\033[31m"+'Debemos de calcular el tipo secundario!!!')

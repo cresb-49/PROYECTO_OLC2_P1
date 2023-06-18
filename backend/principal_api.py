@@ -101,7 +101,7 @@ class Principal:
                 ambito_global.size = 0
                 entorno.generar_c3d(None)
                 codigo_3_direcciones = generador.get_code()
-                print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
+                #print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
             else:
                 result.consola = []
             respuesta = {"result": result, "dot": code_dot,"simbolos": tabla_de_simbolos, "c3d": codigo_3_direcciones}

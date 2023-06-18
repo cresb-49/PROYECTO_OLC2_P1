@@ -33,7 +33,7 @@ class Imprimir(Abstract):
                 else:
                     print_val = resultado['value'] if resultado['value'] != None else 'Null'
                     concat = concat + " " + str(print_val)
-
+                    concat = concat[1:] if concat.startswith(" ") else concat
             else:
                 print('Debuj imprimir -> ', resultado)
                 self.resultado.add_error(
@@ -43,7 +43,7 @@ class Imprimir(Abstract):
 
     def imprimir_array(self, resultado):
         # mandamos ha guardar el string en la consola
-        #return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
+        # return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '').replace('\"', '')
         return self.imprimir_array_recu(resultado).replace('\'', '').replace('\\', '')
 
     def imprimir_struct(self, resultado):
@@ -56,7 +56,7 @@ class Imprimir(Abstract):
                 concat = concat + ' ' + \
                     str(parametro) + ': ' + \
                     str(self.imprimir_array(
-                        resultado['value'][parametro])) +','
+                        resultado['value'][parametro])) + ','
             if resultado['value'][parametro]['tipo'] == TipoEnum.STRING:
                 concat = concat + ' ' + \
                     str(parametro) + ': \"' + \
@@ -99,33 +99,56 @@ class Imprimir(Abstract):
         generador = gen_aux.get_instance()
 
         # TODO: por el momento solo el print del primer parametro
-        
+
         for expr in self.exprecion:
             result = expr.generar_c3d(scope)
-            if len(self.exprecion) >= 2:
-                generador.add_print_espacio()
+            # if len(self.exprecion) >= 2:
+            #     generador.add_print_espacio()
             if isinstance(result, Return):
                 if result.get_tipo() == TipoEnum.NUMBER:
-                    generador.add_print_number('f', result.get_value())
+                    self.imprimir_number(generador, result.get_value())
                 elif result.get_tipo() == TipoEnum.BOOLEAN:
-                    generador.add_print_number('f', result.get_value())
+                    self.imprmir_bool(generador, result.get_value())
                 elif result.get_tipo() == TipoEnum.STRING:
-                    # Generamos la funcion nativa para imprimir cadenas
-                    generador.f_print_string()
-                    param_temp = generador.add_temp()
-                    # Recuperamos el tamanio actual del stack
-                    size = self.last_scope.get_size();
-                    # Agregamos vairbales temporales para recibir el valor del strign guardado con anterioridad
-                    generador.add_exp(param_temp, 'P',size,'+')
-                    generador.add_exp(param_temp,param_temp,'1','+')
-                    generador.set_stack(param_temp,result.get_value())
-                    # Generacion de un nuevo entorno para el llamado de la funcion
-                    generador.new_env(size)
-                    generador.call_fun('printString')
-                    
-                    temp = generador.add_temp()
-                    generador.get_stack(temp,'P')
-                    generador.ret_env(size)
+                    self.imprimir_string(generador, result.get_value())
+                elif result.get_tipo() == TipoEnum.ANY:
+                    self.imprimir_opciones_any(generador,result.get_tipo_aux(),result)
                 else:
-                    print(result)
+                    print("\033[31m"+'Encontre variable sin clasificar ->', result)
         generador.add_print_salto_linea()
+
+    def imprmir_bool(self, generador, value):
+        generador.add_print_number('f', value)
+
+    def imprimir_string(self, generador, value):
+        # Generamos la funcion nativa para imprimir cadenas
+        generador.f_print_string()
+        param_temp = generador.add_temp()
+        # Recuperamos el tamanio actual del stack
+        size = self.last_scope.get_size()
+        # Agregamos vairbales temporales para recibir el valor del strign guardado con anterioridad
+        generador.add_exp(param_temp, 'P', size, '+')
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, value)
+        # Generacion de un nuevo entorno para el llamado de la funcion
+        generador.new_env(size)
+        generador.call_fun('printString')
+
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        generador.ret_env(size)
+
+    def imprimir_number(self, generador, result):
+        generador.add_print_number('f', result.get_value())
+
+    def imprimir_opciones_any(self,generador,tipo_aux,result):
+        if tipo_aux == TipoEnum.NUMBER:
+            self.imprimir_number(generador, result.get_value())
+        elif tipo_aux == TipoEnum.BOOLEAN:
+            self.imprmir_bool(generador, result.get_value())
+        elif tipo_aux == TipoEnum.STRING:
+            self.imprimir_string(generador, result.get_value())
+        elif tipo_aux == TipoEnum.ANY:
+            print("\033[31m"+'Encontre variable any dentro de any? ->', result)
+        else:
+            print("\033[31m"+'Encontre variable sin clasificar ->', result)
