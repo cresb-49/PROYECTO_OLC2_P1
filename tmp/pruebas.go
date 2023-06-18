@@ -5,7 +5,7 @@ import(
 	"fmt"
 	"math"
 )
-var t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64,t65,t66,t67,t68,t69,t70,t71,t72 float64;
+var t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t24,t25,t26,t27,t28,t29,t30,t31,t32,t33,t34,t35,t36,t37,t38,t39,t40,t41,t42,t43,t44,t45,t46,t47,t48,t49,t50,t51,t52,t53,t54,t55,t56,t57,t58,t59,t60,t61,t62,t63,t64,t65,t66,t67,t68,t69,t70,t71,t72,t73,t74,t75,t76,t77,t78,t79,t80,t81,t82,t83,t84,t85,t86,t87,t88,t89,t90,t91,t92,t93,t94,t95,t96,t97 float64;
 
 var P, H float64;
 var stack[30101999] float64;
@@ -545,7 +545,16 @@ func main(){
 	H = H + 1;
 	heap[int(H)] = -1;
 	H = H + 1;
-	t60 = H;
+	t60 = P + 3;
+	t60 = t60 + 1;
+	stack[int(t60)] = t59;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 3;
+	printString();
+	t61 = stack[int(P)];
+	P = P - 3;
+	/* --- RETORNO DE ENTORNO --- */
+	t62 = H;
 	heap[int(H)] = 67;
 	H = H + 1;
 	heap[int(H)] = 97;
@@ -562,18 +571,17 @@ func main(){
 	H = H + 1;
 	heap[int(H)] = -1;
 	H = H + 1;
-	t61 = t59 + t60;
-	t62 = P + 3;
-	t62 = t62 + 1;
-	stack[int(t62)] = t61;
+	t63 = P + 3;
+	t63 = t63 + 1;
+	stack[int(t63)] = t62;
 	/* --- NUEVO ENTORNO --- */
 	P = P + 3;
 	printString();
-	t63 = stack[int(P)];
+	t64 = stack[int(P)];
 	P = P - 3;
 	/* --- RETORNO DE ENTORNO --- */
 	fmt.Println("")
-	t64 = H;
+	t65 = H;
 	heap[int(H)] = 65;
 	H = H + 1;
 	heap[int(H)] = 100;
@@ -605,9 +613,9 @@ func main(){
 	heap[int(H)] = -1;
 	H = H + 1;
 	/* ** compilacion de variable despedida ** */
-	stack[int(3)] = t64;
+	stack[int(3)] = t65;
 	/* ** fin de compilacion variable despedida ** */
-	t65 = H;
+	t66 = H;
 	heap[int(H)] = 72;
 	H = H + 1;
 	heap[int(H)] = 111;
@@ -635,10 +643,34 @@ func main(){
 	heap[int(H)] = -1;
 	H = H + 1;
 	/* ** compilacion de variable saludo ** */
-	stack[int(4)] = t65;
+	stack[int(4)] = t66;
 	/* ** fin de compilacion variable saludo ** */
+	/* ** compilacion de acceso de variable saludo ** */
+	t67 = stack[int(4)];
+	/* ** fin compilacion de acceso de variable saludo ** */
+	t68 = P + 5;
+	t68 = t68 + 1;
+	stack[int(t68)] = t67;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 5;
+	printString();
+	t69 = stack[int(P)];
+	P = P - 5;
+	/* --- RETORNO DE ENTORNO --- */
+	/* ** compilacion de acceso de variable despedida ** */
+	t70 = stack[int(3)];
+	/* ** fin compilacion de acceso de variable despedida ** */
+	t71 = P + 5;
+	t71 = t71 + 1;
+	stack[int(t71)] = t70;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 5;
+	printString();
+	t72 = stack[int(P)];
+	P = P - 5;
+	/* --- RETORNO DE ENTORNO --- */
 	fmt.Println("")
-	t66 = H;
+	t73 = H;
 	heap[int(H)] = 80;
 	H = H + 1;
 	heap[int(H)] = 114;
@@ -739,17 +771,17 @@ func main(){
 	H = H + 1;
 	heap[int(H)] = -1;
 	H = H + 1;
-	t67 = P + 5;
-	t67 = t67 + 1;
-	stack[int(t67)] = t66;
+	t74 = P + 5;
+	t74 = t74 + 1;
+	stack[int(t74)] = t73;
 	/* --- NUEVO ENTORNO --- */
 	P = P + 5;
 	printString();
-	t68 = stack[int(P)];
+	t75 = stack[int(P)];
 	P = P - 5;
 	/* --- RETORNO DE ENTORNO --- */
 	fmt.Println("")
-	t69 = H;
+	t76 = H;
 	heap[int(H)] = 70;
 	H = H + 1;
 	heap[int(H)] = 117;
@@ -826,21 +858,29 @@ func main(){
 	H = H + 1;
 	heap[int(H)] = -1;
 	H = H + 1;
-	t70 = P + 5;
-	t70 = t70 + 1;
-	stack[int(t70)] = t69;
+	t77 = P + 5;
+	t77 = t77 + 1;
+	stack[int(t77)] = t76;
 	/* --- NUEVO ENTORNO --- */
 	P = P + 5;
 	printString();
-	t71 = stack[int(P)];
+	t78 = stack[int(P)];
 	P = P - 5;
 	/* --- RETORNO DE ENTORNO --- */
 	fmt.Println("")
 	/* ** compilacion de variable aprox_1 ** */
 	stack[int(5)] = 3.141516;
 	/* ** fin de compilacion variable aprox_1 ** */
+	/* ** compilacion de acceso de variable aprox_1 ** */
+	t79 = stack[int(5)];
+	/* ** fin compilacion de acceso de variable aprox_1 ** */
+	fmt.Printf("%f", t79);
+	/* ** compilacion de acceso de variable aprox_1 ** */
+	t80 = stack[int(5)];
+	/* ** fin compilacion de acceso de variable aprox_1 ** */
+	fmt.Printf("%f", t80);
 	fmt.Println("")
-	t72 = H;
+	t81 = H;
 	heap[int(H)] = 50;
 	H = H + 1;
 	heap[int(H)] = 48;
@@ -862,7 +902,152 @@ func main(){
 	heap[int(H)] = -1;
 	H = H + 1;
 	/* ** compilacion de variable carnet ** */
-	stack[int(6)] = t72;
+	stack[int(6)] = t81;
 	/* ** fin de compilacion variable carnet ** */
+	t82 = H;
+	heap[int(H)] = 72;
+	H = H + 1;
+	heap[int(H)] = 111;
+	H = H + 1;
+	heap[int(H)] = 108;
+	H = H + 1;
+	heap[int(H)] = 97;
+	H = H + 1;
+	heap[int(H)] = 32;
+	H = H + 1;
+	heap[int(H)] = -1;
+	H = H + 1;
+	t83 = P + 7;
+	t83 = t83 + 1;
+	stack[int(t83)] = t82;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 7;
+	printString();
+	t84 = stack[int(P)];
+	P = P - 7;
+	/* --- RETORNO DE ENTORNO --- */
+	/* ** compilacion de acceso de variable carnet ** */
+	t85 = stack[int(6)];
+	/* ** fin compilacion de acceso de variable carnet ** */
+	t86 = P + 7;
+	t86 = t86 + 1;
+	stack[int(t86)] = t85;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 7;
+	printString();
+	t87 = stack[int(P)];
+	P = P - 7;
+	/* --- RETORNO DE ENTORNO --- */
+	fmt.Println("")
+	/* ** compilacion de acceso de variable val1 ** */
+	t88 = stack[int(0)];
+	/* ** fin compilacion de acceso de variable val1 ** */
+	fmt.Printf("%f", t88);
+	t89 = H;
+	heap[int(H)] = 32;
+	H = H + 1;
+	heap[int(H)] = -1;
+	H = H + 1;
+	t90 = P + 7;
+	t90 = t90 + 1;
+	stack[int(t90)] = t89;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 7;
+	printString();
+	t91 = stack[int(P)];
+	P = P - 7;
+	/* --- RETORNO DE ENTORNO --- */
+	/* ** compilacion de acceso de variable carnet ** */
+	t92 = stack[int(6)];
+	/* ** fin compilacion de acceso de variable carnet ** */
+	t93 = P + 7;
+	t93 = t93 + 1;
+	stack[int(t93)] = t92;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 7;
+	printString();
+	t94 = stack[int(P)];
+	P = P - 7;
+	/* --- RETORNO DE ENTORNO --- */
+	fmt.Println("")
+	t95 = H;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = 45;
+	H = H + 1;
+	heap[int(H)] = -1;
+	H = H + 1;
+	t96 = P + 7;
+	t96 = t96 + 1;
+	stack[int(t96)] = t95;
+	/* --- NUEVO ENTORNO --- */
+	P = P + 7;
+	printString();
+	t97 = stack[int(P)];
+	P = P - 7;
+	/* --- RETORNO DE ENTORNO --- */
+	fmt.Println("")
 
 }
