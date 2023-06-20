@@ -39,7 +39,7 @@ export class DireccionesPageComponent implements AfterViewInit {
     let consola = '';
     let c3d = JSON.parse(localStorage.getItem('compile')!).c3d;
     consola = c3d;
-    this.codeConsole.setCode(consola);
+    this.resultConsole.setCode(consola);
   }
 
   public sendCode(): void {
