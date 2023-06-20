@@ -17,7 +17,7 @@ class Relacional(Abstract):
             return False
         tipo_exprecion_izquierda = val_izq["tipo"]
         tipo_exprecion_der = val_derecho["tipo"]
-        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING or tipo_exprecion_izquierda == TipoEnum.BOOLEAN)):
+        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING)):
             # si se trata de una suma enviamos a validarla
             return True
         else:
@@ -62,44 +62,41 @@ class Relacional(Abstract):
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        temporal = ''
-        operador = ''
-        val_der: Return = self.expresion_derecha.generar_c3d(scope)
+        # temporal = ''
+        # operador = ''
+        
+        generador.add_comment("Compilacion de exprecion Relaciona o Logica")
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
-
+        val_der: Return = self.expresion_derecha.generar_c3d(scope)
+        
+        
         if (self.tipo_operacion == "==="):
             operador = '=='
             temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
             return Return(temporal, TipoEnum.BOOLEAN, True, None)
         elif (self.tipo_operacion == "!=="):
             operador = '!='
             temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
             return Return(temporal, TipoEnum.BOOLEAN, True, None)
         elif (self.tipo_operacion == "<"):
             operador = '<'
             temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
             return Return(temporal, TipoEnum.BOOLEAN, True, None)
         elif (self.tipo_operacion == ">"):
             operador = '>'
             temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
             return Return(temporal, TipoEnum.BOOLEAN, True, None)
         elif (self.tipo_operacion == "<="):
             operador = '<='
             temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
             return Return(temporal, TipoEnum.BOOLEAN, True, None)
         elif (self.tipo_operacion == ">="):
             operador = '>='
             temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
+            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
             return Return(temporal, TipoEnum.BOOLEAN, True, None)

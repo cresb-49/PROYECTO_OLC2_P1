@@ -17,7 +17,7 @@ class Relacional(Abstract):
             return False
         tipo_exprecion_izquierda = val_izq["tipo"]
         tipo_exprecion_der = val_derecho["tipo"]
-        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING or tipo_exprecion_izquierda == TipoEnum.BOOLEAN)):
+        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING)):
             # si se trata de una suma enviamos a validarla
             return True
         else:
