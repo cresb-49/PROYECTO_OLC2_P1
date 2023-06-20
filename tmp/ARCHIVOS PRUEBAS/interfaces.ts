@@ -17,24 +17,15 @@ const actores = ["Elizabeth Olsen", "Adam Sandler", "Christian Bale", "Jennifer 
 const peliculas = ["Avengers: Age of Ultron", "Mr. Deeds", "Batman: The Dark Knight", "Marley & Me"];
 
 function contratar(actor: Actor, pelicula: Pelicula): Contrato {
-    return {
-        actor,
-        pelicula,
-    };
+    return { actor: actor, pelicula: pelicula };
 }
 
 function crearActor(nombre: string, edad: number): Actor {
-    return {
-        nombre,
-        edad,
-};
+    return { nombre: nombre, edad: edad };
 }
 
 function crearPelicula(nombre: string, posicion: number): Pelicula {
-    return {
-        nombre,
-        posicion,
-    };
+    return { nombre: nombre, posicion: posicion };
 }
 function imprimir(contrato: Contrato): void {
     console.log("Actor:", contrato.actor.nombre, "   Edad:", contrato.actor.edad);
@@ -43,13 +34,13 @@ function imprimir(contrato: Contrato): void {
 function contratos(): void {
     for (let i = 1; i < 3; i++) {
         let contrato: Contrato = {
-        actor: { nombre: "", edad: 0 },
-        pelicula: { nombre: "", posicion: 0 },
+            actor: { nombre: "", edad: 0 },
+            pelicula: { nombre: "", posicion: 0 },
         };
         if (i < 4) {
-        const actor = crearActor(actores[i - 1], i + 38);
-        const pelicula = crearPelicula(peliculas[i - 1], i);
-        contrato = contratar(actor, pelicula);
+            const actor = crearActor(actores[i - 1], i + 38);
+            const pelicula = crearPelicula(peliculas[i - 1], i);
+            contrato = contratar(actor, pelicula);
         }
         imprimir(contrato);
     }

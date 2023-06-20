@@ -5,17 +5,17 @@ function ackerman(m: number, n: number): number {
         return ackerman(m - 1, 1);
     } else {
         return ackerman(m - 1, ackerman(m, n - 1));
-    }
+    };
 }
 
-function hanoi(discos: number, origen: number, auxiliar: number, destino: number){
+function hanoi(discos: number, origen: number, auxiliar: number, destino: number) {
     if (discos === 1) {
-    console.log("Mover de", origen, "a", destino);
+        console.log("Mover de", origen, "a", destino);
     } else {
-    hanoi(discos - 1, origen, destino, auxiliar);
-    console.log("Mover de", origen, "a", destino);
-    hanoi(discos - 1, auxiliar, origen, destino);
-    }
+        hanoi(discos - 1, origen, destino, auxiliar);
+        console.log("Mover de", origen, "a", destino);
+        hanoi(discos - 1, auxiliar, origen, destino);
+    };
 }
 
 function factorial(num: number): number {
@@ -23,7 +23,7 @@ function factorial(num: number): number {
         return 1;
     } else {
         return num * factorial(num - 1);
-    }
+    };
 }
 console.log(factorial(5));
 console.log(ackerman(3, 5));
