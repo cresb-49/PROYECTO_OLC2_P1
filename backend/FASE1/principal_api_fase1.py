@@ -1,3 +1,4 @@
+#import pyTypeParser as parser
 import FASE1.pyTypeParser as parser
 from FASE1.pyTypeParser import Scope
 from FASE1.pyTypeParser import TipoEnum
@@ -13,6 +14,7 @@ import FASE1.ply.yacc as yacc
 
 class PrincipalFase1:
     def leer(self, codigo):
+        resultado = Resultado([], [])
         # Clases y metodos para la generacion de codigo en 3 direcciones
         gen_aux = Generador()
         gen_aux.clean_all()  # Limpia todos los archivos anteriores

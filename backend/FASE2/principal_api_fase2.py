@@ -1,5 +1,5 @@
 #import pyTypeParser as parser
-from FASE2.pyTypeParser2 import parser
+import FASE2.pyTypeParser2 as parser
 from FASE2.pyTypeParser2 import Scope
 from FASE2.pyTypeParser2 import TipoEnum
 # from pyTypeParser import Sentencias
@@ -9,11 +9,10 @@ from FASE2.Instrucciones.entorno import Entorno
 from FASE2.Modulos.grafico_dot import GraficoDot
 from FASE2.Symbol.generador import Generador
 
-import FASE2.ply.yacc as yacc
-
-
 class PrincipalFase2:
     def leer(self, codigo):
+        resultado = Resultado([], [])
+
         # Clases y metodos para la generacion de codigo en 3 direcciones
         gen_aux = Generador()
         gen_aux.clean_all()  # Limpia todos los archivos anteriores

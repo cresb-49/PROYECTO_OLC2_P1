@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CompileService {
-  private url = 'http://127.0.0.1:3000/compile';
+  private url = 'http://127.0.0.1:3000/';
 
   constructor(
     private http: HttpClient,
@@ -18,6 +18,15 @@ export class CompileService {
     let body = new Object({
       codigo: code,
     });
-    return this.http.post(this.url, body);
+    return this.http.post(this.url + 'compile', body);
   }
+
+  public sendCodeFase2(code: string): Observable<any> {
+    let body = new Object({
+      codigo: code,
+    });
+    return this.http.post(this.url + 'compile2', body);
+  }
+
+  
 }

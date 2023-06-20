@@ -33,12 +33,12 @@ def compile():
 @app.route('/compile2', methods=["POST"])
 def compile2():
 
-    principal = PrincipalFase2()
+    principal2 = PrincipalFase2()
 
     codigo = request.json.get('codigo')
 
     # enviamos ha compilar el codigo que se envio
-    compilacion = principal.leer(codigo)
+    compilacion = principal2.leer(codigo)
 
     # objeto que enviaremos ha convertir a json
     convertir_a_json = {
