@@ -29,17 +29,19 @@ export class DireccionesPageComponent implements AfterViewInit {
   }
 
   private refreshPage(): void {
-    if (localStorage.getItem('compile') != null) {
+    if (localStorage.getItem('c3d') != null) {
       this.setConsola();
     }
   }
 
   public setConsola(): void {
     //borramos el contenido de la consola
-    let consola = '';
-    let c3d = JSON.parse(localStorage.getItem('compile')!).c3d;
-    consola = c3d;
-    this.resultConsole.setCode(consola);
+    let code = JSON.parse(localStorage.getItem('c3d')!).code;
+    this.codeConsole.setCode(code);
+
+    //borramos el contenido de la consola
+    let c3d = JSON.parse(localStorage.getItem('c3d')!).c3d;
+    this.resultConsole.setCode(c3d);
   }
 
   public sendCode(): void {
