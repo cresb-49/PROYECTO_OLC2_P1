@@ -1,7 +1,7 @@
-from Abstract.abstract import Abstract
-from Symbol.generador import Generador
-from Symbol.tipoEnum import TipoEnum
-from Abstract.return__ import Return
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Symbol.generador import Generador
+from FASE1.Symbol.tipoEnum import TipoEnum
+from FASE1.Abstract.return__ import Return
 
 
 class Primitivo(Abstract):

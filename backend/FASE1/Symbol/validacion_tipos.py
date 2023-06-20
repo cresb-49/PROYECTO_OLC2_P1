@@ -1,4 +1,4 @@
-from Symbol.tipoEnum import TipoEnum
+from FASE1.Symbol.tipoEnum import TipoEnum
 
 def validar_aritmetica(tipo_izq,tipo_der,signo_operacion):
     if signo_operacion == '+':

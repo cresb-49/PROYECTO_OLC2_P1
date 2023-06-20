@@ -1,18 +1,18 @@
-from Abstract.abstract import Abstract
-from Symbol.scope import Scope
-from Symbol.tipoEnum import TipoEnum
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Symbol.scope import Scope
+from FASE1.Symbol.tipoEnum import TipoEnum
 
-from Instrucciones.declaracion import Declaracion
-from Instrucciones.asignacion import Asignacion
-from Instrucciones.detener import Detener
-from Instrucciones.continuar import Continuar
+from FASE1.Instrucciones.declaracion import Declaracion
+from FASE1.Instrucciones.asignacion import Asignacion
+from FASE1.Instrucciones.detener import Detener
+from FASE1.Instrucciones.continuar import Continuar
 
-from Expresiones.primitivo import Primitivo
-from Expresiones.aritmetica import Aritmetica
-from Expresiones.acceder import Acceder
-from Expresiones.acceder_array import AccederArray
-from Expresiones.arreglo import Arreglo
-from Expresiones.relacional import Relacional
+from FASE1.Expresiones.primitivo import Primitivo
+from FASE1.Expresiones.aritmetica import Aritmetica
+from FASE1.Expresiones.acceder import Acceder
+from FASE1.Expresiones.acceder_array import AccederArray
+from FASE1.Expresiones.arreglo import Arreglo
+from FASE1.Expresiones.relacional import Relacional
 
 """
 tipo_for = 1 -> for (let i = 0; i < 10; i++) , declaracion, condicion, exprecion

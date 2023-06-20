@@ -1,5 +1,5 @@
-from Abstract.abstract import Abstract
-from Symbol.scope import Scope
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Symbol.scope import Scope
 
 
 class Contrario(Abstract):

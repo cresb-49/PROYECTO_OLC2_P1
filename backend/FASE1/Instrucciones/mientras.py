@@ -1,9 +1,9 @@
-from Abstract.abstract import Abstract
-from Symbol.tipoEnum import TipoEnum
-from Symbol.scope import Scope
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Symbol.tipoEnum import TipoEnum
+from FASE1.Symbol.scope import Scope
 
-from Instrucciones.continuar import Continuar
-from Instrucciones.detener import Detener
+from FASE1.Instrucciones.continuar import Continuar
+from FASE1.Instrucciones.detener import Detener
 
 
 class Mientras(Abstract):

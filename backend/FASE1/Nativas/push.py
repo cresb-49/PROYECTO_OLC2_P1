@@ -1,6 +1,6 @@
-from Abstract.abstract import Abstract
-from Modulos.funcion_nativa import FuncionNativa
-from Symbol.tipoEnum import TipoEnum
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Modulos.funcion_nativa import FuncionNativa
+from FASE1.Symbol.tipoEnum import TipoEnum
 
 
 class Push(Abstract):
