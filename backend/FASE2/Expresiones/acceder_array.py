@@ -1,5 +1,5 @@
-from Abstract.abstract import Abstract
-from Symbol.tipoEnum import TipoEnum
+from FASE2.Abstract.abstract import Abstract
+from FASE2.Symbol.tipoEnum import TipoEnum
 
 
 class AccederArray(Abstract):

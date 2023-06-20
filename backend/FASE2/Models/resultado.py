@@ -1,5 +1,5 @@
 from datetime import datetime
-from Errores.Errores import Error
+from FASE2.Errores.Errores import Error
 
 
 class Resultado:

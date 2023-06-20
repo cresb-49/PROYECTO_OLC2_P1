@@ -1,8 +1,8 @@
-from Abstract.abstract import Abstract
-from Abstract.return__ import Return
-from Symbol.tipoEnum import TipoEnum
-from Symbol.generador import Generador
-from Expresiones.arreglo import Arreglo
+from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
+from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.generador import Generador
+from FASE2.Expresiones.arreglo import Arreglo
 
 
 class Declaracion(Abstract):

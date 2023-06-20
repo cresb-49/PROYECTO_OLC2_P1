@@ -1,6 +1,6 @@
-from Abstract.abstract import Abstract
-from Modulos.funcion_nativa import FuncionNativa
-from Symbol.tipoEnum import TipoEnum
+from FASE2.Abstract.abstract import Abstract
+from FASE2.Modulos.funcion_nativa import FuncionNativa
+from FASE2.Symbol.tipoEnum import TipoEnum
 
 
 class Concat(Abstract):

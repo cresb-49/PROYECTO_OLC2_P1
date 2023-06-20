@@ -1,71 +1,72 @@
-from Nativas.split import Split
-from Nativas.to_fixed import ToFixed
-from Nativas.to_exponential import ToExponential
-from Nativas.string import String
-from Nativas.number import Number
-from Nativas.type_of import TypeOf
-from Nativas.length import Length
-from Nativas.push import Push
-from Nativas.pop import Pop
-import ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
-from pyTypeLex import lexer  # Import del lexer realizado por el usuario
+from FASE2.Nativas.split import Split
+from FASE2.Nativas.to_fixed import ToFixed
+from FASE2.Nativas.to_exponential import ToExponential
+from FASE2.Nativas.string import String
+from FASE2.Nativas.number import Number
+from FASE2.Nativas.type_of import TypeOf
+from FASE2.Nativas.length import Length
+from FASE2.Nativas.push import Push
+from FASE2.Nativas.pop import Pop
+#from FASE2.ply.yacc import yacc
+import FASE2.ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
+from FASE2.pyTypeLex2 import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
-from pyTypeLex import tokens
-from ply.lex import LexToken
+from FASE2.pyTypeLex2 import tokens
+from FASE2.ply.lex import LexToken
 
 # Seccion para importar las abstracciones y ED para verificar la infomacion
-from ED.Pila import Pila
-from pyTypeLex import find_column
-from pyTypeLex import resultado
-from Models.resultado import Resultado
-from Instrucciones.sentencias import Scope
-from Symbol.tipoEnum import TipoEnum
+from FASE2.ED.Pila import Pila
+from FASE2.pyTypeLex2 import find_column
+from FASE2.pyTypeLex2 import resultado
+from FASE2.Models.resultado import Resultado
+from FASE2.Instrucciones.sentencias import Scope
+from FASE2.Symbol.tipoEnum import TipoEnum
 # Clases referentes a las expreciones
-from Expresiones.acceder import Abstract
-from Expresiones.acceder import Acceder
-from Expresiones.aritmetica import Aritmetica
-from Expresiones.logico import Logico
-from Expresiones.primitivo import Primitivo
-from Expresiones.relacional import Relacional
-from Expresiones.arreglo import Arreglo
-from Expresiones.acceder_array import AccederArray
-from Expresiones.val_funcion import ValFuncion
-from Expresiones.estructura_val import EstructuraVal
-from Expresiones.acceder_estructura import AccederEstructura
+from FASE2.Expresiones.acceder import Abstract
+from FASE2.Expresiones.acceder import Acceder
+from FASE2.Expresiones.aritmetica import Aritmetica
+from FASE2.Expresiones.logico import Logico
+from FASE2.Expresiones.primitivo import Primitivo
+from FASE2.Expresiones.relacional import Relacional
+from FASE2.Expresiones.arreglo import Arreglo
+from FASE2.Expresiones.acceder_array import AccederArray
+from FASE2.Expresiones.val_funcion import ValFuncion
+from FASE2.Expresiones.estructura_val import EstructuraVal
+from FASE2.Expresiones.acceder_estructura import AccederEstructura
 
-from Structs.estructura import Estructura
+from FASE2.Structs.estructura import Estructura
 
-from Nativas.concat import Concat
-from Nativas.to_string import ToString
-from Nativas.to_lower import ToLowerCase
-from Nativas.to_upper import ToUpperCase
-from Nativas.concat import Concat
+from FASE2.Nativas.concat import Concat
+from FASE2.Nativas.to_string import ToString
+from FASE2.Nativas.to_lower import ToLowerCase
+from FASE2.Nativas.to_upper import ToUpperCase
+from FASE2.Nativas.concat import Concat
 # Clases referentes a las intrucciones
-from Instrucciones.asignacion import Asignacion
-from Instrucciones.asignar_array import AsignacionArray
-from Instrucciones.asignar_estructura import AsignacionEstructura
-from Instrucciones.callFuncion import CallFuncion
-from Instrucciones.declaracion import Declaracion
+from FASE2.Instrucciones.asignacion import Asignacion
+from FASE2.Instrucciones.asignar_array import AsignacionArray
+from FASE2.Instrucciones.asignar_estructura import AsignacionEstructura
+from FASE2.Instrucciones.callFuncion import CallFuncion
+from FASE2.Instrucciones.declaracion import Declaracion
 
-from Instrucciones.instr_error import IntruccionError
+from FASE2.Instrucciones.instr_error import IntruccionError
 
 # from Instrucciones.continuar import Continuar
 # from Instrucciones.detener import Detener
 # from Instrucciones.retornar import Retornar
 
-from Instrucciones.sentencias import Sentencias
+from FASE2.Instrucciones.sentencias import Sentencias
 
-from Instrucciones.sentencias import Continuar
-from Instrucciones.sentencias import Detener
-from Instrucciones.sentencias import Retornar
+from FASE2.Instrucciones.sentencias import Continuar
+from FASE2.Instrucciones.sentencias import Detener
+from FASE2.Instrucciones.sentencias import Retornar
 
-from Instrucciones.funcion import Funcion
-from Instrucciones.imprimir import Imprimir
-from Instrucciones.mientras import Mientras
-from Instrucciones.para import Para
-from Instrucciones.si import Si
-from Instrucciones.si_contrario import SiContrario
-from Instrucciones.contrario import Contrario
+from FASE2.Instrucciones.funcion import Funcion
+from FASE2.Instrucciones.imprimir import Imprimir
+from FASE2.Instrucciones.mientras import Mientras
+from FASE2.Instrucciones.para import Para
+from FASE2.Instrucciones.si import Si
+from FASE2.Instrucciones.si_contrario import SiContrario
+from FASE2.Instrucciones.contrario import Contrario
 
 # Inicio de la gramatica
 
