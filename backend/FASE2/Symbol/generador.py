@@ -220,6 +220,28 @@ class Generador:
         self.set_import('fmt')
         self.code_in(f'fmt.Printf("%{type}", {value});\n')  # %d %f %c %s
     
+    def print_true(self):
+        self.set_import('fmt')
+        self.add_ident()
+        self.add_print('c',116)
+        self.add_ident()
+        self.add_print('c',114)
+        self.add_ident()
+        self.add_print('c',117)
+        self.add_ident()
+        self.add_print('c',101)
+    
+    def print_false(self):
+        self.set_import('fmt')
+        self.add_ident()
+        self.add_print('c',102)
+        self.add_ident()
+        self.add_print('c',97)
+        self.add_ident()
+        self.add_print('c',108)
+        self.add_ident()
+        self.add_print('c',101)
+    
     def add_print_salto_linea(self):
         self.set_import('fmt')
         self.code_in('fmt.Println("")\n')

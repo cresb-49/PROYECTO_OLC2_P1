@@ -103,19 +103,28 @@ class Acceder(Abstract):
             generador.add_exp(temp_pos, 'P', temporal_pos, '+')
         # Intruccion para obtener la referencia del stack
         generador.get_stack(temp, temp_pos)
-        generador.add_comment(
-            f"** fin compilacion de acceso de variable {self.id} **")
         # Retornamos los datos temp -> el valor que tomo del stack
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
-        #print('Debuj->', result)
+        # print('Debuj->', result)
         tipo_variable = self.resultado_valor.tipo
-        if tipo_variable !=TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
-            return Return(temp, self.resultado_valor.tipo, True, None)
+        if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
+            if (tipo_variable == TipoEnum.BOOLEAN):
+                return self.definicion_variable_bool(temp, generador)
+            else:
+                generador.add_comment(
+                    f"** fin compilacion de acceso de variable {self.id} **")
+                return Return(temp, self.resultado_valor.tipo, True, None)
         else:
-            return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
-    
-    def calculo_tipo_aux(self,tipo_secundario):
+            calculo = self.calculo_tipo_aux(result.tipo_secundario)
+            if calculo == TipoEnum.BOOLEAN:
+                return self.definicion_variable_bool(temp, generador)
+            else:
+                generador.add_comment(
+                    f"** fin compilacion de acceso de variable {self.id} **")
+                return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
+
+    def calculo_tipo_aux(self, tipo_secundario):
         if tipo_secundario == TipoEnum.BOOLEAN.value:
             return TipoEnum.BOOLEAN
         elif tipo_secundario == TipoEnum.NUMBER.value:
@@ -125,4 +134,22 @@ class Acceder(Abstract):
         elif tipo_secundario == TipoEnum.STRUCT.value:
             return TipoEnum.NUMBER
         else:
-            print("\033[31m"+'Debemos de calcular el tipo secundario!!!')
+            print('Debemos de calcular el tipo secundario!!!')
+
+    def definicion_variable_bool(self, temp, generador: Generador):
+        if self.true_lbl == '':
+            self.true_lbl = generador.new_label()
+        if self.false_lbl == '':
+            self.false_lbl = generador.new_label()
+
+        generador.add_if(temp, '1', '==', self.true_lbl)
+        generador.add_goto(self.false_lbl)
+
+        generador.add_comment(
+            f"** fin compilacion de acceso de variable {self.id} **")
+        generador.add_space()
+        retorno = Return(None, TipoEnum.BOOLEAN, True, None)
+        retorno.set_true_lbl(self.true_lbl)
+        retorno.set_false_lbl(self.false_lbl)
+
+        return retorno

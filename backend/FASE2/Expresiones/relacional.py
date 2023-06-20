@@ -64,39 +64,45 @@ class Relacional(Abstract):
         generador = gen_aux.get_instance()
         # temporal = ''
         # operador = ''
-        
+
         generador.add_comment("Compilacion de exprecion Relaciona o Logica")
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
         val_der: Return = self.expresion_derecha.generar_c3d(scope)
-        
-        
-        if (self.tipo_operacion == "==="):
-            operador = '=='
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.BOOLEAN, True, None)
-        elif (self.tipo_operacion == "!=="):
-            operador = '!='
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.BOOLEAN, True, None)
-        elif (self.tipo_operacion == "<"):
-            operador = '<'
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.BOOLEAN, True, None)
-        elif (self.tipo_operacion == ">"):
-            operador = '>'
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.BOOLEAN, True, None)
-        elif (self.tipo_operacion == "<="):
-            operador = '<='
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.BOOLEAN, True, None)
-        elif (self.tipo_operacion == ">="):
-            operador = '>='
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),val_der.get_value(), operador)
-            return Return(temporal, TipoEnum.BOOLEAN, True, None)
+        # Verificacion de las labels de salto
+        self.check_labels()
+        if (self.tipo_operacion == "===" or self.tipo_operacion == "!=="):
+            if val_izq.get_tipo() == TipoEnum.NUMBER:
+                return self.comparacion_number(val_izq, val_der, generador)
+            elif val_izq.get_tipo() == TipoEnum.STRING:
+                pass
+            else:
+                pass
+        else:
+            if val_izq.get_tipo() == TipoEnum.NUMBER:
+                return self.comparacion_number(val_izq, val_der, generador)
+            else:
+                pass
+
+    def check_labels(self):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        if self.true_lbl == '':
+            self.true_lbl = generador.new_label()
+        if self.false_lbl == '':
+            self.false_lbl = generador.new_label()
+
+    def comparacion_number(self, val_izq: Return, val_der: Return, generador: Generador):
+        if self.tipo_operacion == '===':
+            generador.add_if(val_izq.get_value(),val_der.get_value(), '==', self.true_lbl)
+        elif self.tipo_operacion == '!==':
+            generador.add_if(val_izq.get_value(),val_der.get_value(), '!=', self.true_lbl)
+        else:
+            generador.add_if(val_izq.get_value(), val_der.get_value(), self.tipo_operacion, self.true_lbl)
+        generador.add_goto(self.false_lbl)
+        generador.add_comment('Fin de la exprecion relacional')
+        generador.add_space()
+
+        result = Return(None, TipoEnum.BOOLEAN, False, None)
+        result.set_true_lbl(self.true_lbl)
+        result.set_false_lbl(self.false_lbl)
+        return result

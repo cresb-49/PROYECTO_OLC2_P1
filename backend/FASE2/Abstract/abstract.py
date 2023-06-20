@@ -7,6 +7,9 @@ class Abstract(ABC):
         self.linea = linea
         self.columna = columna
         self.resultado = resultado
+        # CODICO EXTRA PARA CODIGO 3 DIRECCIONES
+        self.true_lbl = ''
+        self.false_lbl = ''
 
     @abstractclassmethod
     def ejecutar(self, scope):
