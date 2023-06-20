@@ -26,9 +26,9 @@ class Imprimir(Abstract):
             if (isinstance(resultado, dict)):
                 # si el tipo de dato es un array entonces debemos imprimirlo como tal
                 if (resultado['tipo'] == TipoEnum.ARRAY):
-                    concat = self.imprimir_array(resultado)
+                    concat += self.imprimir_array(resultado)
                 elif (resultado['tipo'] == TipoEnum.STRUCT):
-                    concat = self.imprimir_struct(resultado)
+                    concat += self.imprimir_struct(resultado)
                 # si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
                 else:
                     print_val = resultado['value'] if resultado['value'] != None else 'Null'
@@ -149,6 +149,6 @@ class Imprimir(Abstract):
         elif tipo_aux == TipoEnum.STRING:
             self.imprimir_string(generador, result.get_value())
         elif tipo_aux == TipoEnum.ANY:
-            print("\033[31m"+'Encontre variable any dentro de any? ->', result)
+            print('Encontre variable any dentro de any? ->', result)
         else:
-            print("\033[31m"+'Encontre variable sin clasificar ->', result)
+            print('Encontre variable sin clasificar ->', result)

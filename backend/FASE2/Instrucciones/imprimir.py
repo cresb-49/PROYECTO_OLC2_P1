@@ -26,9 +26,9 @@ class Imprimir(Abstract):
             if (isinstance(resultado, dict)):
                 # si el tipo de dato es un array entonces debemos imprimirlo como tal
                 if (resultado['tipo'] == TipoEnum.ARRAY):
-                    concat = self.imprimir_array(resultado)
+                    concat += self.imprimir_array(resultado)
                 elif (resultado['tipo'] == TipoEnum.STRUCT):
-                    concat = self.imprimir_struct(resultado)
+                    concat += self.imprimir_struct(resultado)
                 # si no es un array solo imprimimos normal y mandamos ha guardar la imprecion en la consola
                 else:
                     print_val = resultado['value'] if resultado['value'] != None else 'Null'
@@ -108,25 +108,17 @@ class Imprimir(Abstract):
                 if result.get_tipo() == TipoEnum.NUMBER:
                     self.imprimir_number(generador, result.get_value())
                 elif result.get_tipo() == TipoEnum.BOOLEAN:
-                    self.imprmir_bool(generador, result)
+                    self.imprmir_bool(generador, result.get_value())
                 elif result.get_tipo() == TipoEnum.STRING:
                     self.imprimir_string(generador, result.get_value())
                 elif result.get_tipo() == TipoEnum.ANY:
-                    self.imprimir_opciones_any(
-                        generador, result.get_tipo_aux(), result)
+                    self.imprimir_opciones_any(generador,result.get_tipo_aux(),result)
                 else:
-                    print('Encontre variable sin clasificar ->', result)
+                    print("\033[31m"+'Encontre variable sin clasificar ->', result)
         generador.add_print_salto_linea()
 
-    def imprmir_bool(self, generador: Generador, result: Return):
-        temp_lbl = generador.new_label()
-        print('debuj->',result.get_true_lbl())
-        generador.put_label(result.get_true_lbl())
-        generador.print_true()
-        generador.add_goto(temp_lbl)
-        generador.put_label(result.get_false_lbl())
-        generador.print_false()
-        generador.put_label(temp_lbl)
+    def imprmir_bool(self, generador, value):
+        generador.add_print_number('f', value)
 
     def imprimir_string(self, generador, value):
         # Generamos la funcion nativa para imprimir cadenas
@@ -149,11 +141,11 @@ class Imprimir(Abstract):
     def imprimir_number(self, generador, result):
         generador.add_print_number('f', result)
 
-    def imprimir_opciones_any(self, generador, tipo_aux, result: Return):
+    def imprimir_opciones_any(self,generador,tipo_aux,result):
         if tipo_aux == TipoEnum.NUMBER:
             self.imprimir_number(generador, result.get_value())
         elif tipo_aux == TipoEnum.BOOLEAN:
-            self.imprmir_bool(generador, result)
+            self.imprmir_bool(generador, result.get_value())
         elif tipo_aux == TipoEnum.STRING:
             self.imprimir_string(generador, result.get_value())
         elif tipo_aux == TipoEnum.ANY:
