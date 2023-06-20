@@ -1,4 +1,4 @@
-from Abstract.abstract import Abstract
+from FASE1.Abstract.abstract import Abstract
 
 
 class Entorno(Abstract):

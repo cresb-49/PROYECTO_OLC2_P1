@@ -1,11 +1,11 @@
-from Abstract.abstract import Abstract
-from Abstract.return__ import Return
-from Symbol.scope import Scope
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Abstract.return__ import Return
+from FASE1.Symbol.scope import Scope
 
-from Instrucciones.funcion import Funcion
-from Instrucciones.continuar import Continuar
-from Instrucciones.detener import Detener
-from Instrucciones.retornar import Retornar
+from FASE1.Instrucciones.funcion import Funcion
+from FASE1.Instrucciones.continuar import Continuar
+from FASE1.Instrucciones.detener import Detener
+from FASE1.Instrucciones.retornar import Retornar
 
 
 class Sentencias(Abstract):

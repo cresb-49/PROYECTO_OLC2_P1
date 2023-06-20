@@ -1,4 +1,4 @@
-from Symbol.tipoEnum import TipoEnum
+from FASE1.Symbol.tipoEnum import TipoEnum
 
 
 class SimboloC3D:

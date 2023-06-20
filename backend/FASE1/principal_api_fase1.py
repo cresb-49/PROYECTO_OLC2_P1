@@ -1,14 +1,14 @@
-import pyTypeParser as parser
-from pyTypeParser import Scope
-from pyTypeParser import TipoEnum
+import FASE1.pyTypeParser as parser
+from FASE1.pyTypeParser import Scope
+from FASE1.pyTypeParser import TipoEnum
 # from pyTypeParser import Sentencias
-from pyTypeParser import Resultado
-from pyTypeParser import resultado
-from Instrucciones.entorno import Entorno
-from Modulos.grafico_dot import GraficoDot
-from Symbol.generador import Generador
+from FASE1.pyTypeParser import Resultado
+from FASE1.pyTypeParser import resultado
+from FASE1.Instrucciones.entorno import Entorno
+from FASE1.Modulos.grafico_dot import GraficoDot
+from FASE1.Symbol.generador import Generador
 
-import ply.yacc as yacc
+import FASE1.ply.yacc as yacc
 
 
 class PrincipalFase1:

@@ -1,6 +1,6 @@
-from Abstract.abstract import Abstract
-from Symbol.tipoEnum import TipoEnum
-from Symbol.generador import Generador
+from FASE1.Abstract.abstract import Abstract
+from FASE1.Symbol.tipoEnum import TipoEnum
+from FASE1.Symbol.generador import Generador
 
 
 class Asignacion(Abstract):
