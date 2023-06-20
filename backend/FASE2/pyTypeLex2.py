@@ -1,7 +1,7 @@
-import ply.lex as lex  # Import del lex para la generacion del analizadoz lexico
-from Models.resultado import Resultado
+import FASE2.ply.lex as lex  # Import del lex para la generacion del analizadoz lexico
+from FASE2.Models.resultado import Resultado
 # Import de las clases auxiliares
-from Errores.Errores import TablaErrores
+from FASE2.Errores.Errores import TablaErrores
 
 import re
 

@@ -2,7 +2,7 @@ from flask import Flask, request
 import json
 from flask_cors import CORS
 from FASE1.principal_api_fase1 import PrincipalFase1
-#from FASE2.principal_api_fase2 import PrincipalFase2
+from FASE2.principal_api_fase2 import PrincipalFase2
 
 app = Flask(__name__)
 CORS(app)
@@ -30,24 +30,24 @@ def compile():
     return json2
 
 
-# @app.route('/compile2', methods=["POST"])
-# def compile():
+@app.route('/compile2', methods=["POST"])
+def compile2():
 
-#     principal = PrincipalFase2()
+    principal = PrincipalFase2()
 
-#     codigo = request.json.get('codigo')
+    codigo = request.json.get('codigo')
 
-#     # enviamos ha compilar el codigo que se envio
-#     compilacion = principal.leer(codigo)
+    # enviamos ha compilar el codigo que se envio
+    compilacion = principal.leer(codigo)
 
-#     # objeto que enviaremos ha convertir a json
-#     convertir_a_json = {
-#         'errores': [p.__dict__ for p in compilacion['result'].errores],
-#         'c3d': compilacion['c3d']
-#     }
+    # objeto que enviaremos ha convertir a json
+    convertir_a_json = {
+        'errores': [p.__dict__ for p in compilacion['result'].errores],
+        'c3d': compilacion['c3d']
+    }
 
-#     json2 = json.dumps(convertir_a_json)
-#     return json2
+    json2 = json.dumps(convertir_a_json)
+    return json2
 
 
 if __name__ == '__main__':

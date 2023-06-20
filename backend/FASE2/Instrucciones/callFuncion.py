@@ -1,7 +1,7 @@
-from Abstract.abstract import Abstract
-from Symbol.scope import Scope
-from Symbol.tipoEnum import TipoEnum
-from Instrucciones.funcion import Funcion
+from FASE2.Abstract.abstract import Abstract
+from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Instrucciones.funcion import Funcion
 import traceback
 
 

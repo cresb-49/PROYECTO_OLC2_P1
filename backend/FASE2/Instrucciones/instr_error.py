@@ -1,4 +1,4 @@
-from Abstract.abstract import Abstract
+from FASE2.Abstract.abstract import Abstract
 
 
 class IntruccionError(Abstract):
