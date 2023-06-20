@@ -23,6 +23,7 @@ export class EditorComponent implements AfterViewInit {
   @Input() nombreBoton: string = 'button';
   @Input() isLoadFile: boolean = false;
   @Input() resultConsole!: EditorComponent;
+  @Input() lenguaje: string = 'typescript';
 
   nombreArchivo: string = 'Codigo_PyTypeCraft';
   @Input() codigo: string = '';
@@ -64,7 +65,8 @@ export class EditorComponent implements AfterViewInit {
     aceEditor.setOption('tabSize', 4);
     aceEditor.setTheme('ace/theme/twilight');
     if (this.isEditable) {
-      aceEditor.session.setMode('ace/mode/typescript');
+      //aceEditor.session.setMode('ace/mode/typescript');
+      aceEditor.session.setMode('ace/mode/' + this.lenguaje);
     } else {
       aceEditor.session.setMode('ace/mode/plaintext');
     }
