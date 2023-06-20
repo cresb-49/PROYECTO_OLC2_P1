@@ -7,7 +7,7 @@ from FASE2.Nativas.type_of import TypeOf
 from FASE2.Nativas.length import Length
 from FASE2.Nativas.push import Push
 from FASE2.Nativas.pop import Pop
-#from FASE2.ply.yacc import yacc
+# from FASE2.ply.yacc import yacc
 import FASE2.ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from FASE2.pyTypeLex2 import lexer  # Import del lexer realizado por el usuario
 # Import de los tokens del lexer, es necesario por tenerlo en archivos separados
@@ -389,17 +389,18 @@ def p_instruccion(p):
 
 def p_manipulacion_array(p):
     '''manipulacion_array : ID DOT ID LPAR exprecion RPAR SEMICOLON'''
-    #TODO: aqui se agrega la instrucciones para el pop y push
+    # TODO: aqui se agrega la instrucciones para el pop y push
     if (p[3] == 'push'):
         acceder = Acceder(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[1])
+            input, p.slice[1]), p[1])
         p[0] = Push(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), acceder, p[5])
+            input, p.slice[1]), acceder, p[5])
     elif (p[3] == 'pop'):
         acceder = Acceder(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), p[1])
+            input, p.slice[1]), p[1])
         p[0] = Pop(resultado, p.lineno(1), find_column(
-        input, p.slice[1]), acceder, p[5])
+            input, p.slice[1]), acceder, p[5])
+
 
 def p_asignar_array(p):
     """asignar_array : sub_array LBRA exprecion RBRA IGUAL exprecion SEMICOLON"""
@@ -1126,6 +1127,9 @@ def p_sub_exprecion_12(p):
             elif p[1] == 'typeof':
                 p[0] = TypeOf(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), p[3])
+            elif p[1] == 'length':
+                p[0] = Length(resultado, p.lineno(
+                    1), find_column(input, p.slice[1]), p[3])
             else:
                 p[0] = ValFuncion(resultado, p.lineno(
                     1), find_column(input, p.slice[1]), p[1], p[3])
@@ -1168,16 +1172,10 @@ def p_sub_exprecion_12(p):
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
         elif (len(p) == 4):
-            if (p[3] == 'length'):
-                acceder = Acceder(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), p[1])
-                p[0] = Length(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), acceder)
-            else:
-                acceder = Acceder(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), p[1])
-                p[0] = AccederEstructura(resultado, p.lineno(1), find_column(
-                    input, p.slice[1]), acceder, p[3])
+            acceder = Acceder(resultado, p.lineno(
+                1), find_column(input, p.slice[1]), p[1])
+            p[0] = AccederEstructura(resultado, p.lineno(
+                1), find_column(input, p.slice[1]), acceder, p[3])
 
 
 def p_sub_exprecion_13(p):
@@ -1211,12 +1209,16 @@ def p_error(t):
     print('Error Parser p_error ->', t, type(t))
     try:
         if isinstance(t, LexToken):
-            resultado.add_error('Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
+            resultado.add_error(
+                'Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
             print("Error sintáctico en '%s'" % t.value)
         else:
-            resultado.add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+            resultado.add_error(
+                'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
     except Exception as e:
         resultado.add_error('Sintactico', f"Error en parser {str(e)}",  0, 0)
+
+
 # Declaracion de inicio del parser
 parser = yacc.yacc()
 
@@ -1249,4 +1251,3 @@ def parse(ip):
     resultado = Resultado([], [])
 
     return parser.parse(ip)
-
