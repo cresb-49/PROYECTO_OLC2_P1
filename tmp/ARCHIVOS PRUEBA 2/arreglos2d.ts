@@ -46,15 +46,15 @@ let auxiliar = [
 ];
 
 function printMatriz(matrix: any) {
+  console.log("[");
+  for (let i = 0; i < length(matrix); i++) { // Los length pueden manejarlos como arreglo.length
     console.log("[");
-    for (let i = 0; i < length(matrix) ; i++) { // Los length pueden manejarlos como arreglo.length
-        console.log("[");
-        for (let j = 0; j < length(matrix[i]); j++) { // Los length pueden manejarlos como arreglo.length
-            console.log(String(matrix[i][j]) + " ");
-        };
-        console.log("]");
+    for (let j = 0; j < length(matrix[i]); j++) { // Los length pueden manejarlos como arreglo.length
+      console.log(String(matrix[i][j]) + " ");
     };
     console.log("]");
+  };
+  console.log("]");
 }
 
 function sumarMatrices(matrix1: any, matrix2: any): any {

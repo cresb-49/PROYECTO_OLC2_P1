@@ -343,6 +343,7 @@ def p_limit_intrucciones_2(p):
 def p_limit_intruccion(p):
     """limit_intruccion : instruccion
                         | funcion
+                        | funcion SEMICOLON
                         | struct"""
     p[0] = p[1]
 
@@ -429,7 +430,9 @@ def p_asignar_struct(p):
 
 def p_instruccion_2(p):
     """instruccion : ciclo_for SEMICOLON
-                   | ciclo_while SEMICOLON"""
+                   | ciclo_for 
+                   | ciclo_while SEMICOLON
+                   | ciclo_while"""
     p[0] = p[1]
 
 # TODO: manejo de errores produccion
@@ -439,7 +442,8 @@ def p_instruccion_2(p):
 
 
 def p_instruccion_4(p):
-    """instruccion : condicional_if SEMICOLON"""
+    """instruccion : condicional_if SEMICOLON
+                   | condicional_if"""
     p[0] = p[1]
 
 
@@ -691,7 +695,8 @@ def p_continuacion_if(p):
 
 
 def p_struct(p):
-    """struct : INTERFACE ID LKEY valores RKEY SEMICOLON"""
+    """struct : INTERFACE ID LKEY valores RKEY SEMICOLON
+              | INTERFACE ID LKEY valores RKEY"""
     p[0] = Estructura(resultado, p.lineno(
         1), find_column(input, p.slice[1]), p[2], p[4])
 
