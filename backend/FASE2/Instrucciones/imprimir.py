@@ -115,8 +115,7 @@ class Imprimir(Abstract):
                     self.imprimir_opciones_any(
                         generador, result.get_tipo_aux(), result)
                 else:
-                    print("\033[31m" +
-                          'Encontre variable sin clasificar ->', result)
+                    print('Encontre variable sin clasificar ->', result)
         generador.add_print_salto_linea()
 
     def imprmir_bool(self, generador: Generador, result: Return):
