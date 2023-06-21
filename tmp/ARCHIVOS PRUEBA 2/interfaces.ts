@@ -8,41 +8,31 @@ interface Pelicula {
     posicion: number;
 }
 
-interface Contrato {
-    actor: Actor;
-    pelicula: Pelicula;
-}
 
-const actores = ["Elizabeth Olsen", "Adam Sandler", "Christian Bale", "Jennifer Aniston"];
-const peliculas = ["Avengers: Age of Ultron", "Mr. Deeds", "Batman: The Dark Knight", "Marley & Me"];
 
-function contratar(actor: Actor, pelicula: Pelicula): Contrato {
-    return { actor: actor, pelicula: pelicula };
-}
+let actores = ["Elizabeth Olsen", "Adam Sandler", "Christian Bale", "Jennifer Aniston"];
+let peliculas = ["Avengers: Age of Ultron", "Mr. Deeds", "Batman: The Dark Knight", "Marley & Me"];
+
 
 function crearActor(nombre: string, edad: number): Actor {
-    return { nombre: nombre, edad: edad };
+    return {nombre: nombre, edad: edad};
 }
 
 function crearPelicula(nombre: string, posicion: number): Pelicula {
     return { nombre: nombre, posicion: posicion };
 }
-function imprimir(contrato: Contrato): void {
-    console.log("Actor:", contrato.actor.nombre, "   Edad:", contrato.actor.edad);
-    console.log("Pelicula:", contrato.pelicula.nombre, "   Genero:", contrato.pelicula.posicion);
+function imprimir(actor:any) {
+	console.log(actor.nombre);
 }
-function contratos(): void {
+function contratos() {
     for (let i = 1; i < 3; i++) {
-        let contrato: Contrato = {
-            actor: { nombre: "", edad: 0 },
-            pelicula: { nombre: "", posicion: 0 },
-        };
         if (i < 4) {
-            const actor = crearActor(actores[i - 1], i + 38);
-            const pelicula = crearPelicula(peliculas[i - 1], i);
-            contrato = contratar(actor, pelicula);
+            let actor = crearActor(actores[i - 1], i + 38);
+            let pelicula = crearPelicula(peliculas[i - 1], i);
+           
+            imprimir(actor);
         }
-        imprimir(contrato);
+        
     }
 }
 

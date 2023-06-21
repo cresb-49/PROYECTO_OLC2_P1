@@ -67,8 +67,7 @@ class Acceder(Abstract):
                     'Semantico', 'El tipo de estructura no esta definina el proyecto', self.linea, self.columna)
             elif len(resultados) == 1:
                 tipo_secundario = resultados[0].id
-                print(tipo_secundario)
-                return resultados[0].id
+                return tipo_secundario
             else:
                 self.resultado.add_error(
                     'Semantico', 'Existe ambiguedad al deducir la estructura', self.linea, self.columna)

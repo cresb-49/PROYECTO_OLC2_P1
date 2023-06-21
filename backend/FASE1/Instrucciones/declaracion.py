@@ -108,6 +108,8 @@ class Declaracion(Abstract):
                     print('Semantico', str(error), self.linea, self.columna)
         elif self.tipo == TipoEnum.STRUCT:
             if self.tipo == result_expresion['tipo']:
+                print('--->>DEBUG', result_expresion)
+                print('--->>DEBUG',  self.tipo_secundario)
                 if result_expresion['tipo_secundario'] == self.tipo_secundario:
                     try:
                         scope.declarar_variable(

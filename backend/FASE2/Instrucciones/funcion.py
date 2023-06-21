@@ -1,5 +1,6 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.generador import Generador
 
 
 class Funcion(Abstract):
@@ -21,7 +22,7 @@ class Funcion(Abstract):
             if self.validacion_salida_funccion(result):
                 val = {"value": result['value'], "tipo": result['tipo'],
                        "tipo_secundario": result['tipo_secundario'], "linea": self.linea, "columna": self.columna}
-                print(f'Funcion -> {self.id} retorna -> ', val)
+                print(f'Funcion -> {self.id} retorna -> ', val)     
                 return val
                 # print('aquies es')
                 # return {"value": result['value'], "tipo": result['tipo'], "tipo_secundario": result['tipo_tiposecundario'], "linea": self.linea, "columna": self.columna}
@@ -44,6 +45,7 @@ class Funcion(Abstract):
             val = {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario,
                    "linea": self.linea, "columna": self.columna}
             print(f'Funcion -> {self.id} retorna -> ', val)
+            generador.add_begin_func(self.id)
             return val
             # return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
@@ -76,11 +78,18 @@ class Funcion(Abstract):
     def graficar(self, graphviz, padre):
         mode_funcion = graphviz.add_nodo('Funcion:'+self.id, padre)
         node_parametros = graphviz.add_nodo('parametros', mode_funcion)
-        if self.parametros!=None:
+        if self.parametros != None:
             for param in self.parametros:
-                param.graficar(graphviz,node_parametros)
+                param.graficar(graphviz, node_parametros)
         if (self.sentencias != None):
             self.sentencias.graficar(graphviz, mode_funcion)
 
-    def generar_c3d(self,scope):
+    def generar_c3d(self, scope):
+        genAux = Generador()
+        generador = genAux.get_instance()
+        # anadimos un nuevo comentario al c3d
+        generador.add_comment(f'Compilcion de la funcion {self.id}')  
+        #preparamos una label para retornar
+        label_return = generador.new_label()
+        generador.add_begin_func(self.id)
         pass
