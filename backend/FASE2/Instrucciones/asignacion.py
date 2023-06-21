@@ -61,7 +61,7 @@ class Asignacion(Abstract):
         # Validacion si la varaible no es de tipo global
         if not variable_recuperada.simbolo_c3d.is_global:
             tempPos = generador.add_temp()
-            generador.add_expression(tempPos, 'P', temp_Pos, '+')
+            generador.add_exp(tempPos, 'P', temp_Pos, '+')
         # si el resultado de asignacion es None entonces solo inicializamos con 0 la variable
         if result != None:
             generador.set_stack(tempPos, result.value)

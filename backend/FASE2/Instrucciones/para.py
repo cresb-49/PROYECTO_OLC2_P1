@@ -1,5 +1,7 @@
 from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.generador import Generador
 from FASE2.Symbol.tipoEnum import TipoEnum
 
 from FASE2.Instrucciones.declaracion import Declaracion
@@ -24,10 +26,14 @@ class Para(Abstract):
     def __init__(self, resultado, linea, columna, tipo_for, declaracion, condicion, expresion, sentencias):
         super().__init__(resultado, linea, columna)
         self.tipo_for = tipo_for
-        self.declaracion = declaracion
-        self.condicion = condicion
-        self.expresion = expresion
-        self.sentencias = sentencias
+        self.declaracion: Abstract = declaracion
+        self.condicion: Abstract = condicion
+        self.expresion: Abstract = expresion
+        self.sentencias: Abstract = sentencias
+        # RECUPERACION DE VARIABLES UTILIZADAS PARA GENERAR EL CODIGO EN 3 DIRECCIONES
+        self.last_scope = None
+        self.last_pre_scope_for = None
+        self.last_inner_scope_for = None
 
     def __str__(self):
         attributes = []
@@ -36,13 +42,16 @@ class Para(Abstract):
         return f"{type(self).__name__}: " + ", ".join(attributes)
 
     def ejecutar(self, scope):
+        self.last_scope = scope
         codigo_referencia = str(id(self))
         if self.tipo_for == 1:
             # print('Ejecutamos for tipo 1')
             # Iniciamos un scope apartado del entorno del for
             scope_declarado_for: Scope = Scope(scope)
+            self.last_pre_scope_for = scope_declarado_for
             # Registramos el entorno utilizado
-            self.resultado.agregar_entorno(codigo_referencia, scope_declarado_for)
+            self.resultado.agregar_entorno(
+                codigo_referencia, scope_declarado_for)
             # Declramos la variable asociada al for dentro del scope scope_declarado_for
             self.declaracion.ejecutar(scope_declarado_for)
             # Verificamos la exprecion condicional del for
@@ -50,23 +59,16 @@ class Para(Abstract):
             if result != None:
                 if result['tipo'] == TipoEnum.BOOLEAN:
                     try:
-                        res: bool = result['value']
-                        while res:
-                            scope_temporal: Scope = Scope(scope_declarado_for)
-                            self.resultado.agregar_entorno(codigo_referencia+'_sub2', scope_temporal)
-                            if self.sentencias != None:
-                                resultado = self.sentencias.ejecutar(
-                                    scope_temporal)
-                                if isinstance(resultado, dict):
-                                    return resultado
-                                elif isinstance(resultado, Detener):
-                                    break
-                                elif isinstance(resultado, Continuar):
-                                    self.expresion.ejecutar(scope_declarado_for)
-                                    r = self.condicion.ejecutar(scope_declarado_for)
-                            self.expresion.ejecutar(scope_declarado_for)
-                            r = self.condicion.ejecutar(scope_declarado_for)
-                            res = r['value']
+                        # res: bool = result['value']
+                        # Eliminamos el uso while ya que solo vamos a inicializar lo valores del for
+                        scope_temporal: Scope = Scope(scope_declarado_for)
+                        self.last_inner_scope_for = scope_temporal
+                        self.resultado.agregar_entorno(
+                            codigo_referencia+'_sub2', scope_temporal)
+                        if self.sentencias != None:
+                            self.sentencias.ejecutar(scope_temporal)
+                        self.expresion.ejecutar(scope_declarado_for)
+                        # res = r['value']
                     except Exception as e:
                         # Toma el error de exception
                         print("Error:", str(e))
@@ -82,7 +84,8 @@ class Para(Abstract):
             # Iniciamos un scope apartado del entorno del for
             scope_declarado_for: Scope = Scope(scope)
             # Registramos el entorno utilizado
-            self.resultado.agregar_entorno(codigo_referencia, scope_declarado_for)
+            self.resultado.agregar_entorno(
+                codigo_referencia, scope_declarado_for)
             # Declramos la variable asociada al for dentro del scope scope_declarado_for
             result_expresion = self.expresion.ejecutar(scope_declarado_for)
             if result_expresion['tipo'] == TipoEnum.STRING or result_expresion['tipo'] == TipoEnum.ARRAY:
@@ -152,14 +155,15 @@ class Para(Abstract):
                         asignacion.ejecutar(scope_declarado_for)
                         scope_temporal: Scope = Scope(scope_declarado_for)
                         # Registramos el entorno utilizado
-                        self.resultado.agregar_entorno(codigo_referencia+'_sub2', scope_temporal)
+                        self.resultado.agregar_entorno(
+                            codigo_referencia+'_sub2', scope_temporal)
                         if self.sentencias != None:
                             resultado = self.sentencias.ejecutar(
                                 scope_temporal)
                             if isinstance(resultado, dict):
                                 return resultado
                             elif isinstance(resultado, Detener):
-                                    break
+                                break
                             elif isinstance(resultado, Continuar):
                                 incrementar_valor.ejecutar(scope_declarado_for)
                         # Ejecuciones de final de ciclo
@@ -188,5 +192,35 @@ class Para(Abstract):
             if (self.sentencias != None):
                 self.sentencias.graficar(graphviz, node_for)
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self, scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        if self.tipo_for == 1:
+            generador.add_comment('Inicio de compilacion de ciclo for')
+            # Delaracion o acceso a la variable del ciclo
+            self.declaracion.generar_c3d(self.last_pre_scope_for)
+            # Generacion y colocaldo de la label de inicio del for
+            label_intit = generador.new_label()
+            generador.put_label(label_intit)
+            # Generacion del codigo para la condicional del for y colocado de la etiqueta true
+            ret: Return = self.condicion.generar_c3d(self.last_pre_scope_for)
+            for label in ret.get_true_lbls():
+                generador.put_label(label)
+            # Generacion del codigo del las inttrucciones
+            if self.sentencias != None:
+                generador.add_comment('Instrucciones dentro del for')
+                self.sentencias.generar_c3d(self.last_inner_scope_for)
+                generador.add_comment('Fin instrucciones dentro del for')
+            # Instrucciones del paso del for
+            generador.add_comment('compilacion paso for')
+            self.expresion.generar_c3d(self.last_pre_scope_for)
+            generador.add_comment('fin compilacion paso for')
+            # Instruccion de regreso a la condicional
+            generador.add_goto(label_intit)
+            # Generacion del final del ciclo for y lables de salida del ciclo
+            for label in ret.get_false_lbls():
+                generador.put_label(label)
+            generador.add_comment('Fin de compilacion de ciclo for')
+        else:
+            print('for iterable')
+            pass
