@@ -85,19 +85,27 @@ class Relacional(Abstract):
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
         val_der: Abstract = self.expresion_derecha
         if (self.tipo_operacion == "===" or self.tipo_operacion == "!=="):
-            if val_izq.get_tipo() == TipoEnum.NUMBER:
-                return self.comparacion_number(val_izq, val_der, generador, scope)
-            elif val_izq.get_tipo() == TipoEnum.STRING:
-                return self.comparacion_string(val_izq, val_der, generador, scope)
-            elif val_izq.get_tipo() == TipoEnum.BOOLEAN:
-                self.comparacion_bool(val_izq, val_der, generador, scope)
+            if (val_izq.get_tipo() == TipoEnum.ANY):
+                return self.operaciones_asociadas(val_izq.get_tipo_aux(), val_izq, val_der, generador, scope)
             else:
-                pass
+                return self.operaciones_asociadas(val_izq.get_tipo(), val_izq, val_der, generador, scope)
         else:
             if val_izq.get_tipo() == TipoEnum.NUMBER:
                 return self.comparacion_number(val_izq, val_der, generador, scope)
+            elif val_izq.get_tipo() == TipoEnum.ANY:
+                return self.operaciones_asociadas(val_izq.get_tipo_aux(), val_izq, val_der, generador, scope)
             else:
-                pass
+                print('No devolvi nada 2')
+
+    def operaciones_asociadas(self, tipo, val_izq, val_der, generador, scope):
+        if tipo == TipoEnum.NUMBER:
+            return self.comparacion_number(val_izq, val_der, generador, scope)
+        elif tipo == TipoEnum.STRING:
+            return self.comparacion_string(val_izq, val_der, generador, scope)
+        elif tipo == TipoEnum.BOOLEAN:
+            self.comparacion_bool(val_izq, val_der, generador, scope)
+        else:
+            print('No devolvi nada 3')
 
     def check_labels(self):
         gen_aux = Generador()
@@ -149,26 +157,26 @@ class Relacional(Abstract):
         val_der: Return = exp_der.generar_c3d(scope)
         generador.fcompare_string()
         param_temp = generador.add_temp()
-        generador.add_exp(param_temp,'P',scope.size,'+')
-        generador.add_exp(param_temp,param_temp,'1','+')
-        generador.set_stack(param_temp,val_izq.get_value())
-        
-        generador.add_exp(param_temp,param_temp,'1','+')
-        generador.set_stack(param_temp,val_der.get_value())
-        
+        generador.add_exp(param_temp, 'P', scope.size, '+')
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, val_izq.get_value())
+
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, val_der.get_value())
+
         generador.new_env(scope.size)
         generador.call_fun("compareString")
-        
+
         temp = generador.add_temp()
-        generador.get_stack(temp,'P')
+        generador.get_stack(temp, 'P')
         generador.ret_env(scope.size)
-        
+
         true_label = generador.new_label()
         false_label = generador.new_label()
-        
-        generador.add_if(temp,self.getNum(),'==',true_label)
+
+        generador.add_if(temp, self.getNum(), '==', true_label)
         generador.add_goto(false_label)
-        
+
         generador.add_comment('Fin de la exprecion relacional')
         generador.add_space()
 
@@ -176,7 +184,6 @@ class Relacional(Abstract):
         result.add_true_lbl(true_label[:])
         result.add_false_lbl(false_label[:])
         return result
-        
 
     def getNum(self):
         if self.tipo_operacion == '===':

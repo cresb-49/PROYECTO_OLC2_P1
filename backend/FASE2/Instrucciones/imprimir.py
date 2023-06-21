@@ -110,7 +110,7 @@ class Imprimir(Abstract):
                 elif result.get_tipo() == TipoEnum.BOOLEAN:
                     self.imprmir_bool(generador, result)
                 elif result.get_tipo() == TipoEnum.STRING:
-                    self.imprimir_string(generador, result.get_value())
+                    self.imprimir_string(generador, result.get_value(), scope)
                 elif result.get_tipo() == TipoEnum.ANY:
                     self.imprimir_opciones_any(
                         generador, result.get_tipo_aux(), result)
@@ -130,12 +130,13 @@ class Imprimir(Abstract):
         generador.print_false()
         generador.put_label(temp_lbl)
 
-    def imprimir_string(self, generador, value):
+    def imprimir_string(self, generador, value, scope):
         # Generamos la funcion nativa para imprimir cadenas
         generador.f_print_string()
         param_temp = generador.add_temp()
         # Recuperamos el tamanio actual del stack
-        size = self.last_scope.get_size()
+        # size = self.last_scope.get_size()
+        size = scope.get_size()
         # Agregamos vairbales temporales para recibir el valor del strign guardado con anterioridad
         generador.add_exp(param_temp, 'P', size, '+')
         generador.add_exp(param_temp, param_temp, '1', '+')
