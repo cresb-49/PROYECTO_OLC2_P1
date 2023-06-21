@@ -19,6 +19,7 @@ class Generador:
         # TODO: Agregar la lista de nativas
         # Lista de Naivas
         self.print_string = False
+        self.compare_string = False
 
         # Lista de imports
         self.imports = []
@@ -149,7 +150,8 @@ class Generador:
             self.set_import('math')
             self.code_in(f'{result} =  math.Pow({left}, {right});\n')
         elif op == '%':
-            self.code_in(f'{result} =  float64(int({left}) {op} int({right}));\n')
+            self.code_in(
+                f'{result} =  float64(int({left}) {op} int({right}));\n')
         else:
             self.code_in(f'{result} = {left} {op} {right};\n')
 
@@ -219,35 +221,35 @@ class Generador:
     def add_print_number(self, type, value):
         self.set_import('fmt')
         self.code_in(f'fmt.Printf("%{type}", {value});\n')  # %d %f %c %s
-    
+
     def print_true(self):
         self.set_import('fmt')
         self.add_ident()
-        self.add_print('c',116)
+        self.add_print('c', 116)
         self.add_ident()
-        self.add_print('c',114)
+        self.add_print('c', 114)
         self.add_ident()
-        self.add_print('c',117)
+        self.add_print('c', 117)
         self.add_ident()
-        self.add_print('c',101)
-    
+        self.add_print('c', 101)
+
     def print_false(self):
         self.set_import('fmt')
         self.add_ident()
-        self.add_print('c',102)
+        self.add_print('c', 102)
         self.add_ident()
-        self.add_print('c',97)
+        self.add_print('c', 97)
         self.add_ident()
-        self.add_print('c',108)
+        self.add_print('c', 108)
         self.add_ident()
-        self.add_print('c',115)
+        self.add_print('c', 115)
         self.add_ident()
-        self.add_print('c',101)
-    
+        self.add_print('c', 101)
+
     def add_print_salto_linea(self):
         self.set_import('fmt')
         self.code_in('fmt.Println("")\n')
-        
+
     def add_print_espacio(self):
         self.set_import('fmt')
         self.code_in('fmt.Print(" ")\n')
@@ -286,6 +288,61 @@ class Generador:
         self.add_exp(temp_h, temp_h, '1', '+')
         self.add_ident()
         self.add_goto(compare_lbl)
+        self.put_label(return_lbl)
+        self.add_end_func()
+        self.in_natives = False
+
+    def fcompare_string(self):
+        if self.compare_string:
+            return
+        self.compare_string = True
+        self.in_natives = True
+
+        self.add_begin_func("compareString")
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
+
+        t2 = self.add_temp()
+        self.add_exp(t2, 'P', '1', '+')
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        self.add_exp(t2, t2, '1', '+')
+        t4 = self.add_temp()
+        self.get_stack(t4, t2)
+
+        l1 = self.new_label()
+        l2 = self.new_label()
+        l3 = self.new_label()
+        self.put_label(l1)
+
+        t5 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t5, t3)
+
+        t6 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t6, t4)
+
+        self.add_ident()
+        self.add_if(t5, t6, '!=', l3)
+        self.add_ident()
+        self.add_if(t5, '-1', '==', l2)
+
+        self.add_ident()
+        self.add_exp(t3, t3, '1', '+')
+        self.add_ident()
+        self.add_exp(t4, t4, '1', '+')
+        self.add_ident()
+        self.add_goto(l1)
+
+        self.put_label(l2)
+        self.add_ident()
+        self.set_stack('P', '1')
+        self.add_ident()
+        self.add_goto(return_lbl)
+        self.put_label(l3)
+        self.add_ident()
+        self.set_stack('P', '0')
         self.put_label(return_lbl)
         self.add_end_func()
         self.in_natives = False
