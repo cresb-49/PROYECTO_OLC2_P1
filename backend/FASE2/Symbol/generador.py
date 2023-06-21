@@ -240,6 +240,8 @@ class Generador:
         self.add_ident()
         self.add_print('c',108)
         self.add_ident()
+        self.add_print('c',115)
+        self.add_ident()
         self.add_print('c',101)
     
     def add_print_salto_linea(self):

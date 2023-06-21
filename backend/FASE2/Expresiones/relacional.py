@@ -62,14 +62,9 @@ class Relacional(Abstract):
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        # temporal = ''
-        # operador = ''
-
         generador.add_comment("Compilacion de exprecion Relaciona o Logica")
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
         val_der: Return = self.expresion_derecha.generar_c3d(scope)
-        # Verificacion de las labels de salto
-        self.check_labels()
         if (self.tipo_operacion == "===" or self.tipo_operacion == "!=="):
             if val_izq.get_tipo() == TipoEnum.NUMBER:
                 return self.comparacion_number(val_izq, val_der, generador)
@@ -92,17 +87,20 @@ class Relacional(Abstract):
             self.false_lbl = generador.new_label()
 
     def comparacion_number(self, val_izq: Return, val_der: Return, generador: Generador):
+        true_label = generador.new_label()
+        false_label = generador.new_label()
+        
         if self.tipo_operacion == '===':
-            generador.add_if(val_izq.get_value(),val_der.get_value(), '==', self.true_lbl)
+            generador.add_if(val_izq.get_value(),val_der.get_value(), '==', true_label)
         elif self.tipo_operacion == '!==':
-            generador.add_if(val_izq.get_value(),val_der.get_value(), '!=', self.true_lbl)
+            generador.add_if(val_izq.get_value(),val_der.get_value(), '!=', true_label)
         else:
-            generador.add_if(val_izq.get_value(), val_der.get_value(), self.tipo_operacion, self.true_lbl)
-        generador.add_goto(self.false_lbl)
+            generador.add_if(val_izq.get_value(), val_der.get_value(), self.tipo_operacion, true_label)
+        generador.add_goto(false_label)
         generador.add_comment('Fin de la exprecion relacional')
         generador.add_space()
-
+        
         result = Return(None, TipoEnum.BOOLEAN, False, None)
-        result.set_true_lbl(self.true_lbl)
-        result.set_false_lbl(self.false_lbl)
+        result.add_true_lbl(true_label[:])
+        result.add_false_lbl(false_label[:])
         return result

@@ -6,8 +6,6 @@ class Return:
         self.length = length
         self.referencia = referencia
         self.is_temp = is_temp
-        self.true_lbl = ''
-        self.false_lbl = ''
         self.list_true_lbls = []
         self.list_false_lbls = []
 
@@ -28,12 +26,6 @@ class Return:
 
     def get_referencia(self):
         return self.referencia
-
-    def get_true_lbl(self):
-        return self.true_lbl
-
-    def get_false_lbl(self):
-        return self.false_lbl
 
     def set_value(self, value):
         self.value = value
