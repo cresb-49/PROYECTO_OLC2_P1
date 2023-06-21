@@ -17,13 +17,29 @@ class Relacional(Abstract):
             return False
         tipo_exprecion_izquierda = val_izq["tipo"]
         tipo_exprecion_der = val_derecho["tipo"]
-        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING)):
+        if (tipo_exprecion_izquierda == tipo_exprecion_der and (tipo_exprecion_izquierda == TipoEnum.NUMBER or tipo_exprecion_izquierda == TipoEnum.STRING or tipo_exprecion_izquierda == TipoEnum.BOOLEAN)):
             # si se trata de una suma enviamos a validarla
-            return True
+            if tipo_exprecion_izquierda == TipoEnum.STRING:
+                if self.tipo_operacion == '===' or self.tipo_operacion == '!==':
+                    return True
+                else:
+                    concat = f'No puede realizar la operacion, string {self.tipo_operacion} string'
+                    self.resultado.add_error('Semantico', concat, self.linea, self.columna)
+                    print(concat)
+                    return False
+            elif tipo_exprecion_izquierda == TipoEnum.BOOLEAN:
+                if self.tipo_operacion == '===' or self.tipo_operacion == '!==':
+                    return True
+                else:
+                    concat = f'No puede realizar la operacion, boolean {self.tipo_operacion} boolean'
+                    self.resultado.add_error('Semantico', concat, self.linea, self.columna)
+                    print(concat)
+                    return False
+            else:
+                return True
         else:
             concat = f'Tipos no coinciden para la operacion, Se esperaba number {self.tipo_operacion} number o string {self.tipo_operacion} string y se recibio {tipo_exprecion_izquierda.value} {self.tipo_operacion} {tipo_exprecion_der.value}'
-            self.resultado.add_error(
-                'Semantico', concat, self.linea, self.columna)
+            self.resultado.add_error('Semantico', concat, self.linea, self.columna)
             print(concat)
             return False
 
