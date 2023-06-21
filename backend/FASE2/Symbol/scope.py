@@ -59,7 +59,7 @@ class Scope:
         self.variables = Variables()
 
     def __str__(self) -> str:
-        return f"Nombre: {self.nombre}, Tipo: {self.tipo}"
+        return f"Nombre: {self.nombre}, Tipo: {self.tipo} Anterior: {self.anterior}"
 
     def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario, linea, columna):
         try:
@@ -83,6 +83,9 @@ class Scope:
             raise ValueError(str(error))
 
     def get_size(self):
+        # TODO: Si hay problemas de entornos hay que verificar aqui XD
+        if self.anterior != None:
+            self.size = self.anterior.size
         return self.size
 
     def sum_size(self):

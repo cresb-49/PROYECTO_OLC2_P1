@@ -182,6 +182,8 @@ class Declaracion(Abstract):
         # Primero obtenermos la variable desde el scope generado por ultimo
         variable_recuperada = self.last_scope.obtener_variable(self.id)
         recu_pos = self.last_scope.get_size()
+        print('last scope -> ',self.last_scope)
+        print('Variable -> ',self.id,' pos ->',recu_pos)
         variable_recuperada.simbolo_c3d.pos = "pos_"+str(recu_pos)
         tempPos = variable_recuperada.simbolo_c3d.pos[4:]
         temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
@@ -205,4 +207,6 @@ class Declaracion(Abstract):
             generador.set_stack(tempPos, 0)
         generador.add_comment(f'** fin de compilacion variable {self.id} **')
         self.last_scope.sum_size()
+        print('last scope -> ',self.last_scope.size)
+        
         
