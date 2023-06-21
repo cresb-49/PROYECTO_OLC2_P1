@@ -10,6 +10,8 @@ class Abstract(ABC):
         # CODICO EXTRA PARA CODIGO 3 DIRECCIONES
         self.true_lbl = ''
         self.false_lbl = ''
+        self.list_true_lbl = []
+        self.list_false_lbl = []
 
     @abstractclassmethod
     def ejecutar(self, scope):
@@ -18,7 +20,7 @@ class Abstract(ABC):
     @abstractclassmethod
     def graficar(self, graphviz, padre):
         pass
-    
+
     @abstractclassmethod
-    def generar_c3d(self,scope):
+    def generar_c3d(self, scope):
         pass
