@@ -1,7 +1,8 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
-
+from FASE2.Symbol.generador import Generador
+from FASE2.Abstract.return__ import Return
 
 class ToFixed(Abstract):
     def __init__(self, resultado, linea, columna, numero, expreciones):
@@ -50,4 +51,44 @@ class ToFixed(Abstract):
         self.expreciones.graficar(graphviz, node_fixed)
     
     def generar_c3d(self,scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+
+
+        # mandamos ha traer el c3d de las expreciones que componen el fixed
+        c3d_numero:Return = self.numero.generar_c3d(scope)
+        c3d_expreciones:Return = self.expreciones.generar_c3d(scope)
+        #mandamos ha crear la funcion to fixed del generador
+        generador.too_fixed()
+
+        param_temp = generador.add_temp()
+        generador.add_exp(param_temp,'P',scope.size,'+')
+
+        #enviamos ha guardar el valor del primer valor (numero)
+        generador.add_exp(param_temp,param_temp,'1','+')
+        generador.set_stack(param_temp,c3d_numero.get_value())
+        
+
+        #seteamos en el stack el valor del segundo valor (expreciones)
+        generador.add_exp(param_temp,param_temp,'1','+')
+        generador.set_stack(param_temp,c3d_expreciones.get_value())
+        
+        #creacion del nuevo entorno
+        generador.new_env(scope.size)
+
+        #mandamos ha llamr a la funcion toFixed
+        generador.call_fun("toFixed")
+        
+        temp = generador.add_temp()
+        generador.get_stack(temp,'P')
+        generador.ret_env(scope.size)
+        
+
+        
+        #indicamos que se termino la compilacion de tofixed
+        generador.add_comment('fin de to fixed')
+        generador.add_space()
+
+        result = Return(temp, TipoEnum.NUMBER, False, None)
+        return result
         pass

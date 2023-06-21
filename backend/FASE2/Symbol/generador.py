@@ -347,3 +347,34 @@ class Generador:
         self.put_label(return_lbl)
         self.add_end_func()
         self.in_natives = False
+
+    def too_fixed(self):
+        if self.to_fixed:
+            return
+        self.to_fixed = True
+        self.in_natives = True
+
+        # agregamos la libreia math para poder hacer el round especifico
+        self.set_import('math')
+        self.add_begin_func("toFixed")
+
+        t2 = self.add_temp()
+        self.add_exp(t2, 'P', '1', '+')
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        self.add_exp(t2, t2, '1', '+')
+
+        # variable temporal que contendra el numero de presicion
+        t4 = self.add_temp()
+        self.get_stack(t4, t2)
+
+        # variable temporal que contendra el numero base
+        t5 = self.add_temp()
+        # mandamos ha traer el stack en donde esta el numero base y lo asignamos ha t4
+        self.get_stack(t5, t3)
+        #seteamos el pointer con el valor de la operacion to fixed
+        self.set_stack(
+            'P', f'math.Round({t5}*(math.Pow(10, float64({t4})))) / (math.Pow(10, float64({t4})))')
+
+        self.add_end_func()
+        self.in_natives = False
