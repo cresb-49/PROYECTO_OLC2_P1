@@ -1,13 +1,14 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
-
+from FASE2.Symbol.generador import Generador
+from FASE2.Abstract.return__ import Return
 
 class ToLowerCase(Abstract):
 
-    def __init__(self, resultado, linea, columna, numero):
+    def __init__(self, resultado, linea, columna, cadena):
         super().__init__(resultado, linea, columna)
-        self.numero = numero
+        self.cadena = cadena
 
     def __str__(self):
         return "toLowerCase"
@@ -25,7 +26,7 @@ class ToLowerCase(Abstract):
 
     def ejecutar(self, scope):
         # ejecutamos el diccionario
-        ejecutar = self.numero.ejecutar(scope)
+        ejecutar = self.cadena.ejecutar(scope)
         # una vez traida la variable debemos verificar que se trata d eun string
         if(self.verificarTipos(ejecutar)):
             # mandmaos ha hacer concat sobre el atributo value
@@ -46,4 +47,38 @@ class ToLowerCase(Abstract):
         graphviz.add_nodo("toLowerCase", result)
 
     def generar_c3d(self,scope):
-        pass
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+
+
+        # mandamos ha traer el c3d de las expreciones que componen el fixed
+        c3d_cadena:Return = self.cadena.generar_c3d(scope)
+        #mandamos ha crear la funcion to fixed del generador
+        generador.to_lower()
+
+        param_temp = generador.add_temp()
+        generador.add_exp(param_temp,'P',scope.size,'+')
+
+        #enviamos ha guardar el valor del primer valor (numero)
+        generador.add_exp(param_temp,param_temp,'1','+')
+        generador.get_stack(param_temp,c3d_cadena.get_value())
+        
+        
+        #creacion del nuevo entorno
+        generador.new_env(scope.size)
+
+        #mandamos ha llamr a la funcion toLowerCase
+        generador.call_fun("toLowerCase")
+        
+        temp = generador.add_temp()
+        generador.get_stack(temp,'P')
+        generador.ret_env(scope.size)
+        
+
+        
+        #indicamos que se termino la compilacion de tofixed
+        generador.add_comment('fin de toLowerCase')
+        generador.add_space()
+
+        result = Return(temp, TipoEnum.STRING, False, None)
+        return result

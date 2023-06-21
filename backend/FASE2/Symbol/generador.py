@@ -356,6 +356,7 @@ class Generador:
 
         # agregamos la libreia math para poder hacer el round especifico
         self.set_import('math')
+        self.set_import('strconv')
         self.add_begin_func("toFixed")
 
         t2 = self.add_temp()
@@ -372,9 +373,65 @@ class Generador:
         t5 = self.add_temp()
         # mandamos ha traer el stack en donde esta el numero base y lo asignamos ha t4
         self.get_stack(t5, t3)
-        #seteamos el pointer con el valor de la operacion to fixed
+        # seteamos el pointer con el valor de la operacion to fixed
         self.set_stack(
-            'P', f'math.Round({t5}*(math.Pow(10, float64({t4})))) / (math.Pow(10, float64({t4})))')
+            'P', f"strconv.ParseFloat(strconv.FormatFloat({t5}, 'f', int({t4}), 64), 64)")
+
+        self.add_end_func()
+        self.in_natives = False
+
+    def to_lower(self):
+        if self.to_fixed:
+            return
+        self.to_fixed = True
+        self.in_natives = True
+        # agregamos la libreria strings para poder la manupilacion de strings
+        self.set_import('strings')
+
+        # agregamos la libreia math para poder hacer el round especifico
+        self.add_begin_func("toLowerCase")
+
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
+        # Label para la comparacion para buscar fin de cadena
+        compare_lbl = self.new_label()
+        # Temporal puntero a stack
+        tempo_p = self.add_temp()
+        # Temporal puntero Heap
+        temp_h = self.add_temp()
+        self.add_exp(tempo_p, 'P', '1', '+')
+        self.get_stack(temp_h, tempo_p)
+
+        # Temporal con puntero ha H para guardar la cadena nueva
+        tempo_p2 = self.add_temp()
+        self.add_asig(tempo_p2, 'H')
+
+        # Temporal para comparar
+        temp_c = self.add_temp()
+        self.put_label(compare_lbl)
+        self.add_ident()
+        self.get_heap(temp_c, temp_h)
+        self.add_ident()
+        self.add_if(temp_c, '-1', '==', return_lbl)
+        self.add_ident()
+
+        self.set_heap('H', f'float64(int({temp_c}) + 32)')
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        self.add_exp(temp_h, temp_h, '1', '+')
+        self.add_ident()
+        self.add_goto(compare_lbl)
+        self.put_label(return_lbl)
+
+
+        self.set_heap('H', f'-1')
+        self.next_heap()
+
+
+        # seteamos el pointer con el valor de la operacion to fixed
+        # self.set_stack(
+        #     'P', f'math.Round({t5}*(math.Pow(10, float64({t4})))) / (math.Pow(10, float64({t4})))')
 
         self.add_end_func()
         self.in_natives = False
