@@ -187,7 +187,7 @@ class Declaracion(Abstract):
         temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
         if not variable_recuperada.simbolo_c3d.is_global:
             tempPos = generador.add_temp()
-            generador.add_expression(tempPos, 'P', temp_Pos, '+')
+            generador.add_exp(tempPos, 'P', temp_Pos, '+')
         if result != None:
             if result.type == TipoEnum.BOOLEAN:
                 temp_lbl = generador.new_label()

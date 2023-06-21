@@ -10,7 +10,7 @@ class Return:
         self.list_false_lbls = []
 
     def __str__(self):
-        return f"Value: {self.value}, Type: {self.type}, True Labels: {self.list_true_lbls}, False Labels: {self.list_false_lbls}"
+        return f"Value: {self.value}, Type: {self.type}, Aux Type: {self.aux_type}, True Labels: {self.list_true_lbls}, False Labels: {self.list_false_lbls}"
 
     def get_value(self):
         return self.value
