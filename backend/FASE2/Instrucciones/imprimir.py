@@ -113,7 +113,7 @@ class Imprimir(Abstract):
                     self.imprimir_string(generador, result.get_value(), scope)
                 elif result.get_tipo() == TipoEnum.ANY:
                     self.imprimir_opciones_any(
-                        generador, result.get_tipo_aux(), result)
+                        generador, result.get_tipo_aux(), result, scope)
                 else:
                     print('Encontre variable sin clasificar ->', result)
         generador.add_print_salto_linea()
@@ -152,13 +152,13 @@ class Imprimir(Abstract):
     def imprimir_number(self, generador, result):
         generador.add_print_number('f', result)
 
-    def imprimir_opciones_any(self, generador, tipo_aux, result: Return):
+    def imprimir_opciones_any(self, generador, tipo_aux, result: Return, scope):
         if tipo_aux == TipoEnum.NUMBER:
             self.imprimir_number(generador, result.get_value())
         elif tipo_aux == TipoEnum.BOOLEAN:
             self.imprmir_bool(generador, result)
         elif tipo_aux == TipoEnum.STRING:
-            self.imprimir_string(generador, result.get_value())
+            self.imprimir_string(generador, result.get_value(), scope)
         elif tipo_aux == TipoEnum.ANY:
             print('Encontre variable any dentro de any? ->', result)
         else:

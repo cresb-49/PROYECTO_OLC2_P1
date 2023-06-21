@@ -2,6 +2,7 @@ from FASE2.Abstract.abstract import Abstract
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
+from FASE2.Expresiones.logico import Logico
 
 
 class Relacional(Abstract):
@@ -10,6 +11,10 @@ class Relacional(Abstract):
         self.expresion_izquierda = expresion_izquierda
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
+        # Guadado de los ultimos tipos ejecutados en el relacional
+        self.last_scope = None
+        self.last_exp_izq = None
+        self.last_exp_der = None
 
     def verificarTipos(self, val_izq, val_derecho):
         # extraemos el tipo de la exprecion izquierda de la op
@@ -47,8 +52,11 @@ class Relacional(Abstract):
             return False
 
     def ejecutar(self, scope):
+        self.last_scope = scope
         val_izquierdo = self.expresion_izquierda.ejecutar(scope)
         val_derecho = self.expresion_derecha.ejecutar(scope)
+        self.last_exp_izq = val_izquierdo
+        self.last_exp_der = val_derecho
 
         if (self.verificarTipos(val_izquierdo, val_derecho)):
             if (self.tipo_operacion == "===" or self.tipo_operacion == "=="):
@@ -82,18 +90,20 @@ class Relacional(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         generador.add_comment("Compilacion de exprecion Logica")
-        val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
+        # print('debuj 1 ->', self.last_exp_izq)
+        # print('debuj 2 ->', self.last_exp_der)
+        val_izq: Abstract = self.expresion_izquierda
         val_der: Abstract = self.expresion_derecha
         if (self.tipo_operacion == "===" or self.tipo_operacion == "!=="):
-            if (val_izq.get_tipo() == TipoEnum.ANY):
-                return self.operaciones_asociadas(val_izq.get_tipo_aux(), val_izq, val_der, generador, scope)
+            if self.last_exp_izq['tipo'] == TipoEnum.ANY:
+                return self.operaciones_asociadas(self.last_exp_izq['tipo'], val_izq, val_der, generador, scope)
             else:
-                return self.operaciones_asociadas(val_izq.get_tipo(), val_izq, val_der, generador, scope)
+                return self.operaciones_asociadas(self.last_exp_izq['tipo'], val_izq, val_der, generador, scope)
         else:
-            if val_izq.get_tipo() == TipoEnum.NUMBER:
+            if self.last_exp_izq['tipo'] == TipoEnum.NUMBER:
                 return self.comparacion_number(val_izq, val_der, generador, scope)
-            elif val_izq.get_tipo() == TipoEnum.ANY:
-                return self.operaciones_asociadas(val_izq.get_tipo_aux(), val_izq, val_der, generador, scope)
+            elif self.last_exp_izq['tipo'] == TipoEnum.ANY:
+                return self.operaciones_asociadas(self.last_exp_izq['tipo'], val_izq, val_der, generador, scope)
             else:
                 print('No devolvi nada 2')
 
@@ -103,7 +113,7 @@ class Relacional(Abstract):
         elif tipo == TipoEnum.STRING:
             return self.comparacion_string(val_izq, val_der, generador, scope)
         elif tipo == TipoEnum.BOOLEAN:
-            self.comparacion_bool(val_izq, val_der, generador, scope)
+            return self.comparacion_bool(val_izq, val_der, generador, scope)
         else:
             print('No devolvi nada 3')
 
@@ -115,7 +125,8 @@ class Relacional(Abstract):
         if self.false_lbl == '':
             self.false_lbl = generador.new_label()
 
-    def comparacion_number(self, val_izq: Return, exp_der: Abstract, generador: Generador, scope):
+    def comparacion_number(self, exp_izq: Return, exp_der: Abstract, generador: Generador, scope):
+        val_izq: Return = exp_izq.generar_c3d(scope)
         val_der: Return = exp_der.generar_c3d(scope)
         true_label = generador.new_label()
         false_label = generador.new_label()
@@ -138,22 +149,41 @@ class Relacional(Abstract):
         result.add_false_lbl(false_label[:])
         return result
 
-    def comparacion_bool(self, val_izq: Return, exp_der: Abstract, generador: Generador, scope):
-        print('debuj -> ', val_izq)
-        for label in val_izq.get_true_lbls():
-            generador.put_label(label)
-        val_der: Return = exp_der.generar_c3d(scope)
-        for label in val_der.get_true_lbls():
-            generador.put_label(label)
-        print('debuj -> ', val_der)
-        generador.add_comment('Fin de la exprecion relacional')
-        generador.add_space()
-        result = Return(None, TipoEnum.BOOLEAN, False, None)
-        result.add_true_lbl("r")
-        result.add_false_lbl("y")
-        return result
+    def comparacion_bool(self, exp_izq: Abstract, exp_der: Abstract, generador: Generador, scope):
+        ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
+        and1: Logico = Logico(self.resultado, self.linea,
+                              self.columna, exp_izq, exp_der, '&&')
+        not_izq = Logico(self.resultado, self.linea,
+                         self.columna, None, exp_izq, '!')
+        not_der = Logico(self.resultado, self.linea,
+                         self.columna, None, exp_der, '!')
+        and2: Logico = Logico(self.resultado, self.linea,
+                              self.columna, not_izq, not_der, '&&')
+        or1: Logico = Logico(self.resultado, self.linea,
+                             self.columna, and1, and2, '||')
 
-    def comparacion_string(self, val_izq: Return, exp_der: Abstract, generador: Generador, scope):
+        if self.tipo_operacion == '===':
+            result: Return = or1.generar_c3d(scope)
+            for label in result.get_true_lbls():
+                ret.add_true_lbl(label)
+            for label in result.get_false_lbls():
+                ret.add_false_lbl(label)
+            generador.add_comment('Fin de la exprecion relacional')
+            generador.add_space()
+            return ret
+        else:
+            not_all: Logico = Logico(self.resultado, self.linea, self.columna, None, or1, '!')
+            result: Return = not_all.generar_c3d(scope)
+            for label in result.get_true_lbls():
+                ret.add_true_lbl(label)
+            for label in result.get_false_lbls():
+                ret.add_false_lbl(label)
+            generador.add_comment('Fin de la exprecion relacional')
+            generador.add_space()
+            return ret
+
+    def comparacion_string(self, exp_izq: Abstract, exp_der: Abstract, generador: Generador, scope):
+        val_izq: Return = exp_izq.generar_c3d(scope)
         val_der: Return = exp_der.generar_c3d(scope)
         generador.fcompare_string()
         param_temp = generador.add_temp()
