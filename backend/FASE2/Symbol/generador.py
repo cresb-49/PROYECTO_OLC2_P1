@@ -361,6 +361,7 @@ class Generador:
 
         t2 = self.add_temp()
         self.add_exp(t2, 'P', '1', '+')
+        #variable temporal en donde se alojara el valor del numero base
         t3 = self.add_temp()
         self.get_stack(t3, t2)
         self.add_exp(t2, t2, '1', '+')
@@ -369,13 +370,9 @@ class Generador:
         t4 = self.add_temp()
         self.get_stack(t4, t2)
 
-        # variable temporal que contendra el numero base
-        t5 = self.add_temp()
-        # mandamos ha traer el stack en donde esta el numero base y lo asignamos ha t4
-        self.get_stack(t5, t3)
         # seteamos el pointer con el valor de la operacion to fixed
         self.set_stack(
-            'P', f"strconv.ParseFloat(strconv.FormatFloat({t5}, 'f', int({t4}), 64), 64)")
+            'P', f"math.Round({t3}*(math.Pow(10, float64({t4})))) / (math.Pow(10, float64({t4})))")
 
         self.add_end_func()
         self.in_natives = False
