@@ -7,8 +7,8 @@ from FASE2.Symbol.generador import Generador
 class Logico(Abstract):
     def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
         super().__init__(resultado, linea, columna)
-        self.expresion_izquierda = expresion_izquierda
-        self.expresion_derecha = expresion_derecha
+        self.expresion_izquierda: Abstract = expresion_izquierda
+        self.expresion_derecha: Abstract = expresion_derecha
         self.tipo_operacion = tipo_operacion
 
     def __str__(self):
@@ -70,11 +70,51 @@ class Logico(Abstract):
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        
-        if (self.tipo_operacion == "!"):
-            val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
-            val_der: Return = self.expresion_derecha.generar_c3d(scope)
-                        
-                
-        else:
-            val_der: Return = self.expresion_derecha.generar_c3d(scope)
+        generador.add_comment('Compilacion de Exprecion Relacional')
+        if self.tipo_operacion == "!":
+            ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
+            rigth = self.expresion_derecha.generar_c3d(scope)
+            # Invertimos las lista de verdadero y falso
+            for label in rigth.get_true_lbls():
+                ret.add_false_lbl(label)
+            for label in rigth.get_false_lbls():
+                ret.add_true_lbl(label)
+            return ret
+        elif self.tipo_operacion == '&&':
+            ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
+            left: Return = self.expresion_izquierda.generar_c3d(scope)
+            for label in left.get_true_lbls():
+                generador.put_label(label)
+            rigth: Return = self.expresion_derecha.generar_c3d(scope)
+            # Asignacion de nueva estiquetas verdaderas - las etiquetas verdaderas del segundo son las de este nuevo
+            for label in rigth.get_true_lbls():
+                ret.list_true_lbls.append(label)
+            # Asignacion de nueva estiquetas falsas - las etiquetas falsas del primero y el segundo
+            for label in left.get_false_lbls():
+                ret.add_false_lbl(label)
+            for label in rigth.get_false_lbls():
+                ret.add_false_lbl(label)
+            return ret
+        elif self.tipo_operacion == '||':
+            ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
+            left: Return = self.expresion_izquierda.generar_c3d(scope)
+            for label in left.get_false_lbls():
+                generador.put_label(label)
+            rigth: Return = self.expresion_derecha.generar_c3d(scope)
+            # Asignacion de nueva estiquetas verdaderas - las etiquetas verdaderas del segundo son las de este nuevo
+            for label in left.get_true_lbls():
+                ret.add_true_lbl(label)
+            for label in rigth.get_true_lbls():
+                ret.add_true_lbl(label)
+            # Asignacion de nueva estiquetas falsas - las etiquetas falsas del primero y el segundo
+            for label in rigth.get_false_lbls():
+                ret.add_false_lbl(label)
+            return ret
+
+    def check_labels(self):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        if self.true_lbl == '':
+            self.true_lbl = generador.new_label()
+        if self.false_lbl == '':
+            self.false_lbl = generador.new_label()

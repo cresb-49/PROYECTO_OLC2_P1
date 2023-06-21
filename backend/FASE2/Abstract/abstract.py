@@ -24,3 +24,15 @@ class Abstract(ABC):
     @abstractclassmethod
     def generar_c3d(self, scope):
         pass
+
+    def get_true_lbl(self):
+        return self.true_lbl
+
+    def get_false_lbl(self):
+        return self.false_lbl
+
+    def set_true_lbl(self, true_lbl):
+        self.true_lbl = true_lbl
+
+    def set_false_lbl(self, false_lbl):
+        self.false_lbl = false_lbl

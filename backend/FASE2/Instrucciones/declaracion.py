@@ -175,7 +175,7 @@ class Declaracion(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         # generamos el codigo 3 direccines de la asignacion si es que existe
-        result = None
+        result: Return = None
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
         generador.add_comment(f'** compilacion de variable {self.id} **')
@@ -189,8 +189,20 @@ class Declaracion(Abstract):
             tempPos = generador.add_temp()
             generador.add_expression(tempPos, 'P', temp_Pos, '+')
         if result != None:
-            generador.set_stack(tempPos, result.value)
+            if result.type == TipoEnum.BOOLEAN:
+                temp_lbl = generador.new_label()
+                for label in result.get_true_lbls():
+                    generador.put_label(label)
+                generador.set_stack(tempPos, "1")
+                generador.add_goto(temp_lbl)
+                for label in result.get_false_lbls():
+                    generador.put_label(label)
+                generador.set_stack(temp_Pos, "0")
+                generador.put_label(temp_lbl)
+            else:
+                generador.set_stack(tempPos, result.value)
         else:
             generador.set_stack(tempPos, 0)
         generador.add_comment(f'** fin de compilacion variable {self.id} **')
         self.last_scope.sum_size()
+        

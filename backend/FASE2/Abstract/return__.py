@@ -6,11 +6,11 @@ class Return:
         self.length = length
         self.referencia = referencia
         self.is_temp = is_temp
-        self.true_lbl = ''
-        self.false_lbl = ''
+        self.list_true_lbls = []
+        self.list_false_lbls = []
 
     def __str__(self):
-        return f"Value: {self.value}, Type: {self.type}, Aux Type: {self.aux_type}, Length: {self.length}, Referencia: {self.referencia}, Is Temp: {self.is_temp}, True Label: {self.true_lbl}, False Label: {self.false_lbl}"
+        return f"Value: {self.value}, Type: {self.type}, True Labels: {self.list_true_lbls}, False Labels: {self.list_false_lbls}"
 
     def get_value(self):
         return self.value
@@ -27,12 +27,6 @@ class Return:
     def get_referencia(self):
         return self.referencia
 
-    def get_true_lbl(self):
-        return self.true_lbl
-
-    def get_false_lbl(self):
-        return self.false_lbl
-
     def set_value(self, value):
         self.value = value
 
@@ -48,8 +42,20 @@ class Return:
     def set_referencia(self, ref):
         self.referencia = ref
 
-    def set_true_lbl(self, true_lbl):
-        self.true_lbl = true_lbl
+    def add_true_lbl(self, true_lbl):
+        self.list_true_lbls.append(true_lbl)
 
-    def set_false_lbl(self, false_lbl):
-        self.false_lbl = false_lbl
+    def add_false_lbl(self, false_lbl):
+        self.list_false_lbls.append(false_lbl)
+
+    def get_true_lbls(self):
+        return self.list_true_lbls
+
+    def get_false_lbls(self):
+        return self.list_false_lbls
+
+    def set_true_lbls(self, true_lbls):
+        self.list_true_lbls = true_lbls
+
+    def set_false_lbls(self, false_lbls):
+        self.list_false_lbls = false_lbls

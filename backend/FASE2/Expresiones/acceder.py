@@ -110,6 +110,8 @@ class Acceder(Abstract):
         tipo_variable = self.resultado_valor.tipo
         if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
             if (tipo_variable == TipoEnum.BOOLEAN):
+                generador.add_comment(
+                    f"** fin compilacion de acceso de variable {self.id} **")
                 return self.definicion_variable_bool(temp, generador)
             else:
                 generador.add_comment(
@@ -118,6 +120,8 @@ class Acceder(Abstract):
         else:
             calculo = self.calculo_tipo_aux(result.tipo_secundario)
             if calculo == TipoEnum.BOOLEAN:
+                generador.add_comment(
+                    f"** fin compilacion de acceso de variable {self.id} **")
                 return self.definicion_variable_bool(temp, generador)
             else:
                 generador.add_comment(
@@ -137,19 +141,18 @@ class Acceder(Abstract):
             print('Debemos de calcular el tipo secundario!!!')
 
     def definicion_variable_bool(self, temp, generador: Generador):
-        if self.true_lbl == '':
-            self.true_lbl = generador.new_label()
-        if self.false_lbl == '':
-            self.false_lbl = generador.new_label()
+        true_label = generador.new_label()
 
-        generador.add_if(temp, '1', '==', self.true_lbl)
-        generador.add_goto(self.false_lbl)
+        false_label = generador.new_label()
+
+        generador.add_if(temp, '1', '==', true_label)
+        generador.add_goto(false_label)
 
         generador.add_comment(
             f"** fin compilacion de acceso de variable {self.id} **")
         generador.add_space()
         retorno = Return(None, TipoEnum.BOOLEAN, True, None)
-        retorno.set_true_lbl(self.true_lbl)
-        retorno.set_false_lbl(self.false_lbl)
+        retorno.add_true_lbl(true_label)
+        retorno.add_false_lbl(false_label)
 
         return retorno

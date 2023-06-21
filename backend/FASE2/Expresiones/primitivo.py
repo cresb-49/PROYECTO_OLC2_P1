@@ -34,25 +34,25 @@ class Primitivo(Abstract):
         generador = gen_aux.get_instance()
 
         if self.tipo == TipoEnum.BOOLEAN:
-            
-            if self.true_lbl == '':
-                generador.new_label()
-            if self.false_lbl == '':
-                generador.new_label()
-
-            if self.valor:
-                generador.add_goto(self.true_lbl)
-                generador.add_goto(self.false_lbl)
-            else:
-                generador.add_goto(self.false_lbl)
-                generador.add_goto(self.true_lbl)
 
             result = Return(self.valor, self.tipo, False, None)
-            result.set_true_lbl(self.true_lbl)
-            result.set_false_lbl(self.false_lbl)
-            
+            true_label = generador.new_label()
+            false_label = generador.new_label()
+
+            if self.valor:
+                generador.add_goto(true_label)
+                generador.add_comment('goto para evitar error de go')
+                generador.add_goto(false_label)
+            else:
+                generador.add_goto(false_label)
+                generador.add_comment('goto para evitar error de go')
+                generador.add_goto(true_label)
+
+            result.add_true_lbl(true_label)
+            result.add_false_lbl(false_label)
+
             return result
-        
+
         elif self.tipo == TipoEnum.STRING:
             temporal = generador.add_temp()
             generador.add_asig(temporal, 'H')

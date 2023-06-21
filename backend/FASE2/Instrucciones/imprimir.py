@@ -119,11 +119,14 @@ class Imprimir(Abstract):
         generador.add_print_salto_linea()
 
     def imprmir_bool(self, generador: Generador, result: Return):
+        print('imprimir ->', result)
         temp_lbl = generador.new_label()
-        generador.put_label(result.get_true_lbl())
+        for label in result.get_true_lbls():
+            generador.put_label(label)
         generador.print_true()
         generador.add_goto(temp_lbl)
-        generador.put_label(result.get_false_lbl())
+        for label in result.get_false_lbls():
+            generador.put_label(label)
         generador.print_false()
         generador.put_label(temp_lbl)
 
