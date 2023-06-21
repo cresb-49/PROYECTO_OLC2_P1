@@ -15,7 +15,7 @@ class Logico(Abstract):
         return f"Resultado: {self.resultado}\nLínea: {self.linea}\nColumna: {self.columna}\nExpresión Izquierda: {self.expresion_izquierda}\nExpresión Derecha: {self.expresion_derecha}\nTipo de Operación: {self.tipo_operacion}"
 
     def verificarTipos(self, val_izq, val_derecho):
-        if (val_izq == None or val_derecho == None):
+        if ((val_izq == None or val_derecho == None) and self.tipo_operacion != '!'):
             return False
         # extraemos el tipo de la exprecion izquierda de la op
         tipo_exprecion_der = val_derecho["tipo"]
@@ -40,26 +40,32 @@ class Logico(Abstract):
 
     def ejecutar(self, scope):
         # print(self)
-        val_derecho = self.expresion_derecha.ejecutar(scope)
         if self.expresion_izquierda != None:
             val_izq = self.expresion_izquierda.ejecutar(scope)
         else:
             val_izq = None
-        if (self.verificarTipos(val_izq, val_derecho)):
-            if (self.tipo_operacion == "&&"):
-                val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-                result = val_izquierdo['value'] and val_derecho['value']
-                return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo_operacion == "||"):
-                val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-                result = val_izquierdo['value'] or val_derecho['value']
-                return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            elif (self.tipo_operacion == "!"):
+        if self.tipo_operacion == '!':
+            val_derecho = self.expresion_derecha.ejecutar(scope)
+            if (self.verificarTipos(val_izq, val_derecho)):
                 result = not val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            else:
+                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
-            # print('Debuj-> Primitivo ->', self)
-            return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            val_derecho = self.expresion_derecha.ejecutar(scope)
+            if (self.verificarTipos(val_izq, val_derecho)):
+                if (self.tipo_operacion == "&&"):
+                    val_izquierdo = self.expresion_izquierda.ejecutar(scope)
+                    val_derecho = self.expresion_derecha.ejecutar(scope)
+                    result = val_izquierdo['value'] and val_derecho['value']
+                    return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+                elif (self.tipo_operacion == "||"):
+                    val_izquierdo = self.expresion_izquierda.ejecutar(scope)
+                    val_derecho = self.expresion_derecha.ejecutar(scope)
+                    result = val_izquierdo['value'] or val_derecho['value']
+                    return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+            else:
+                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo(self.tipo_operacion, padre)

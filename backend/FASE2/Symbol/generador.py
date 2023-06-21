@@ -20,6 +20,7 @@ class Generador:
         # Lista de Naivas
         self.print_string = False
         self.to_fixed = False
+        self.compare_string = False
 
         # Lista de imports
         self.imports = []
@@ -292,33 +293,57 @@ class Generador:
         self.add_end_func()
         self.in_natives = False
 
-    def to_fixed(self):
-        self.set_import('math')
-        if self.to_fixed:
+    def fcompare_string(self):
+        if self.compare_string:
             return
-        self.to_fixed = True
+        self.compare_string = True
         self.in_natives = True
 
-        # creamos una nueva funcion llamada tofixed
-        self.add_begin_func('round')
+        self.add_begin_func("compareString")
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
 
-
-
-        #obtenemos el primer parametro de la exprecion
         t2 = self.add_temp()
         self.add_exp(t2, 'P', '1', '+')
         t3 = self.add_temp()
         self.get_stack(t3, t2)
-
-        #obtenemos el segundo parametro
-        self.add_exp(t2,t2,'1', '+')
+        self.add_exp(t2, t2, '1', '+')
         t4 = self.add_temp()
         self.get_stack(t4, t2)
 
+        l1 = self.new_label()
+        l2 = self.new_label()
+        l3 = self.new_label()
+        self.put_label(l1)
 
+        t5 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t5, t3)
 
+        t6 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t6, t4)
 
-        # terminamos la primera funcion
+        self.add_ident()
+        self.add_if(t5, t6, '!=', l3)
+        self.add_ident()
+        self.add_if(t5, '-1', '==', l2)
+
+        self.add_ident()
+        self.add_exp(t3, t3, '1', '+')
+        self.add_ident()
+        self.add_exp(t4, t4, '1', '+')
+        self.add_ident()
+        self.add_goto(l1)
+
+        self.put_label(l2)
+        self.add_ident()
+        self.set_stack('P', '1')
+        self.add_ident()
+        self.add_goto(return_lbl)
+        self.put_label(l3)
+        self.add_ident()
+        self.set_stack('P', '0')
+        self.put_label(return_lbl)
         self.add_end_func()
-
-    pass
+        self.in_natives = False
