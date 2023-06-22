@@ -73,19 +73,19 @@ class SiContrario(Abstract):
         generador = gen_aux.get_instance()
         generador.add_comment("Compilacion de de sentencia if")
         exit_label = generador.new_label()
-        res: Return = self.exprecion_condicion.generar_c3d(self.last_scope)
-        if(isinstance(res, Excepcion)):
+        res: Return = self.exprecion_condicion.generar_c3d(scope)
+        if (isinstance(res, Excepcion)):
             return res
 
         for label in res.get_true_lbls():
             generador.put_label(label)
         # Sentencias verdaderas del else if
         if self.sentencias_true != None:
-            self.sentencias_true.generar_c3d(self.last_scope1)
+            self.sentencias_true.generar_c3d(scope)
         generador.add_goto(exit_label)
         for label in res.get_false_lbls():
             generador.put_label(label)
         # Sentencias falsas del else if
         if self.sentencias_false != None:
-            self.sentencias_false.generar_c3d(self.last_scope2)
+            self.sentencias_false.generar_c3d(scope)
         generador.put_label(exit_label)

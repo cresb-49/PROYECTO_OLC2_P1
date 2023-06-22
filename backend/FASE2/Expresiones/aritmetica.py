@@ -76,26 +76,18 @@ class Aritmetica(Abstract):
         # print('Debuj-> Aritmetica -> Derecho: ',val_derecho)
 
         if (self.verificarTipos(val_izquierdo, val_derecho)):
+            result = None
             if (self.tipo_operacion == "+"):
-                result = val_izquierdo['value'] + val_derecho['value']
                 return {"value": result, "tipo": val_izquierdo['tipo'], "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "-"):
-                result = val_izquierdo['value'] - val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "*"):
-                result = val_izquierdo['value'] * val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "/"):
-                if val_derecho == 0:
-                    raise ValueError('Error: Divicion entre 0',
-                                     'linea:', self.linea, 'columna', self.columna)
-                result = val_izquierdo['value'] / val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "%"):
-                result = val_izquierdo['value'] % val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "^"):
-                result = val_izquierdo['value'] ** val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             # print('Debuj-> Primitivo ->', self)

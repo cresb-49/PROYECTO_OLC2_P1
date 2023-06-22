@@ -14,7 +14,7 @@ class Acceder(Abstract):
         self.last_scope = None
 
     def __str__(self):
-        return f"Acceder -> Tipo: {self.tipo}"
+        return f"Acceder -> Tipo: {self.tipo} Id: {self.id}"
 
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)

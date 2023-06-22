@@ -69,19 +69,19 @@ class Si(Abstract):
         generador = gen_aux.get_instance()
         generador.add_comment("Compilacion de de sentencia if")
         exit_label = generador.new_label()
-        res: Return = self.exprecion.generar_c3d(self.last_scope1)
-        if(isinstance(res, Excepcion)):
+        res: Return = self.exprecion.generar_c3d(scope)
+        if (isinstance(res, Excepcion)):
             return res
         for label in res.get_true_lbls():
             generador.put_label(label)
         # Sentencias verdaderas del if
         if self.sentencias != None:
-            self.sentencias.generar_c3d(self.last_scope2)
+            self.sentencias.generar_c3d(scope)
         generador.add_goto(exit_label)
         for label in res.get_false_lbls():
             generador.put_label(label)
         # Sentencias falsas del if
         if self._else != None:
-            self._else.generar_c3d(self.last_scope3)
+            self._else.generar_c3d(scope)
         generador.put_label(exit_label)
         generador.add_comment("fin compilacion de de sentencia if")

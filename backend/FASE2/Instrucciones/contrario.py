@@ -35,4 +35,4 @@ class Contrario(Abstract):
         if self.sentencias != None:
             self.sentencias.generar_c3d(scope)
         else:
-            return  Excepcion("Semantico", f"Sentencias es None", self.linea, self.columna)
+            return Excepcion("Semantico", f"Sentencias es None", self.linea, self.columna)

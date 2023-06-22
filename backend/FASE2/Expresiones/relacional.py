@@ -64,23 +64,18 @@ class Relacional(Abstract):
         self.last_exp_der = val_derecho
 
         if (self.verificarTipos(val_izquierdo, val_derecho)):
+            result = None
             if (self.tipo_operacion == "===" or self.tipo_operacion == "=="):
-                result = val_izquierdo['value'] == val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "!==" or self.tipo_operacion == "!="):
-                result = val_izquierdo['value'] != val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "<"):
-                result = val_izquierdo['value'] < val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == ">"):
-                result = val_izquierdo['value'] > val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == "<="):
-                result = val_izquierdo['value'] <= val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
             elif (self.tipo_operacion == ">="):
-                result = val_izquierdo['value'] >= val_derecho['value']
                 return {"value": result, "tipo": TipoEnum.BOOLEAN, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             # print('Debuj-> Primitivo ->', self)
@@ -98,21 +93,31 @@ class Relacional(Abstract):
 
         val_izq: Abstract = self.expresion_izquierda;
         val_der: Abstract = self.expresion_derecha;
-
-        print(val_izq)
-        print(val_der)
+        
+        tipos_recuperados1 = val_izq.ejecutar(scope)
+        tipos_recuperados2 = val_der.ejecutar(scope)
+        
+        
+        tipo_izq = tipos_recuperados1['tipo']
+        tipo_der = tipos_recuperados2['tipo']
+        
+        print('Manejo operaciones realacionel')
+        print(tipo_izq)
+        print(tipo_der)
+        
+        
         # TODO: Realizar la validacion de tipos
 
         if (self.tipo_operacion == "===" or self.tipo_operacion == "!=="):
-            if val_izq.tipo == TipoEnum.ANY:
-                return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
+            if tipo_izq == TipoEnum.ANY:
+                return self.operaciones_asociadas(tipo_izq, val_izq, val_der, generador, scope)
             else:
-                return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
+                return self.operaciones_asociadas(tipo_izq, val_izq, val_der, generador, scope)
         else:
-            if val_izq.tipo == TipoEnum.NUMBER:
+            if tipo_izq == TipoEnum.NUMBER:
                 return self.comparacion_number(val_izq, val_der, generador, scope)
-            elif val_izq.tipo == TipoEnum.ANY:
-                return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
+            elif tipo_izq == TipoEnum.ANY:
+                return self.operaciones_asociadas(tipo_izq, val_izq, val_der, generador, scope)
             else:
                 return Excepcion("Semantico", f"No existe operacion para el tipo  {self.last_exp_izq['tipo'].value} desconocida", self.linea, self.columna)
 
