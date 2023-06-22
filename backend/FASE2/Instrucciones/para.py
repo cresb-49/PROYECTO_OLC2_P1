@@ -177,20 +177,7 @@ class Para(Abstract):
                     'Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        if self.tipo_for == 1:
-            node_for = graphviz.add_nodo('for', padre)
-            self.declaracion.graficar(graphviz, node_for)
-            node_condicion = graphviz.add_nodo('condicion', node_for)
-            self.condicion.graficar(graphviz, node_condicion)
-            if (self.sentencias != None):
-                self.sentencias.graficar(graphviz, node_for)
-            node_accion_final = graphviz.add_nodo('accion final', node_for)
-            self.expresion.graficar(graphviz, node_accion_final)
-        else:
-            node_for = graphviz.add_nodo('for', padre)
-            self.declaracion.graficar(graphviz, node_for)
-            if (self.sentencias != None):
-                self.sentencias.graficar(graphviz, node_for)
+        pass
 
     def generar_c3d(self, scope):
         gen_aux = Generador()
