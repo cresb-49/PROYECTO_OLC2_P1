@@ -85,4 +85,4 @@ class Length(Abstract):
         generador.add_comment('Fin del length')
         generador.add_space()
 
-        return Return(temp, TipoEnum.STRING, True, None)
+        return Return(temp, TipoEnum.NUMBER, True, None)
