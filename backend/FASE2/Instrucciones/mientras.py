@@ -71,26 +71,29 @@ class Mientras(Abstract):
         lable_init = generador.new_label()
         generador.put_label(lable_init)
         # Generacion del codigo intermedio de la condicional
-        ret: Return = self.condicion.generar_c3d(self.last_scope)
-
-        if(isinstance(ret, Excepcion)):
+        ret: Return = self.condicion.generar_c3d(scope)
+        if (isinstance(ret, Excepcion)):
             return ret
+        # Generacion del scope intermedio para alamcenar las etiquetas de manejo del ciclo
+        pre_scope_while: Scope = Scope(scope)
         # Ingreso de las etiquetas para las sentencias de break y continue en la generacion de codigo intermedio
         for label in ret.get_false_lbls():
-            self.last_pre_scope_while.add_break_label(label)
-        self.last_pre_scope_while.admit_continue_label = True
+            pre_scope_while.add_break_label(label)
+        pre_scope_while.admit_continue_label = True
         # En el while continue hace un salto a la condicional por esa
         # razon establecemos de una vez esta etiqueta, en el for hasta
         # que hay un continue se genera dicha label se genera, porque no pueden ser
-        # declaradas las labels y no utilizarlas o tener los goto y no existan las 
+        # declaradas las labels y no utilizarlas o tener los goto y no existan las
         # labels
-        self.last_pre_scope_while.set_continue_label(lable_init)
+        pre_scope_while.set_continue_label(lable_init)
+        # Generamos un scope para las oepraciones del scope
+        inner_scope_while: Scope = Scope(pre_scope_while)
         # Imprecion de la label de entrada al ciclo
         for label in ret.get_true_lbls():
             generador.put_label(label)
         if self.sentencias != None:
             generador.add_comment('Inicio de sentencias dentro del while')
-            self.sentencias.generar_c3d(self.last_inner_scope_while)
+            self.sentencias.generar_c3d(inner_scope_while)
             generador.add_comment('Fin de sentencias dentro del while')
         # Imprecion de la etiqueta de repeticion del ciclo
         generador.add_goto(lable_init)

@@ -8,7 +8,7 @@ class Asignacion(Abstract):
         super().__init__(resultado, linea, columna)
         self.id = id
         self.valor = valor
-        #CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
+        # CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
         self.resultado_valor = None
         self.last_scope = None
 
@@ -44,8 +44,8 @@ class Asignacion(Abstract):
         igual = graphviz.add_nodo('=', padre)
         graphviz.add_nodo(self.id, igual)
         self.valor.graficar(graphviz, igual)
-    
-    def generar_c3d(self,scope):
+
+    def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         # Recuperacion de la generacion de codigo 3 direcciones para la signacion del valor
@@ -54,7 +54,7 @@ class Asignacion(Abstract):
             result = self.valor.generar_c3d(scope)
         generador.add_comment(f'** compilacion de asignacion de variable {self.id} **')
         # Primero obtenermos la variable desde el scope generado por ultimo
-        variable_recuperada = self.last_scope.obtener_variable(self.id)
+        variable_recuperada = scope.obtener_variable(self.id)
         # Generamos dos variables temporales para el manejo de la informacion
         tempPos = variable_recuperada.simbolo_c3d.pos[4:]
         temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
@@ -67,4 +67,5 @@ class Asignacion(Abstract):
             generador.set_stack(tempPos, result.value)
         else:
             generador.set_stack(tempPos, 0)
-        generador.add_comment(f'** fin de compilacion de asignacion variable {self.id} **')
+        generador.add_comment(
+            f'** fin de compilacion de asignacion variable {self.id} **')
