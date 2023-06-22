@@ -12,7 +12,16 @@ class Resultado:
         self.consola = []
         self.scope_global = None
         self.entornos_variables = dict()
+        
+    def __str__(self):
+        return f"sentencias: {self.sentencias}\n" \
+            f"errores: {self.errores}\n" \
+            f"tabla_simbolos: {self.tabla_simbolos}\n" \
+            f"consola: {self.consola}\n" \
+            f"scope_global: {self.scope_global}\n" \
+            f"entornos_variables: {self.entornos_variables}"
 
+    
     def get_instance(self):
         if Resultado.resultado == None:
             Resultado.resultado = Resultado()

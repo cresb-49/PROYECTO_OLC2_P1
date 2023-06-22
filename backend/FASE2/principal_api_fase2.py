@@ -24,15 +24,19 @@ class PrincipalFase2:
 
         # print('#### CODIGO A PROCESAR\n', codigo)
         print('#### PARSER FASE 2 EJECUTADO')
-        result: Resultado = parser.parse(codigo)
-        if result != None:
+        parser.parse(codigo)
+        lista_errores = parser.get_errores_parser_lexer()
+        parser.clear_errores()
+        print('Debuj errores ->', lista_errores)
+        if len(lista_errores) == 0:
+            result: Resultado = parser.get_resultado()
+            print('Resultado',result)
             print('#### PARSER FASE 2 FINALIZADO')
-            ambito_global: Scope = None
-            for n in result.tabla_simbolos:
-                if isinstance(n, Scope):
-                    if n.tipo == 'Global':
-                        ambito_global = n
-
+            if result.tabla_simbolos != None:
+                for n in result.tabla_simbolos:
+                    if isinstance(n, Scope):
+                        if n.tipo == 'Global':
+                            ambito_global = n
             print('#### AMBITO GLOBAL')
             ambito_global.reboot_variables()
             print(ambito_global)
@@ -46,20 +50,6 @@ class PrincipalFase2:
             print('#### ERRORES LEXER PARSER')
             for n in result.errores:
                 print(n)
-
-            # if len(result.errores) == 0:
-            #     print('#### EJECUCION DEL CODIGO FASE 2')
-            #     entorno.ejecutar(None)
-            # else:
-            #     print('#### NO SE PUEDE EJECUTAR EL CODIGO HAY ERRORES')
-
-            # print('#### CONSOLA DE SALIDA FASE 2')
-            # for n in result.consola:
-            #     print(n)
-
-            # print('#### ERRORES EJECUCION DE CODIGO FASE 2')
-            # for n in result.errores:
-            #     print(n)
 
             codigo_3_direcciones = ""
 
@@ -76,8 +66,8 @@ class PrincipalFase2:
             respuesta = {"result": result, "c3d": codigo_3_direcciones}
             return respuesta
         else:
-            print(resultado.errores)
-            resultado.add_error(
-                'Sintactico', 'Existe un error al final del archivo', 0, 0)
+            for error in lista_errores:
+                resultado.errores.append(error)
+            resultado.add_error('Sintactico', 'Existe un error al final del archivo', 0, 0)
             respuesta = {"result": resultado, "c3d": ''}
             return respuesta
