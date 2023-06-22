@@ -33,6 +33,8 @@ class Contrario(Abstract):
 
     def generar_c3d(self, scope):
         if self.sentencias != None:
-            self.sentencias.generar_c3d(scope)
-        else:
-            return Excepcion("Semantico", f"Sentencias es None", self.linea, self.columna)
+            # Generacion de un nuevo scope para el else
+            new_scope_else: Scope = Scope(scope)
+            ret = self.sentencias.generar_c3d(new_scope_else)
+            if isinstance(ret, Excepcion):
+                return ret

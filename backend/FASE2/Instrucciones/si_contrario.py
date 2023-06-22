@@ -81,11 +81,19 @@ class SiContrario(Abstract):
             generador.put_label(label)
         # Sentencias verdaderas del else if
         if self.sentencias_true != None:
-            self.sentencias_true.generar_c3d(scope)
+            # Generacion de un scope para las variables de este nivel
+            new_scope_true: Scope = Scope(scope)
+            ret = self.sentencias_true.generar_c3d(new_scope_true)
+            if isinstance(ret, Excepcion):
+                return ret
         generador.add_goto(exit_label)
         for label in res.get_false_lbls():
             generador.put_label(label)
         # Sentencias falsas del else if
         if self.sentencias_false != None:
-            self.sentencias_false.generar_c3d(scope)
+            # Generacion de un scope para las variables de este nivel
+            new_scope_false: Scope = Scope(scope)
+            ret = self.sentencias_false.generar_c3d(new_scope_false)
+            if isinstance(ret, Excepcion):
+                return ret
         generador.put_label(exit_label)
