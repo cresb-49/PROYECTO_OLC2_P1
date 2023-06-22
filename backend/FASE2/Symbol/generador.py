@@ -169,9 +169,9 @@ class Generador:
         self.code_in(f'func {id}(){{\n')
 
     def add_end_func(self):
+        self.code_in('}\n')
         if not self.in_natives:
             self.in_func = False
-        self.code_in('}\n')
 
     ###############
     # STACK
