@@ -21,5 +21,5 @@ class Entorno(Abstract):
         result = graphviz.add_nodo('Inicio', padre)
         self.intrucciones.graficar(graphviz, result)
 
-    def generar_c3d(self,scope):
-        self.intrucciones.generar_c3d(self.scope_global)
+    def generar_c3d(self, scope):
+        self.intrucciones.generar_c3d(scope)

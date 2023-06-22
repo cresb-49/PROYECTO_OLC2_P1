@@ -39,18 +39,14 @@ class Sentencias(Abstract):
                     return result
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo('instr', padre)
-        if self.intr_izquierda != None:
-            self.intr_izquierda.graficar(graphviz, result)
-        if self.instr_derecha != None:
-            self.instr_derecha.graficar(graphviz, result)
+        pass
 
     def generar_c3d(self, scope):
         if self.intr_izquierda != None:
-            result = self.intr_izquierda.generar_c3d(self.last_scope)
+            result = self.intr_izquierda.generar_c3d(scope)
             if isinstance(result, Return):
                 return result
         if self.instr_derecha != None:
-            result = self.instr_derecha.generar_c3d(self.last_scope)
+            result = self.instr_derecha.generar_c3d(scope)
             if isinstance(result, Return):
                 return result
