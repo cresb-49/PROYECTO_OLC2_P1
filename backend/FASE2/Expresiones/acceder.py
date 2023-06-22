@@ -2,6 +2,7 @@ from FASE2.Abstract.abstract import Abstract
 from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Acceder(Abstract):
@@ -91,6 +92,9 @@ class Acceder(Abstract):
             f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
         result = scope.obtener_variable(self.id)
+
+        if(result == None):
+            return Excepcion("Semantico", "No se puedo encontrar la variable", self.linea, self.columna)
         #result = scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
         temp = generador.add_temp()
