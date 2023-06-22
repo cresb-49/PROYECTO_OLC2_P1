@@ -4,6 +4,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 
 from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
+from backend.FASE2.Symbol.Exception import Excepcion
 
 
 class Imprimir(Abstract):
@@ -116,6 +117,8 @@ class Imprimir(Abstract):
                         generador, result.get_tipo_aux(), result, scope)
                 else:
                     print('Encontre variable sin clasificar ->', result)
+                    return  Excepcion("Semantico", "Variable sin clasificar", self.linea, self.columna)
+                    
         generador.add_print_salto_linea()
 
     def imprmir_bool(self, generador: Generador, result: Return):
@@ -161,5 +164,7 @@ class Imprimir(Abstract):
             self.imprimir_string(generador, result.get_value(), scope)
         elif tipo_aux == TipoEnum.ANY:
             print('Encontre variable any dentro de any? ->', result)
+            return  Excepcion("Semantico", 'Encontre variable any dentro de any? ->', self.linea, self.columna)
         else:
             print('Encontre variable sin clasificar ->', result)
+            return  Excepcion("Semantico", 'Encontre variable sin clasificar ->', self.linea, self.columna)

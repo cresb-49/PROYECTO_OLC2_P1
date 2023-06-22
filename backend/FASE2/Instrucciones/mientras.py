@@ -6,6 +6,7 @@ from FASE2.Symbol.scope import Scope
 
 from FASE2.Instrucciones.continuar import Continuar
 from FASE2.Instrucciones.detener import Detener
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Mientras(Abstract):
@@ -71,6 +72,9 @@ class Mientras(Abstract):
         generador.put_label(lable_init)
         # Generacion del codigo intermedio de la condicional
         ret: Return = self.condicion.generar_c3d(self.last_scope)
+
+        if(isinstance(ret, Excepcion)):
+            return ret
         # Ingreso de las etiquetas para las sentencias de break y continue en la generacion de codigo intermedio
         for label in ret.get_false_lbls():
             self.last_pre_scope_while.add_break_label(label)

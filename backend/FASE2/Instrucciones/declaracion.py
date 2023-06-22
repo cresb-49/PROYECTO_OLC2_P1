@@ -4,6 +4,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
 from FASE2.Symbol.scope import Scope
 from FASE2.Expresiones.arreglo import Arreglo
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Declaracion(Abstract):
@@ -198,6 +199,10 @@ class Declaracion(Abstract):
         result: Return = None
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
+
+        if(isinstance(result, Excepcion)):
+            return result
+        
         generador.add_comment(f'** compilacion de variable {self.id} **')
 
         if (self.validar_tipos(result)):
@@ -207,8 +212,9 @@ class Declaracion(Abstract):
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
             self.resultado.add_error(
-                'Semantico', error, self.linea, self.columna)
+                'Semantico', error, self.linea, self.columna) 
             print('Semantico', str(error), self.linea, self.columna)
+            return Excepcion("Semantico", error, self.linea, self.columna)
 
     def declaracion(self, result: Return, generador: Generador, scope: Scope):
         # Primero obtenermos la variable desde el scope generado por ultimo

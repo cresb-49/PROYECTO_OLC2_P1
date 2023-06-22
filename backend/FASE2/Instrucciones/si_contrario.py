@@ -3,6 +3,7 @@ from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.scope import Scope
 from FASE2.Symbol.generador import Generador
 from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.Exception import Excepcion
 
 
 class SiContrario(Abstract):
@@ -73,6 +74,9 @@ class SiContrario(Abstract):
         generador.add_comment("Compilacion de de sentencia if")
         exit_label = generador.new_label()
         res: Return = self.exprecion_condicion.generar_c3d(self.last_scope)
+        if(isinstance(res, Excepcion)):
+            return res
+
         for label in res.get_true_lbls():
             generador.put_label(label)
         # Sentencias verdaderas del else if

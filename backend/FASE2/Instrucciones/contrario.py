@@ -1,5 +1,6 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Contrario(Abstract):
@@ -33,3 +34,5 @@ class Contrario(Abstract):
     def generar_c3d(self, scope):
         if self.sentencias != None:
             self.sentencias.generar_c3d(scope)
+        else:
+            return  Excepcion("Semantico", f"Sentencias es None", self.linea, self.columna)
