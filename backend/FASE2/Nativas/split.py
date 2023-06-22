@@ -6,6 +6,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 class Split(Abstract):
     def __init__(self, resultado, linea, columna, cadena, expreciones):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.ARRAY
         self.expreciones = expreciones
         self.cadena = cadena
 

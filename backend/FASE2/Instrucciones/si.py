@@ -75,13 +75,21 @@ class Si(Abstract):
         for label in res.get_true_lbls():
             generador.put_label(label)
         # Sentencias verdaderas del if
+        new_scope_true:Scope = Scope(scope)
+        # Generamos un scope nuevo para las intrucciones
         if self.sentencias != None:
-            self.sentencias.generar_c3d(scope)
+            ret = self.sentencias.generar_c3d(new_scope_true)
+            if isinstance(ret,Excepcion):
+                return ret
         generador.add_goto(exit_label)
         for label in res.get_false_lbls():
             generador.put_label(label)
         # Sentencias falsas del if
+        # Generamos un scope nuevo para las intrucciones
+        new_scope_false:Scope = Scope(scope)
         if self._else != None:
-            self._else.generar_c3d(scope)
+            ret = self._else.generar_c3d(new_scope_false)
+            if isinstance(ret,Excepcion):
+                return ret
         generador.put_label(exit_label)
         generador.add_comment("fin compilacion de de sentencia if")

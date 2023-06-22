@@ -7,6 +7,7 @@ class ToString(Abstract):
 
     def __init__(self, resultado, linea, columna, numero):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.STRING
         self.numero = numero
 
     def __str__(self):
