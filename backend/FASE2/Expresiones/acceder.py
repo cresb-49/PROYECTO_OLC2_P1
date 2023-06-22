@@ -7,10 +7,14 @@ from FASE2.Symbol.generador import Generador
 class Acceder(Abstract):
     def __init__(self, resultado, linea, columna, id):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.ANY
         self.id = id
         # CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
         self.resultado_valor = None
         self.last_scope = None
+
+    def __str__(self):
+        return f"Acceder -> Tipo: {self.tipo}"
 
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)
@@ -91,7 +95,7 @@ class Acceder(Abstract):
             f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
         result = scope.obtener_variable(self.id)
-        #result = scope.obtener_variable(self.id)
+        # result = scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
         temp = generador.add_temp()
         # Generamos un variable para recuperar las posicion en el stack de la variable
@@ -109,6 +113,7 @@ class Acceder(Abstract):
         # Si la variable es temporal
         print('Debuj->', result)
         tipo_variable = result.tipo
+        self.tipo = tipo_variable
         if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
             if (tipo_variable == TipoEnum.BOOLEAN):
                 generador.add_comment(

@@ -12,7 +12,7 @@ class Logico(Abstract):
         self.tipo_operacion = tipo_operacion
 
     def __str__(self):
-        return f"Resultado: {self.resultado}\nLínea: {self.linea}\nColumna: {self.columna}\nExpresión Izquierda: {self.expresion_izquierda}\nExpresión Derecha: {self.expresion_derecha}\nTipo de Operación: {self.tipo_operacion}"
+        return f"Logico -> Tipo: {self.tipo}"
 
     def verificarTipos(self, val_izq, val_derecho):
         if ((val_izq == None or val_derecho == None) and self.tipo_operacion != '!'):
@@ -68,10 +68,7 @@ class Logico(Abstract):
                 return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
-        result = graphviz.add_nodo(self.tipo_operacion, padre)
-        if self.tipo_operacion != "!":
-            self.expresion_izquierda.graficar(graphviz, result)
-        self.expresion_derecha.graficar(graphviz, result)
+        pass
 
     def generar_c3d(self, scope):
         gen_aux = Generador()
