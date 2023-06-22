@@ -1,5 +1,6 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Abstract.return__ import Return
+from FASE2.Expresiones.val_funcion import ValFuncion
 from FASE2.Symbol.scope import Scope
 from FASE2.Symbol.generador import Generador
 from FASE2.Symbol.Exception import Excepcion
@@ -110,12 +111,20 @@ class CallFuncion(Abstract):
         tmps = []
         size = scope.size
 
-        for parametros in self.parametros:
-            value = parametros.generar_c3d(scope)
-            if isinstance(value, Excepcion):
-                return value
-            param_values.append(value)
-            tmps.append(value.get_value())
+        for parametro in self.parametros:
+            if isinstance(parametro, ValFuncion):
+                self.guardar_temporales(generador, scope, tmps)
+                a = parametro.generar_c3d(scope)
+                if isinstance(a, Excepcion):
+                    return a
+                param_values.append(a)
+                self.recuperar_temporales(generador, scope, tmps)
+            else:
+                value = parametro.generar_c3d(scope)
+                if isinstance(value, Excepcion):
+                    return value
+                param_values.append(value)
+                tmps.append(value.get_value())
 
         temp = generador.add_temp()
         generador.add_exp(temp, 'P', size+1, '+')

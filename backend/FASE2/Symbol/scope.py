@@ -141,6 +141,9 @@ class Scope:
 
     def sum_size(self):
         self.size += 1
+    
+    def res_size(self):
+        self.size -= 1
 
     def modificar_variable(self, id: str, valor: any, tipo_secundario):
         if self.variables.has(id):

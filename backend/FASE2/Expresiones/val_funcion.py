@@ -119,12 +119,20 @@ class ValFuncion(Abstract):
         tmps = []
         size = scope.size
 
-        for parametros in self.parametros:
-            value = parametros.generar_c3d(scope)
-            if isinstance(value, Excepcion):
-                return value
-            param_values.append(value)
-            tmps.append(value.get_value())
+        for parametro in self.parametros:
+            if isinstance(parametro, ValFuncion):
+                self.guardar_temporales(generador, scope, tmps)
+                a = parametro.generar_c3d(scope)
+                if isinstance(a, Excepcion):
+                    return a
+                param_values.append(a)
+                self.recuperar_temporales(generador, scope, tmps)
+            else:
+                value = parametro.generar_c3d(scope)
+                if isinstance(value, Excepcion):
+                    return value
+                param_values.append(value)
+                tmps.append(value.get_value())
 
         temp = generador.add_temp()
         generador.add_exp(temp, 'P', size+1, '+')
@@ -167,3 +175,21 @@ class ValFuncion(Abstract):
             self.resultado.add_error(
                 'Semantico', f'No esta enviado la cantidad correcta de parametros a a funcion "{self.id}"', self.columna, self.columna)
             return Excepcion('Semantico', f'No esta enviado la cantidad correcta de parametros a a funcion "{self.id}"', self.linea, self.columna)
+
+    def guardar_temporales(self, generador: Generador, scope: Scope, temps):
+        generador.add_comment('Guardando temporrales')
+        tmp = generador.add_temp()
+        for tmp1 in temps:
+            generador.add_exp(tmp,'P',scope.size,'+')
+            generador.set_stack(tmp,tmp1)
+            scope.sum_size()
+        generador.add_comment('Fin de guardado de temporales')
+
+    def recuperar_temporales(self, generador: Generador, scope: Scope, temps):
+        generador.add_comment('Recuperacion de temporales')
+        tmp = generador.add_temp()
+        for tmp1 in temps:
+            scope.res_size()
+            generador.add_exp(tmp,'P',scope.size,'+')
+            generador.get_stack(tmp1,tmp)
+        generador.add_comment('Fin de recuperacion de temporales')
