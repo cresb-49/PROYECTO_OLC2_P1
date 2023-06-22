@@ -10,6 +10,7 @@ from FASE2.Symbol.generador import Generador
 class Length(Abstract):
     def __init__(self, resultado, linea, columna, acceder):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.NUMBER
         self.acceder = acceder
 
     def __str__(self):

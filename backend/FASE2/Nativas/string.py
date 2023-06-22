@@ -6,6 +6,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 class String(Abstract):
     def __init__(self, resultado, linea, columna, expreciones):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.STRING
         self.expreciones = expreciones
 
     def __str__(self):

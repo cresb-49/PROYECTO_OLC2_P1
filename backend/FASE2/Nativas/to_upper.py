@@ -9,6 +9,7 @@ class ToUpperCase(Abstract):
 
     def __init__(self, resultado, linea, columna, cadena):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.STRING
         self.cadena = cadena
 
     def __str__(self):
@@ -31,8 +32,7 @@ class ToUpperCase(Abstract):
         # una vez traida la variable debemos verificar que se trata d eun string
         if (self.verificarTipos(ejecutar)):
             # mandmaos ha hacer concat sobre el atributo value
-            toString = FuncionNativa.hacer_to_upper_case(
-                None, ejecutar['value'])
+            toString = FuncionNativa.hacer_to_upper_case(None, '')
             # retornamos un diccionario con la String en lower y el tipo String
             return {"value": toString, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:

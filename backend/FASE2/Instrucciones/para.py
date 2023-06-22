@@ -186,34 +186,40 @@ class Para(Abstract):
         if self.tipo_for == 1:
             generador.add_comment('Inicio de compilacion de ciclo for')
             # Delaracion o acceso a la variable del ciclo
-            self.declaracion.generar_c3d(self.last_pre_scope_for)
+            self.declaracion.generar_c3d(scope)
             # Generacion y colocaldo de la label de inicio del for
             label_intit = generador.new_label()
             generador.put_label(label_intit)
+            # Genreacion de un scope intermedio
+            pre_scope_for: Scope = Scope(scope)
             # Generacion del codigo para la condicional del for y colocado de la etiqueta true
-            ret: Return = self.condicion.generar_c3d(self.last_pre_scope_for)
-            
-            if(isinstance(ret, Excepcion)):
+            ret: Return = self.condicion.generar_c3d(pre_scope_for)
+
+            if (isinstance(ret, Excepcion)):
                 return ret
 
             # Ingresamos la etiquetas para el sentencias de break y continue en la generacion del codigo intermedio
             for label in ret.get_false_lbls():
-                self.last_pre_scope_for.add_break_label(label)
-            self.last_pre_scope_for.admit_continue_label = True
-            print('labels ->', self.last_pre_scope_for)
+                pre_scope_for.add_break_label(label)
+            pre_scope_for.admit_continue_label = True
+            print('labels ->', pre_scope_for)
             for label in ret.get_true_lbls():
                 generador.put_label(label)
             # Generacion del codigo del las inttrucciones
             if self.sentencias != None:
+                # Generacion de un inner scope para las sentencias dentro del for
+                inner_scope_for: Scope = Scope(pre_scope_for)
                 generador.add_comment('Instrucciones dentro del for')
-                self.sentencias.generar_c3d(self.last_inner_scope_for)
+                retr = self.sentencias.generar_c3d(inner_scope_for)
+                if (isinstance(ret, Excepcion)):
+                    return retr
                 generador.add_comment('Fin instrucciones dentro del for')
             # Aqui se debe de agregar etiqueta del continue
-            if self.last_pre_scope_for.continue_label != '':
-                generador.put_label(self.last_pre_scope_for.continue_label)
+            if pre_scope_for.continue_label != '':
+                generador.put_label(pre_scope_for.continue_label)
             # Instrucciones del paso del for
             generador.add_comment('compilacion paso for')
-            self.expresion.generar_c3d(self.last_pre_scope_for)
+            self.expresion.generar_c3d(pre_scope_for)
             generador.add_comment('fin compilacion paso for')
             # Instruccion de regreso a la condicional
             generador.add_goto(label_intit)
@@ -224,4 +230,3 @@ class Para(Abstract):
         else:
             print('for iterable')
             return Excepcion("Semantico", 'for iterable', self.linea, self.columna)
-            pass

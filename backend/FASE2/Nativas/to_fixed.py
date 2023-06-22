@@ -8,6 +8,7 @@ from FASE2.Symbol.Exception import Excepcion
 class ToFixed(Abstract):
     def __init__(self, resultado, linea, columna, numero, expreciones):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.NUMBER
         self.expreciones = expreciones
         self.numero = numero
 
@@ -35,7 +36,7 @@ class ToFixed(Abstract):
                 value_id = ejecutar['value'] #valor del id al que se aplico split
                 exponencial = ejecutarExpresion['value'] #calor del saparador de split
                 #mandamos ha ejecutar la funcion nativa con los valores recabados
-                fixed = FuncionNativa.hacer_to_fixed(None, value_id, exponencial)
+                fixed = FuncionNativa.hacer_to_fixed(None, 0, 0)
                 #retornamos un nuevo diccionario con la informacion del fixed    
                 return {"value": fixed, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna} 
             else:

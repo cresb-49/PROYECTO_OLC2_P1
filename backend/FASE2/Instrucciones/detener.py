@@ -21,7 +21,7 @@ class Detener(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         generador.add_comment('Inicio de compilacion de break')
-        result = self.last_scope.get_break_ref()
+        result = scope.get_break_ref()
         for label in result:
             generador.add_goto(label)
         generador.add_comment('Fin de compilacion de break')

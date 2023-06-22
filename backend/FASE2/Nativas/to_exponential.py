@@ -6,6 +6,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 class ToExponential(Abstract):
     def __init__(self, resultado, linea, columna, numero, expreciones):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.STRING
         self.expreciones = expreciones
         self.numero = numero
 
