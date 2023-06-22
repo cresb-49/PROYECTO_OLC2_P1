@@ -1252,6 +1252,10 @@ def clear_errores():
     clear_errores_lexer()
 
 
+def get_resultado():
+    return resultado
+
+
 # Declaracion de inicio del parser
 parser = yacc.yacc()
 

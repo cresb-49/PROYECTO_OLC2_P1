@@ -1,4 +1,4 @@
-#import pyTypeParser as parser
+# import pyTypeParser as parser
 import FASE1.pyTypeParser as parser
 from FASE1.pyTypeParser import Scope
 from FASE1.pyTypeParser import TipoEnum
@@ -18,27 +18,22 @@ class PrincipalFase1:
         # Clases y metodos para la generacion de codigo en 3 direcciones
         gen_aux = Generador()
         gen_aux.clean_all()  # Limpia todos los archivos anteriores
-        generador = gen_aux.get_instance()
-
         # Agregamos el ultimo salto de linea para evitar conflictos con los comentarios :D
         codigo = codigo + '\n'
-
-        # print('#### CODIGO A PROCESAR\n', codigo)
         print('#### PARSER FASE 1 EJECUTADO')
-        result: Resultado = None
         parser.parse(codigo)
-        
+
         lista_errores = parser.get_errores_parser_lexer()
-        print('Debuj errores -> ',lista_errores)
+        print('Debuj errores -> ', lista_errores)
         parser.clear_errores()
         if len(lista_errores) == 0:
+            result: Resultado = parser.get_resultado()
             print('#### PARSER FASE 1 FINALIZADO')
             ambito_global: Scope = None
             for n in result.tabla_simbolos:
                 if isinstance(n, Scope):
                     if n.tipo == 'Global':
                         ambito_global = n
-
             print('#### AMBITO GLOBAL')
             ambito_global.reboot_variables()
             print(ambito_global)
@@ -94,23 +89,18 @@ class PrincipalFase1:
                         variable = diccionario_estructuras[key2]
                         tabla_de_simbolos.append({'nombre': variable.id, 'clase': 'Estructura', 'tipo': TipoEnum.STRUCT.value,
                                                   'ambito': result.entornos_variables[key].tipo, 'linea': variable.linea, 'columna': variable.columna})
-                # print('#### TABLA DE SIMBOLOS')
-                # for simbolos in tabla_de_simbolos:
-                #     print(simbolos)
-
                 # GENERACION DEL CODIGO DOT PARA REALZIAR EL GRAFICO DEL AST
                 gv = GraficoDot()
                 entorno.graficar(gv, None)
                 code_dot = gv.get_dot()
-
             else:
                 result.consola = []
-            respuesta = {"result": result, "dot": code_dot,
-                         "simbolos": tabla_de_simbolos}
+            respuesta = {"result": result, "dot": code_dot,"simbolos": tabla_de_simbolos}
             return respuesta
         else:
             for error in lista_errores:
                 resultado.errores.append(error)
-            resultado.add_error('Sintactico', 'Existe un error al final del archivo', 0, 0)
+            resultado.add_error(
+                'Sintactico', 'Existe un error al final del archivo', 0, 0)
             respuesta = {"result": resultado, "dot": '', "simbolos": dict()}
             return respuesta
