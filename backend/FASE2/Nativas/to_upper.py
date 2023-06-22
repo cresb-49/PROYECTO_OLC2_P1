@@ -1,13 +1,14 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
-
+from FASE2.Symbol.generador import Generador
+from FASE2.Abstract.return__ import Return
 
 class ToUpperCase(Abstract):
 
-    def __init__(self, resultado, linea, columna, numero):
+    def __init__(self, resultado, linea, columna, cadena):
         super().__init__(resultado, linea, columna)
-        self.numero = numero
+        self.cadena = cadena
 
     def __str__(self):
         return "toUpperCase"
@@ -25,25 +26,46 @@ class ToUpperCase(Abstract):
 
     def ejecutar(self, scope):
         # ejecutamos el diccionario
-        ejecutar = self.numero.ejecutar(scope)
+        ejecutar = self.cadena.ejecutar(scope)
         # una vez traida la variable debemos verificar que se trata d eun string
-        if(self.verificarTipos(ejecutar)):
+        if (self.verificarTipos(ejecutar)):
             # mandmaos ha hacer concat sobre el atributo value
-            toString = FuncionNativa.hacer_to_upper_case(None, ejecutar['value'])
+            toString = FuncionNativa.hacer_to_upper_case(
+                None, ejecutar['value'])
             # retornamos un diccionario con la String en lower y el tipo String
             return {"value": toString, "tipo": TipoEnum.STRING, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
-             # print('Debuj-> Primitivo ->', self)
+            # print('Debuj-> Primitivo ->', self)
             return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
-
-
     def graficar(self, graphviz, padre):
-        #agregarmos el nombre del nodo (el de la operacion) y el nodo padre
+        # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
         result = graphviz.add_nodo(".", padre)
-        #mandmaos ha graficar el hijo (acceder)
-        self.numero.graficar(graphviz, result)
+        # mandmaos ha graficar el hijo (acceder)
+        self.cadena.graficar(graphviz, result)
         graphviz.add_nodo("toUpperCase", result)
+
+    def generar_c3d(self, scope):
+        # mandamos ha traer el c3d de las expreciones que componen el fixed
+        c3d_numero:Return = self.cadena.generar_c3d(scope)
     
-    def generar_c3d(self,scope):
-        pass
+        generador_aux = Generador()
+        generador = generador_aux.get_instance()
+
+        generador.to_upper()
+        temporal_parametro = generador.add_temp()
+        generador.add_exp(temporal_parametro, 'P', scope.size, '+')
+        generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
+
+        generador.set_stack(temporal_parametro, c3d_numero.get_value())
+
+        generador.new_env(scope.size)
+        generador.call_fun("toUpperCase")
+
+        temporal1 = generador.add_temp()
+        temporal2 = generador.add_temp()
+
+        generador.add_exp(temporal2, 'P', '1', '+')
+        generador.get_stack(temporal1, temporal2)
+
+        return Return(temporal1, TipoEnum.STRING, True, None)

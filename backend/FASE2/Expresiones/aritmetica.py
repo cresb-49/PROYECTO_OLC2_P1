@@ -130,8 +130,7 @@ class Aritmetica(Abstract):
                 return Return(temporal, self.resultado_valor_izq['tipo'], True, None)
             elif self.resultado_valor_izq['tipo'] == TipoEnum.STRING:
                 operador = '+'
-                temporal = generador.add_temp()
-                return self.suma_de_strings(temporal, val_izq.get_value(), val_der.get_value(), operador)
+                return self.suma_de_strings(val_izq.get_value(), val_der.get_value(), scope, generador)
             else:
                 print('Fallo de calculo de tipo')
         elif (self.tipo_operacion == "-"):
@@ -165,5 +164,35 @@ class Aritmetica(Abstract):
                               val_der.get_value(), operador)
             return Return(temporal, TipoEnum.NUMBER, True, None)
 
-    def suma_de_strings(self, temporal, valor_izquierda, valor_derecha, operador):
-        pass
+    def suma_de_strings(self, valor_izquierda, valor_derecha, scope, generador: Generador):
+
+        #envihamos ha generar la funcion de sumas
+        generador.sum_strings()
+        #generamos el primer temporal
+        param_temp = generador.add_temp()
+        generador.add_exp(param_temp, 'P', scope.size, '+')
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, valor_izquierda)
+
+        #asignamos el segundo valor a la posicion 3 del stack
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, valor_derecha)
+
+        #generar un nuevo entorno
+        generador.new_env(scope.size)
+        #llamamos a la funcion de sumar strings
+        generador.call_fun("sumStrings")
+
+        #anadir un nuevo temporal que guardara el stack en P
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        #retornamos el un entorno
+        generador.ret_env(scope.size)
+
+
+        generador.add_comment('Fin de la suma de strings')
+        generador.add_space()
+
+        result = Return(temp, TipoEnum.STRING, False, None)
+
+        return result

@@ -20,6 +20,9 @@ class Generador:
         # Lista de Naivas
         self.print_string = False
         self.to_fixed = False
+        self.to_lowerr = False
+        self.to_upperr = False
+        self.summ_strings = False
         self.compare_string = False
 
         # Lista de imports
@@ -361,7 +364,7 @@ class Generador:
 
         t2 = self.add_temp()
         self.add_exp(t2, 'P', '1', '+')
-        #variable temporal en donde se alojara el valor del numero base
+        # variable temporal en donde se alojara el valor del numero base
         t3 = self.add_temp()
         self.get_stack(t3, t2)
         self.add_exp(t2, t2, '1', '+')
@@ -378,57 +381,215 @@ class Generador:
         self.in_natives = False
 
     def to_lower(self):
-        if self.to_fixed:
+        if (self.to_lowerr):
             return
-        self.to_fixed = True
+        # indicamos que se agrego una funcion toLower
+        self.to_lowerr = True
+        # indicamos que se creo una nativa
         self.in_natives = True
-        # agregamos la libreria strings para poder la manupilacion de strings
-        self.set_import('strings')
+        # creamos la funcion toLowerCase
+        self.add_begin_func('toLowerCase')
+        # etiqueta de retorno
+        return_et = self.new_label()
+        # Etiqueta que permite la comparacion del valor del string
+        compare_et = self.new_label()
+        # temportal que guarda punteor al stack
+        temp_p = self.add_temp()
+        # termporal con puntero al heap
+        temp_h = self.add_temp()
+        # Se aumenta la posicion del stack en 1
+        self.add_exp(temp_p, 'P', '1', '+')
+        # Asignamos el un valor del stack en la posicion del heap
+        self.get_stack(temp_h, temp_p)
+        # temporal de comparacion
+        temp_c = self.add_temp()
+        self.put_label(compare_et)
+        # movemos valor de heap ha stack
+        self.get_heap(temp_c, temp_h)
+        # Condicional que ientifica si el valor del stack es el valor de fin de cadena
+        self.add_if(temp_c, '-1', '==', return_et)
+        # Se agrega temporal
+        temp = self.add_temp()
+        # Se crea etiqueta de conversion
+        pass_et = self.new_label()
+        # If que excluye a los caracteres que no son minusculas
+        self.add_if(temp_c, '65', '<', pass_et)
+        self.add_if(temp_c, '90', '>', pass_et)
+        # de no comporbarse los if entonces podemos aumentar en 32 el caracter
+        self.add_exp(temp, temp_c, '32', '+')
+        # guarda el valor de temporal en el heap
+        self.set_heap(temp_h, temp)
+        # agregar etiqueta de conversion
+        self.put_label(pass_et)
+        # Aumentar en 1 la posicion del heap
+        self.add_exp(temp_h, temp_h, '1', '+')
+        # Goto que inicializa las conficionales
+        self.add_goto(compare_et)
+        # Etiueta de salida del metodo
+        self.put_label(return_et)
+        # cerramos el metodo
+        self.add_end_func()
+        # Se desactiva flag que indica que se esta en una funcion nativa
+        self.in_natives = False
 
-        # agregamos la libreia math para poder hacer el round especifico
-        self.add_begin_func("toLowerCase")
+    def to_upper(self):
+        if (self.to_upperr):
+            return
+        self.to_upperr = True
+        self.in_natives = True
+        # creamos la funcion toUpperCase
+        self.add_begin_func('toUpperCase')
+        # etiqueta de retorno
+        return_et = self.new_label()
+        # Etiqueta que permite la comparacion del valor del string
+        compare_et = self.new_label()
+        # temportal que guarda punteor al stack
+        temp_p = self.add_temp()
+        # termporal con puntero al heap
+        temp_h = self.add_temp()
+        # Se aumenta la posicion del stack en 1
+        self.add_exp(temp_p, 'P', '1', '+')
+        # Asignamos el un valor del stack en la posicion del heap
+        self.get_stack(temp_h, temp_p)
+        # temporal de comparacion
+        temp_c = self.add_temp()
+        self.put_label(compare_et)
+        # movemos valor de heap ha stack
+        self.get_heap(temp_c, temp_h)
+        # Condicional que ientifica si el valor del stack es el valor de fin de cadena
+        self.add_if(temp_c, '-1', '==', return_et)
+        # Se agrega temporal
+        temp = self.add_temp()
+        # Se crea etiqueta de conversion
+        pass_et = self.new_label()
+        # If que excluye a los caracteres que no son minusculas
+        self.add_if(temp_c, '97', '<', pass_et)
+        self.add_if(temp_c, '122', '>', pass_et)
+        # de no comporbarse los if entonces podemos aumentar en 32 el caracter
+        self.add_exp(temp, temp_c, '32', '-')
+        # guarda el valor de temporal en el heap
+        self.set_heap(temp_h, temp)
+        # agregar etiqueta de conversion
+        self.put_label(pass_et)
+        # Aumentar en 1 la posicion del heap
+        self.add_exp(temp_h, temp_h, '1', '+')
+        # Goto que inicializa las conficionales
+        self.add_goto(compare_et)
+        # Etiueta de salida del metodo
+        self.put_label(return_et)
+        # cerramos el metodo
+        self.add_end_func()
+        # Se desactiva flag que indica que se esta en una funcion nativa
+        self.in_natives = False
+
+    def sum_strings(self):
+        # if que reconoce si ya ha sido agregada la funcion sumStrings
+        if self.summ_strings:
+            return
+        self.summ_strings = True
+        self.in_natives = True
+        # declaramos la nueva funcion
+        self.add_begin_func("sumStrings")
+        # creamos una variable que guardara el inicio de la nueva cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, 'H')
 
         # Label para salir de la funcion
         return_lbl = self.new_label()
-        # Label para la comparacion para buscar fin de cadena
-        compare_lbl = self.new_label()
-        # Temporal puntero a stack
-        tempo_p = self.add_temp()
-        # Temporal puntero Heap
-        temp_h = self.add_temp()
-        self.add_exp(tempo_p, 'P', '1', '+')
-        self.get_stack(temp_h, tempo_p)
+        # creamos una nueva temporal
+        t2 = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(t2, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack en t2 y contendra la primera cadena
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        self.add_exp(t2, t2, '1', '+')
 
-        # Temporal con puntero ha H para guardar la cadena nueva
-        tempo_p2 = self.add_temp()
-        self.add_asig(tempo_p2, 'H')
+        # anadimos el temporal que conentra la segunda cadena
+        t4 = self.add_temp()
+        self.get_stack(t4, t2)
 
-        # Temporal para comparar
-        temp_c = self.add_temp()
-        self.put_label(compare_lbl)
+        # label de incializacion del primer ciclo
+        l1 = self.new_label()
+        # label  que inicia la agregacion de los caracteres de la primera cadena a la cadena nueva
+        l3 = self.new_label()
+
+        # label de iniciaizacion del segundo ciclo
+        l2 = self.new_label()
+        # label  que inicia la agregacion de los caracteres de la segunda cadena a la cadena nueva
+        l4 = self.new_label()
+
+        # iniciamos el primer ciclo
+        self.put_label(l1)
+
+        # obtenemos el caracter de la primera cadena contenido en el heap
+        t5 = self.add_temp()
         self.add_ident()
-        self.get_heap(temp_c, temp_h)
-        self.add_ident()
-        self.add_if(temp_c, '-1', '==', return_lbl)
+        self.get_heap(t5, t3)
+
         self.add_ident()
 
-        self.set_heap('H', f'float64(int({temp_c}) + 32)')
+        # si la cadena es diferente de menos 1 entonces agregamos hacemos salto a la etiqueta que guarda la primera cadena
+        self.add_if(t5, '-1', '!=', l3)
+        self.add_ident()
+        self.add_if(t5, '-1', '==', l2)
+
+        ########################################
+        # AGREGACION CARACTERES PRIMERA CADENA #
+        ########################################
+
+        # anadimos el valor t5 a una nueva posicion en el heap y retornamos a la label del primer bucle
+        self.put_label(l3)
+        self.add_ident()
+        self.set_heap('H', t5)
         self.add_ident()
         self.next_heap()
         self.add_ident()
-        self.add_exp(temp_h, temp_h, '1', '+')
+        self.add_exp(t3, t3, '1', '+')
         self.add_ident()
-        self.add_goto(compare_lbl)
+        self.add_goto(l1)
+
+        #################
+        # SEGUNDO CICLO #
+        #################
+
+        # debemos iniciar el segundo ciclo que anade los caracters de la segunda cadena a la nueva cadena
+        self.put_label(l2)
+        # obtenemos el caracter de la primera cadena contenido en el heap
+        t6 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t6, t4)
+        self.add_ident()
+        # si la cadena es diferente de menos 1 entonces agregamos hacemos salto a la etiqueta que guarda la primera cadena
+        self.add_if(t6, '-1', '!=', l4)
+        self.add_ident()
+        self.add_if(t6, '-1', '==', return_lbl)
+
+        ########################################
+        # AGREGACION CARACTERES SEGUNDA CADENA #
+        ########################################
+
+        # anadimos el valor t6 a una nueva posicion en el heap y retornamos a la label del primer bucle
+        self.put_label(l4)
+        self.add_ident()
+        self.set_heap('H', t6)
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        self.add_exp(t4, t4, '1', '+')
+        self.add_ident()
+        self.add_goto(l2)
+
         self.put_label(return_lbl)
 
-
-        self.set_heap('H', f'-1')
+        self.add_ident()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        self.add_ident()
+        # aumentamos en uno el heap
         self.next_heap()
-
-
-        # seteamos el pointer con el valor de la operacion to fixed
-        # self.set_stack(
-        #     'P', f'math.Round({t5}*(math.Pow(10, float64({t4})))) / (math.Pow(10, float64({t4})))')
-
+        self.add_ident()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
         self.add_end_func()
         self.in_natives = False
