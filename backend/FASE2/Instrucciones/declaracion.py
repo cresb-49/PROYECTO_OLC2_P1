@@ -2,6 +2,7 @@ from FASE2.Abstract.abstract import Abstract
 from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.scope import Scope
 from FASE2.Expresiones.arreglo import Arreglo
 
 
@@ -173,15 +174,14 @@ class Declaracion(Abstract):
 
     def validar_tipos(self, result: Return):
 
-     
-            if(result.get_tipo() == TipoEnum.ANY):
-                if(self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
-                    return False
-                return True
-            
-            if(result.get_tipo() != self.tipo and self.tipo != TipoEnum.ANY):
-                return False          
+        if (result.get_tipo() == TipoEnum.ANY):
+            if (self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
+                return False
             return True
+
+        if (result.get_tipo() != self.tipo and self.tipo != TipoEnum.ANY):
+            return False
+        return True
         # if(self.tipo != result['tipo'] !=  TipoEnum.STRING):
         #     return False
         # if(self.tipo != result['tipo'] !=  TipoEnum.NUMBER):
@@ -199,55 +199,26 @@ class Declaracion(Abstract):
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
         generador.add_comment(f'** compilacion de variable {self.id} **')
-        
-        
-        
-        if(self.validar_tipos(result)):
 
+        if (self.validar_tipos(result)):
             print("--------->se paso la validacion")
-            return
+            self.declaracion(result, generador, scope)
         else:
-           #si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
+           # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
             self.resultado.add_error(
-                    'Semantico', error, self.linea, self.columna)
+                'Semantico', error, self.linea, self.columna)
             print('Semantico', str(error), self.linea, self.columna)
-            return
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+    def declaracion(self, result: Return, generador: Generador, scope: Scope):
         # Primero obtenermos la variable desde el scope generado por ultimo
-        variable_recuperada = self.last_scope.obtener_variable(self.id)
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        recu_pos = self.last_scope.get_size()
-        print('last scope -> ',self.last_scope)
-        print('Variable -> ',self.id,' pos ->',recu_pos)
+        scope.declarar_variable(
+            self.id, None, result.get_tipo(), result.get_tipo_aux(), 0, 0)
+        # Codigo resultante
+        scope.imprimir()
+        variable_recuperada = scope.obtener_variable(self.id)
+        recu_pos = scope.get_size()
+        print('Variable -> ', self.id, ' pos ->', recu_pos)
         variable_recuperada.simbolo_c3d.pos = "pos_"+str(recu_pos)
         tempPos = variable_recuperada.simbolo_c3d.pos[4:]
         temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
@@ -270,7 +241,5 @@ class Declaracion(Abstract):
         else:
             generador.set_stack(tempPos, 0)
         generador.add_comment(f'** fin de compilacion variable {self.id} **')
-        self.last_scope.sum_size()
-        print('last scope -> ',self.last_scope.size)
-        
-        
+        scope.sum_size()
+        print('last scope -> ', scope)
