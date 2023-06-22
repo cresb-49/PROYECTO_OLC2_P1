@@ -14,8 +14,9 @@ class Mientras(Abstract):
         self.condicion: Abstract = condicion
         self.sentencias: Abstract = sentencias
         # Variables de ayuda para generacion de codigo en 3 direcciones
-        self.last_scope = None
-        self.last_inner_scope_while = None
+        self.last_scope: Scope = None
+        self.last_pre_scope_while: Scope = None
+        self.last_inner_scope_while: Scope = None
 
     def __str__(self):
         return f"While -> Condición: {self.condicion}, Sentencias: {self.sentencias}"
@@ -27,7 +28,14 @@ class Mientras(Abstract):
         if result != None:
             if result['tipo'] == TipoEnum.BOOLEAN:
                 try:
-                    scope_temporal: Scope = Scope(scope)
+                    # Este while es generado como un intemediario para almacenar
+                    # banderas y etiquetas que lo puede tener un while en concreto
+                    # Este scope no se comparte con otro while a pesar que puede estar
+                    # al mismo nivel que otro.
+                    # Lo utilizamos para evitar ambiguedad en los while consecutivos
+                    scope_referencia_while: Scope = Scope(scope)
+                    self.last_pre_scope_while = scope_referencia_while
+                    scope_temporal: Scope = Scope(scope_referencia_while)
                     self.last_inner_scope_while = scope_temporal
                     # Registramos el scope generado
                     self.resultado.agregar_entorno(
@@ -52,20 +60,27 @@ class Mientras(Abstract):
                 'Semantico', 'No se puede ejecutar la sentencia hay un error anterior', self.linea, self.columna)
 
     def graficar(self, graphviz, padre):
-        mientras_node = graphviz.add_nodo('while', padre)
-        self.condicion.graficar(graphviz, mientras_node)
-        if (self.sentencias != None):
-            self.sentencias.graficar(graphviz, mientras_node)
+        pass
 
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         generador.add_comment('Compilacion de ciclo while')
-        #Generacion de la etiqueta de inicio del cilo
+        # Generacion de la etiqueta de inicio del cilo
         lable_init = generador.new_label()
         generador.put_label(lable_init)
         # Generacion del codigo intermedio de la condicional
         ret: Return = self.condicion.generar_c3d(self.last_scope)
+        # Ingreso de las etiquetas para las sentencias de break y continue en la generacion de codigo intermedio
+        for label in ret.get_false_lbls():
+            self.last_pre_scope_while.add_break_label(label)
+        self.last_pre_scope_while.admit_continue_label = True
+        # En el while continue hace un salto a la condicional por esa
+        # razon establecemos de una vez esta etiqueta, en el for hasta
+        # que hay un continue se genera dicha label se genera, porque no pueden ser
+        # declaradas las labels y no utilizarlas o tener los goto y no existan las 
+        # labels
+        self.last_pre_scope_while.set_continue_label(lable_init)
         # Imprecion de la label de entrada al ciclo
         for label in ret.get_true_lbls():
             generador.put_label(label)

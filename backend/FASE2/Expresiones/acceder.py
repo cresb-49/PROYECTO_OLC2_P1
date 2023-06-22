@@ -90,8 +90,8 @@ class Acceder(Abstract):
         generador.add_comment(
             f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
-        #result = self.last_scope.obtener_variable(self.id)
-        result = scope.obtener_variable(self.id)
+        result = self.last_scope.obtener_variable(self.id)
+        #result = scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
         temp = generador.add_temp()
         # Generamos un variable para recuperar las posicion en el stack de la variable

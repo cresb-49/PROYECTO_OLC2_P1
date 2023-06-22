@@ -27,30 +27,30 @@ class Si(Abstract):
         self.last_result = result
         try:
             if result['tipo'] == TipoEnum.BOOLEAN:
-                if result['value']:
-                    # print('If -> Verdadero')
-                    if self.sentencias != None:
-                        new_scope = Scope(scope)
-                        self.last_scope2 = new_scope
-                        # Registramos el entorno utilizado
-                        self.resultado.agregar_entorno(
-                            codigo_referencia, new_scope)
-                        return self.sentencias.ejecutar(new_scope)
-                else:
-                    # print('If -> Falso')
-                    if self._else != None:
-                        new_scope = Scope(scope)
-                        self.last_scope3 = new_scope
-                        # Registramos el entorno utilizado
-                        self.resultado.agregar_entorno(
-                            codigo_referencia, new_scope)
-                        return self._else.ejecutar(new_scope)
+                self.exect_code_true(codigo_referencia, scope)
+                self.exect_code_false(codigo_referencia, scope)
             else:
                 self.resultado.add_error(
                     'Semantico', 'Error el if opera con una exprecion booleana', self.linea, self.columna)
         except Exception:
             self.resultado.add_error(
                 'Semantico', 'No se puede operar la sentencia existe un error anterior', self.linea, self.columna)
+
+    def exect_code_true(self, codigo_referencia, scope):
+        if self.sentencias != None:
+            new_scope = Scope(scope)
+            self.last_scope2 = new_scope
+            # Registramos el entorno utilizado
+            self.resultado.agregar_entorno(codigo_referencia, new_scope)
+            return self.sentencias.ejecutar(new_scope)
+
+    def exect_code_false(self, codigo_referencia, scope):
+        if self._else != None:
+            new_scope = Scope(scope)
+            self.last_scope3 = new_scope
+            # Registramos el entorno utilizado
+            self.resultado.agregar_entorno(codigo_referencia, new_scope)
+            return self._else.ejecutar(new_scope)
 
     def graficar(self, graphviz, padre):
         result = graphviz.add_nodo('if', padre)
@@ -68,17 +68,17 @@ class Si(Abstract):
         generador = gen_aux.get_instance()
         generador.add_comment("Compilacion de de sentencia if")
         exit_label = generador.new_label()
-        res: Return = self.exprecion.generar_c3d(scope)
+        res: Return = self.exprecion.generar_c3d(self.last_scope1)
         for label in res.get_true_lbls():
             generador.put_label(label)
-        #Sentencias verdaderas del if
+        # Sentencias verdaderas del if
         if self.sentencias != None:
-            self.sentencias.generar_c3d(scope)
+            self.sentencias.generar_c3d(self.last_scope2)
         generador.add_goto(exit_label)
         for label in res.get_false_lbls():
             generador.put_label(label)
-        #Sentencias falsas del if
+        # Sentencias falsas del if
         if self._else != None:
-            self._else.generar_c3d(scope)
+            self._else.generar_c3d(self.last_scope3)
         generador.put_label(exit_label)
         generador.add_comment("fin compilacion de de sentencia if")

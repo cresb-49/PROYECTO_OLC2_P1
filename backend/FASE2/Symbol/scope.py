@@ -42,6 +42,55 @@ class Scope:
         self.size: int = 0
         if anterior != None:
             self.size = self.anterior.size
+        self.return_labels = []
+        self.break_labels = []
+        self.admit_continue_label = False
+        self.continue_label = ''
+
+    def add_return_label(self, label):
+        self.return_labels.append(label)
+
+    def get_return_labels(self):
+        return self.return_labels
+
+    def add_break_label(self, label):
+        self.break_labels.append(label)
+
+    def get_break_labels(self):
+        return self.break_labels
+
+    def set_continue_label(self, label):
+        self.continue_label = label
+
+    def get_continue_label(self):
+        return self.continue_label
+
+    def get_return_ref(self):
+        if len(self.return_labels) == 0:
+            if self.anterior != None:
+                return self.anterior.get_return_ref()
+            else:
+                return None
+        else:
+            return self.return_labels
+
+    def get_break_ref(self):
+        if len(self.break_labels) == 0:
+            if self.anterior != None:
+                return self.anterior.get_break_ref()
+            else:
+                return None
+        else:
+            return self.break_labels
+
+    def get_scope_continue_ref(self):
+        if self.admit_continue_label:
+            return self
+        else:
+            if self.anterior != None:
+                return self.anterior.get_scope_continue_ref()
+            else:
+                return None
 
     def imprimir(self):
         for x in self.variables.get_diccionario():
@@ -59,7 +108,7 @@ class Scope:
         self.variables = Variables()
 
     def __str__(self) -> str:
-        return f"Nombre: {self.nombre}, Tipo: {self.tipo}"
+        return f"Nombre: {self.nombre}, Tipo: {self.tipo} Anterior: {self.anterior}"
 
     def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario, linea, columna):
         try:
@@ -83,6 +132,9 @@ class Scope:
             raise ValueError(str(error))
 
     def get_size(self):
+        # TODO: Si hay problemas de entornos hay que verificar aqui XD
+        if self.anterior != None:
+            self.size = self.anterior.size
         return self.size
 
     def sum_size(self):
