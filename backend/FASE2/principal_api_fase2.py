@@ -67,6 +67,7 @@ class PrincipalFase2:
                 # GENERACION DEL CODIGO 3 DIRECCIONES EN GO
                 ambito_global.size = 0
                 new_scope = Scope(None)
+                new_scope.tipo = 'Global'
                 entorno.generar_c3d(new_scope)
                 codigo_3_direcciones = generador.get_code()
                 # print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)

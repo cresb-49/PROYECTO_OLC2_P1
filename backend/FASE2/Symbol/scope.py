@@ -3,7 +3,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 
 class SimboloC3D:
     def __init__(self, in_heap):
-        self.pos = 0  # Ubicacion en el stack
+        self.pos = "0"  # Ubicacion en el stack
         self.is_global = False  # Sabemos si la variable es de tipo global
         self.in_heap = in_heap  # Si su valor esta contenido en el heap del programa
         self.value = None
@@ -27,7 +27,7 @@ class Simbolo:
         self.simbolo_c3d = simbolo_c3d
 
     def __str__(self) -> str:
-        return f"Variable: {self.id}, Tipo: {self.tipo}, Tipo_Secundario: {self.tipo_secundario}, Valor: {self.valor}, Línea: {self.linea}, Columna: {self.columna}"
+        return f"Variable: {self.id}, Tipo: {self.tipo}, Tipo_Secundario: {self.tipo_secundario} Pos: {self.simbolo_c3d.pos} IsGlobal: {self.simbolo_c3d.is_global} Inheap: {self.simbolo_c3d.in_heap}"
 
 
 class Scope:
@@ -115,26 +115,28 @@ class Scope:
             # Calculo si los datos esta ubicados en el heap o en el stack
             # Lo hacemos por medio del tipo principal y secundario de la variable
             is_heap = False
-            if tipo == TipoEnum.ARRAY or TipoEnum.STRING:
+            if tipo == TipoEnum.ARRAY or tipo == TipoEnum.STRING or tipo == TipoEnum.STRUCT:
                 is_heap = True
             # Generacion de parametros del simbolo en 3 direcciones
             simbolo_c3d: SimboloC3D = SimboloC3D(is_heap)
-            new_symbol = Simbolo(
-                valor, id, tipo, tipo_secundario, linea, columna, simbolo_c3d)
+            new_symbol = Simbolo(valor, id, tipo, tipo_secundario, linea, columna, simbolo_c3d)
             self.variables.add(id, new_symbol)
             # Asignamos la direccion del stack a la variable ingresada
             variable = self.get_size()
-            simbolo_c3d.pos = "pos_"+str(variable)
+            simbolo_c3d.pos = str(variable)[:]
             # Aqui asignamos automaticamente si la variable a declarar es de tipo global
             if self.anterior == None:
                 simbolo_c3d.is_global = True
         except ValueError as error:
             raise ValueError(str(error))
 
+    # def get_size(self):
+    #     # TODO: Si hay problemas de entornos hay que verificar aqui XD
+    #     if self.anterior != None:
+    #         self.size = self.anterior.size
+    #     return self.size
+
     def get_size(self):
-        # TODO: Si hay problemas de entornos hay que verificar aqui XD
-        if self.anterior != None:
-            self.size = self.anterior.size
         return self.size
 
     def sum_size(self):
