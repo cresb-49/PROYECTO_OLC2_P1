@@ -13,18 +13,21 @@ class Sentencias(Abstract):
         super().__init__(resultado, linea, columna)
         self.intr_izquierda = intr_izquierda
         self.instr_derecha = instr_derecha
+        # Recuperacion del scope de ejecucion
+        self.last_scope = None
 
     def __str__(self):
         return f"instr: izquierda: {str(self.intr_izquierda)}, derecha: {str(self.instr_derecha)}"
 
     def ejecutar(self, scope):
+        self.last_scope = scope
         # Verificamos que la instruccion no sea una funcion para no ejecutarla
         if self.intr_izquierda != None:
             if not (isinstance(self.intr_izquierda, Funcion)):
                 result = self.intr_izquierda.ejecutar(scope)
                 if isinstance(result, dict) or isinstance(result, Continuar) or isinstance(result, Detener):
                     # TODO: [IMPORTANTE] Eliminar debuj
-                    #print('debuj sentencias:', result)
+                    # print('debuj sentencias:', result)
                     return result
 
         if self.instr_derecha != None:
@@ -32,7 +35,7 @@ class Sentencias(Abstract):
                 result = self.instr_derecha.ejecutar(scope)
                 if isinstance(result, dict) or isinstance(result, Continuar) or isinstance(result, Detener):
                     # TODO: [IMPORTANTE] Eliminar debuj
-                    #print('debuj sentencias:', result)
+                    # print('debuj sentencias:', result)
                     return result
 
     def graficar(self, graphviz, padre):
@@ -42,12 +45,12 @@ class Sentencias(Abstract):
         if self.instr_derecha != None:
             self.instr_derecha.graficar(graphviz, result)
 
-    def generar_c3d(self,scope):
+    def generar_c3d(self, scope):
         if self.intr_izquierda != None:
-            result = self.intr_izquierda.generar_c3d(scope)
+            result = self.intr_izquierda.generar_c3d(self.last_scope)
             if isinstance(result, Return):
                 return result
         if self.instr_derecha != None:
-            result = self.instr_derecha.generar_c3d(scope)
+            result = self.instr_derecha.generar_c3d(self.last_scope)
             if isinstance(result, Return):
                 return result

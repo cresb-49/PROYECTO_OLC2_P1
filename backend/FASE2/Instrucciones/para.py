@@ -204,6 +204,11 @@ class Para(Abstract):
             generador.put_label(label_intit)
             # Generacion del codigo para la condicional del for y colocado de la etiqueta true
             ret: Return = self.condicion.generar_c3d(self.last_pre_scope_for)
+            # Ingresamos la etiquetas para el sentencias de break y continue en la generacion del codigo intermedio
+            for label in ret.get_false_lbls():
+                self.last_pre_scope_for.add_break_label(label)
+            self.last_pre_scope_for.admit_continue_label = True
+            print('labels ->', self.last_pre_scope_for)
             for label in ret.get_true_lbls():
                 generador.put_label(label)
             # Generacion del codigo del las inttrucciones
@@ -211,6 +216,9 @@ class Para(Abstract):
                 generador.add_comment('Instrucciones dentro del for')
                 self.sentencias.generar_c3d(self.last_inner_scope_for)
                 generador.add_comment('Fin instrucciones dentro del for')
+            # Aqui se debe de agregar etiqueta del continue
+            if self.last_pre_scope_for.continue_label != '':
+                generador.put_label(self.last_pre_scope_for.continue_label)
             # Instrucciones del paso del for
             generador.add_comment('compilacion paso for')
             self.expresion.generar_c3d(self.last_pre_scope_for)
