@@ -25,8 +25,13 @@ class PrincipalFase1:
 
         # print('#### CODIGO A PROCESAR\n', codigo)
         print('#### PARSER FASE 1 EJECUTADO')
-        result: Resultado = parser.parse(codigo)
-        if result != None:
+        result: Resultado = None
+        parser.parse(codigo)
+        
+        lista_errores = parser.get_errores_parser_lexer()
+        print('Debuj errores -> ',lista_errores)
+        parser.clear_errores()
+        if len(lista_errores) == 0:
             print('#### PARSER FASE 1 FINALIZADO')
             ambito_global: Scope = None
             for n in result.tabla_simbolos:
@@ -104,8 +109,8 @@ class PrincipalFase1:
                          "simbolos": tabla_de_simbolos}
             return respuesta
         else:
-            print(resultado.errores)
-            resultado.add_error(
-                'Sintactico', 'Existe un error al final del archivo', 0, 0)
+            for error in lista_errores:
+                resultado.errores.append(error)
+            resultado.add_error('Sintactico', 'Existe un error al final del archivo', 0, 0)
             respuesta = {"result": resultado, "dot": '', "simbolos": dict()}
             return respuesta

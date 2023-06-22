@@ -2,11 +2,14 @@ import FASE1.ply.lex as lex  # Import del lex para la generacion del analizadoz 
 from FASE1.Models.resultado import Resultado
 # Import de las clases auxiliares
 from FASE1.Errores.Errores import TablaErrores
+from FASE1.Errores.Errores import Error
 
 import re
+from datetime import datetime
 
 tabla_errores = TablaErrores()
 resultado = Resultado([], [])
+errores_lexer = []
 
 
 # Definicion de tokens
@@ -72,7 +75,7 @@ tokens = [
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     # Verifica en las palabras reservadas
-    #t.type = reservadas.get(t.value.lower(), 'ID')
+    # t.type = reservadas.get(t.value.lower(), 'ID')
     t.type = reservadas.get(t.value, 'ID')
     return t
 
@@ -158,8 +161,16 @@ def t_newline(t):
 
 def t_error(t):
     error = "Caracter ilegal '%s'" % t.value[0]
-    resultado.add_error('Lexico', error, t.lexer.lineno, 0)
+    # resultado.add_error('Lexico', error, t.lexer.lineno, 0)
+    lexer_add_error('Lexico', error, t.lexer.lineno, 0)
     t.lexer.skip(1)
+
+
+def lexer_add_error(tipo, desc, linea, columna):
+    fecha_hora_actual = datetime.now()
+    fecha_hora_formateada = fecha_hora_actual.strftime("%d/%m/%Y %H:%M")
+    error = Error(tipo, desc, linea, columna, fecha_hora_formateada)
+    errores_lexer.append(error)
 
 
 def find_column(input, token):
@@ -167,11 +178,19 @@ def find_column(input, token):
     return (token.lexpos - line_start) + 1
 
 
-# Construcion del Lexer
-#lexer = lex.lex()
-lexer = lex.lex(reflags=re.IGNORECASE) #TODO: tomar en si no funciona
+def get_errores_lexer():
+    return errores_lexer
 
-#Apertura y lectura del archivo de entrada
+
+def clear_errores_lexer():
+    errores_lexer.clear()
+
+
+# Construcion del Lexer
+# lexer = lex.lex()
+lexer = lex.lex(reflags=re.IGNORECASE)  # TODO: tomar en si no funciona
+
+# Apertura y lectura del archivo de entrada
 # archivo = open("backend/entrada.ts", "r")
 # input = archivo.read()
 
