@@ -1,4 +1,4 @@
-#import pyTypeParser as parser
+# import pyTypeParser as parser
 import FASE2.pyTypeParser2 as parser
 from FASE2.pyTypeParser2 import Scope
 from FASE2.pyTypeParser2 import TipoEnum
@@ -8,6 +8,7 @@ from FASE2.pyTypeParser2 import resultado
 from FASE2.Instrucciones.entorno import Entorno
 from FASE2.Modulos.grafico_dot import GraficoDot
 from FASE2.Symbol.generador import Generador
+
 
 class PrincipalFase2:
     def leer(self, codigo):
@@ -65,9 +66,10 @@ class PrincipalFase2:
             if len(result.errores) == 0:
                 # GENERACION DEL CODIGO 3 DIRECCIONES EN GO
                 ambito_global.size = 0
-                entorno.generar_c3d(None)
+                new_scope = Scope(None)
+                entorno.generar_c3d(new_scope)
                 codigo_3_direcciones = generador.get_code()
-                #print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
+                # print('#### CODIGO 3 DIRECCIONES\n', codigo_3_direcciones)
             else:
                 result.consola = []
             respuesta = {"result": result, "c3d": codigo_3_direcciones}
