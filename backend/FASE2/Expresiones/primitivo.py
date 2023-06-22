@@ -11,7 +11,7 @@ class Primitivo(Abstract):
         self.valor = valor
 
     def __str__(self):
-        return f"Tipo: {self.tipo}, Valor: {self.valor}"
+        return f"Primitivo -> Tipo: {self.tipo}, Valor: {self.valor}"
 
     def ejecutar(self, scope):
         """

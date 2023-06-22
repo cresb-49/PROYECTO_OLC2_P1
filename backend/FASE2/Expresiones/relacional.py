@@ -9,14 +9,18 @@ from FASE2.Symbol.Exception import Excepcion
 class Relacional(Abstract):
     def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
         super().__init__(resultado, linea, columna)
-        self.expresion_izquierda = expresion_izquierda
-        self.expresion_derecha = expresion_derecha
+        self.tipo = TipoEnum.BOOLEAN
+        self.expresion_izquierda: Abstract = expresion_izquierda
+        self.expresion_derecha: Abstract = expresion_derecha
         self.tipo_operacion = tipo_operacion
         # Guadado de los ultimos tipos ejecutados en el relacional
         self.last_scope = None
         self.last_exp_izq = None
         self.last_exp_der = None
-
+        
+    def __str__(self):
+        return f"Relacional -> Tipo: {self.tipo}"
+    
     def verificarTipos(self, val_izq, val_derecho):
         # extraemos el tipo de la exprecion izquierda de la op
         if (val_izq == None or val_derecho == None):
@@ -91,20 +95,24 @@ class Relacional(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         generador.add_comment("Compilacion de exprecion Logica")
-        # print('debuj 1 ->', self.last_exp_izq)
-        # print('debuj 2 ->', self.last_exp_der)
-        val_izq: Abstract = self.expresion_izquierda
-        val_der: Abstract = self.expresion_derecha
+
+        val_izq: Abstract = self.expresion_izquierda;
+        val_der: Abstract = self.expresion_derecha;
+
+        print(val_izq)
+        print(val_der)
+        # TODO: Realizar la validacion de tipos
+
         if (self.tipo_operacion == "===" or self.tipo_operacion == "!=="):
-            if self.last_exp_izq['tipo'] == TipoEnum.ANY:
-                return self.operaciones_asociadas(self.last_exp_izq['tipo'], val_izq, val_der, generador, scope)
+            if val_izq.tipo == TipoEnum.ANY:
+                return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
             else:
-                return self.operaciones_asociadas(self.last_exp_izq['tipo'], val_izq, val_der, generador, scope)
+                return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
         else:
-            if self.last_exp_izq['tipo'] == TipoEnum.NUMBER:
+            if val_izq.tipo == TipoEnum.NUMBER:
                 return self.comparacion_number(val_izq, val_der, generador, scope)
-            elif self.last_exp_izq['tipo'] == TipoEnum.ANY:
-                return self.operaciones_asociadas(self.last_exp_izq['tipo'], val_izq, val_der, generador, scope)
+            elif val_izq.tipo == TipoEnum.ANY:
+                return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
             else:
                 return Excepcion("Semantico", f"No existe operacion para el tipo  {self.last_exp_izq['tipo'].value} desconocida", self.linea, self.columna)
 
@@ -126,7 +134,7 @@ class Relacional(Abstract):
         if self.false_lbl == '':
             self.false_lbl = generador.new_label()
 
-    def comparacion_number(self, exp_izq: Return, exp_der: Abstract, generador: Generador, scope):
+    def comparacion_number(self, exp_izq: Abstract, exp_der: Abstract, generador: Generador, scope):
         val_izq: Return = exp_izq.generar_c3d(scope)
         val_der: Return = exp_der.generar_c3d(scope)
         true_label = generador.new_label()

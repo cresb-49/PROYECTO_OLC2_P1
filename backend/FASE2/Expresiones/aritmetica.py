@@ -7,13 +7,17 @@ from FASE2.Abstract.return__ import Return
 class Aritmetica(Abstract):
     def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
         super().__init__(resultado, linea, columna)
+        self.tipo = TipoEnum.NUMBER
         self.expresion_izquierda = expresion_izquierda
         self.expresion_derecha = expresion_derecha
         self.tipo_operacion = tipo_operacion
         # CODIGO DE AYUDA REFERENCIA PARA LA EJECUCION
-        self.resultado_valor_izq = None
-        self.resultado_valor_der = None
-        self.last_scope = None
+        # self.resultado_valor_izq = None
+        # self.resultado_valor_der = None
+        # self.last_scope = None
+
+    def __str__(self):
+        return f"Aritmetica -> Tipo: {self.tipo}"
 
     def verificarTipos(self, val_izquierdo, val_derecho):
 
@@ -108,28 +112,22 @@ class Aritmetica(Abstract):
         temporal = ''
         operador = ''
 
-        # Al ejecutar obtenemos los tipos de los datos automaticamanete,
-        # no debemos realizar verificaciones porque ya el interprete hizo lo necesario
-        # val_izquierdo = self.expresion_izquierda.ejecutar(scope)
-        # val_derecho = self.expresion_derecha.ejecutar(scope)
-
         # Recuperamos los valores
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
         val_der: Return = self.expresion_derecha.generar_c3d(scope)
 
-        # print('val_izquierdo',val_izquierdo)
-        # print('val_derecho',val_derecho)
+        if not (val_izq.get_tipo() == val_der.get_tipo()):
+            print('Error en aritmetica')
 
-        # TODO: Falta por implementar operaciones
         if (self.tipo_operacion == "+"):
-            if self.resultado_valor_izq['tipo'] == TipoEnum.NUMBER:
+            if val_izq.get_tipo() == TipoEnum.NUMBER:
                 operador = '+'
                 temporal = generador.add_temp()
                 generador.add_exp(temporal, val_izq.get_value(),
                                   val_der.get_value(), operador)
-                return Return(temporal, self.resultado_valor_izq['tipo'], True, None)
-            elif self.resultado_valor_izq['tipo'] == TipoEnum.STRING:
-                operador = '+'
+                return Return(temporal, TipoEnum.NUMBER, True, None)
+            elif val_izq.get_tipo() == TipoEnum.STRING:
+                self.tipo = TipoEnum.STRING
                 return self.suma_de_strings(val_izq.get_value(), val_der.get_value(), scope, generador)
             else:
                 print('Fallo de calculo de tipo')
@@ -166,29 +164,28 @@ class Aritmetica(Abstract):
 
     def suma_de_strings(self, valor_izquierda, valor_derecha, scope, generador: Generador):
 
-        #envihamos ha generar la funcion de sumas
+        # envihamos ha generar la funcion de sumas
         generador.sum_strings()
-        #generamos el primer temporal
+        # generamos el primer temporal
         param_temp = generador.add_temp()
         generador.add_exp(param_temp, 'P', scope.size, '+')
         generador.add_exp(param_temp, param_temp, '1', '+')
         generador.set_stack(param_temp, valor_izquierda)
 
-        #asignamos el segundo valor a la posicion 3 del stack
+        # asignamos el segundo valor a la posicion 3 del stack
         generador.add_exp(param_temp, param_temp, '1', '+')
         generador.set_stack(param_temp, valor_derecha)
 
-        #generar un nuevo entorno
+        # generar un nuevo entorno
         generador.new_env(scope.size)
-        #llamamos a la funcion de sumar strings
+        # llamamos a la funcion de sumar strings
         generador.call_fun("sumStrings")
 
-        #anadir un nuevo temporal que guardara el stack en P
+        # anadir un nuevo temporal que guardara el stack en P
         temp = generador.add_temp()
         generador.get_stack(temp, 'P')
-        #retornamos el un entorno
+        # retornamos el un entorno
         generador.ret_env(scope.size)
-
 
         generador.add_comment('Fin de la suma de strings')
         generador.add_space()
