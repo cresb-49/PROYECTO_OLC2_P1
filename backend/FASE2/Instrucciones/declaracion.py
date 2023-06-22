@@ -218,8 +218,7 @@ class Declaracion(Abstract):
 
     def declaracion(self, result: Return, generador: Generador, scope: Scope):
         # Primero obtenermos la variable desde el scope generado por ultimo
-        scope.declarar_variable(
-            self.id, None, result.get_tipo(), result.get_tipo_aux(), 0, 0)
+        scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), 0, 0)
         # Codigo resultante
         scope.imprimir()
         variable_recuperada = scope.obtener_variable(self.id)

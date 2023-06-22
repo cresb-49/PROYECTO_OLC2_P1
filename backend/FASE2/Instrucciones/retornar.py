@@ -23,4 +23,4 @@ class Retornar(Abstract):
             self.exprecion.graficar(graphviz, node_result)
 
     def generar_c3d(self,scope):
-        pass
+        print('Estoy generando un retorno')

@@ -21,7 +21,7 @@ class Continuar(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         generador.add_comment('Inicio de compilacion de continue')
-        result = self.last_scope.get_scope_continue_ref()
+        result = scope.get_scope_continue_ref()
         print('debuj =>', result)
         if result.continue_label == '':
             continue_label = generador.new_label()
