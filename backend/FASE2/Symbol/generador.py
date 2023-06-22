@@ -603,10 +603,9 @@ class Generador:
         # declaramos la nueva funcion
         self.add_begin_func("length")
 
-        #declaracion de una temporal contadora
+        # declaracion de una temporal contadora
         t0 = self.add_temp()
-        self.add_asig(t0, '0') #inicializamos la temporal en 0
-
+        self.add_asig(t0, '0')  # inicializamos la temporal en 0
 
         # creamos una nueva temporal
         t2 = self.add_temp()
@@ -617,9 +616,9 @@ class Generador:
         self.get_stack(t3, t2)
         self.add_exp(t2, t2, '1', '+')
 
-        #######################
-        # DECLARACION DE LABELS#
-        #######################
+        #########################
+        # DECLARACION DE LABELS #
+        #########################
 
         # Label para salir de la funcion
         return_lbl = self.new_label()
@@ -648,24 +647,25 @@ class Generador:
         ###############################
         # Acumulacion del contador    #
         ###############################
-        #marcamos la label que hace la acumulacion del contador
+
+        # marcamos la label que hace la acumulacion del contador
         self.put_label(l2)
         self.add_ident()
-        #acumulamos 1 en la temporal contadora
+        # acumulamos 1 en la temporal contadora
         self.add_exp(t0, t0, '1', '+')
         self.add_ident()
-        #regresamos a la label que abre el ciclo
+        self.add_exp(t3, t3, '1', '+')
+        self.add_ident()
+        # regresamos a la label que abre el ciclo
         self.add_goto(l1)
-
 
         ####################################
         # Declaracion del final del metodo #
         ####################################
 
+        # declaramos la label que termina el metodo
+        self.put_label(return_lbl)
         # en el stack devolvemos el valor final de la variable contadora
         self.set_stack('P', t0)
         self.add_end_func()
         self.in_natives = False
-
-
-        pass
