@@ -78,10 +78,8 @@ class Funcion(Abstract):
     def compilacion_funcion(self, scope: Scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        generador.add_comment(f'Compilacion de la funcion {self.id}')
         # Generamos el nuevo entorno para la intrucciones de la funcion
         new_scope_func: Scope = Scope(scope)
-
         # Generacion de la label de retorno para las funciones
         lbl_return = generador.new_label()
         new_scope_func.add_return_label(lbl_return)
@@ -94,6 +92,7 @@ class Funcion(Abstract):
                 # TODO: debemos de buscar si la variable es tipo estruct y mandar a llamar sus valores
 
         generador.add_begin_func(self.id)
+        generador.add_comment(f'Compilacion de la funcion {self.id}')
         # Generamos un scope solo para las intrucciones que se ejecutan
         new_inner_scope: Scope = Scope(new_scope_func)
         if self.sentencias != None:

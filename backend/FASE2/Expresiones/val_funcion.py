@@ -1,5 +1,8 @@
 from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.Exception import Excepcion
 from FASE2.Instrucciones.funcion import Funcion
 from FASE2.Symbol.tipoEnum import TipoEnum
 import traceback
@@ -52,7 +55,8 @@ class ValFuncion(Abstract):
                             for param_fun, param_send in zip(fun.parametros, self.parametros):
                                 param_fun.ejecutar(scope_funcion)
                                 result = param_send.ejecutar(scope)
-                                self.asignacion_valor_funcion(param_fun.id,scope_funcion,result)
+                                self.asignacion_valor_funcion(
+                                    param_fun.id, scope_funcion, result)
                         scope_funcion.imprimir()
                         value = fun.ejecutar(scope_funcion)
                         return value
@@ -77,8 +81,8 @@ class ValFuncion(Abstract):
         result = graphviz.add_nodo('function', padre)
         graphviz.add_nodo(self.id, result)
         node_params = graphviz.add_nodo('params', result)
-        #si los parametros no son nulos entonces mandamos ha graficar
-        if(self.parametros != None):
+        # si los parametros no son nulos entonces mandamos ha graficar
+        if (self.parametros != None):
             for nodo in self.parametros:
                 nodo.graficar(graphviz, node_params)
 
@@ -102,5 +106,64 @@ class ValFuncion(Abstract):
             self.resultado.add_error(
                 'Semantico', concat, self.linea, self.columna)
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self, scope: Scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        funcion = scope.obtener_funcion(self.id)
+        if funcion == None:
+            self.resultado.add_error(
+                'Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.columna, self.columna)
+            return Excepcion('Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.linea, self.columna)
+
+        param_values = []
+        tmps = []
+        size = scope.size
+
+        for parametros in self.parametros:
+            value = parametros.generar_c3d(scope)
+            if isinstance(value, Excepcion):
+                return value
+            param_values.append(value)
+            tmps.append(value.get_value())
+
+        temp = generador.add_temp()
+        generador.add_exp(temp, 'P', size+1, '+')
+        aux = 0
+        if len(funcion.parametros) == len(param_values):
+            for param_fun, param_send in zip(funcion.parametros, param_values):
+                if param_fun.tipo == param_send.type:
+                    print('debuj1 val_funcion =>', param_fun)
+                    print('debuj2 val_funcion =>', param_send)
+                    aux += 1
+                    generador.set_stack(temp, param_send.get_value())
+                    if aux != len(param_values):
+                        generador.add_exp(temp, temp, 1, '+')
+                else:
+                    self.resultado.add_error(
+                        'Semantico', f'Esta asignando un valor de tipo {param_send.type.value} a un parametro de tipo {param_fun.tipo.value}', self.columna, self.columna)
+                    return Excepcion('Semantico', f'Esta asignando un valor de tipo {param_send.type.value} a un parametro de tipo {param_fun.tipo.value}', self.linea, self.columna)
+            generador.new_env(size)
+            generador.call_fun(self.id)
+            generador.get_stack(temp, 'P')
+            generador.ret_env(size)
+            generador.add_comment(f'Fin de la llamada a la funcion {self.id}')
+            generador.add_space()
+            if funcion.tipo != TipoEnum.BOOLEAN:
+                return Return(temp, funcion.tipo, True, None)
+            else:
+                generador.add_comment('Recuperacion de booleano')
+                if self.true_lbl == '':
+                    self.true_lbl = generador.generator.new_label()
+                if self.false_lbl == '':
+                    self.false_lbl = generador.generator.new_label()
+                generador.add_if(temp, 1, '==', self.true_lbl)
+                generador.add_goto(self.true_lbl)
+                ret = Return(temp, TipoEnum.BOOLEAN, True, None)
+                ret.add_true_lbl(self.true_lbl)
+                ret.add_false_lbl(self.false_lbl)
+                generador.add_comment('Fin de recuperacion de booleano')
+                return ret
+        else:
+            self.resultado.add_error(
+                'Semantico', f'No esta enviado la cantidad correcta de parametros a a funcion "{self.id}"', self.columna, self.columna)
+            return Excepcion('Semantico', f'No esta enviado la cantidad correcta de parametros a a funcion "{self.id}"', self.linea, self.columna)
