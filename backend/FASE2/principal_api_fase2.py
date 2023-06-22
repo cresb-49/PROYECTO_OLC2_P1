@@ -46,19 +46,19 @@ class PrincipalFase2:
             for n in result.errores:
                 print(n)
 
-            if len(result.errores) == 0:
-                print('#### EJECUCION DEL CODIGO FASE 2')
-                entorno.ejecutar(None)
-            else:
-                print('#### NO SE PUEDE EJECUTAR EL CODIGO HAY ERRORES')
+            # if len(result.errores) == 0:
+            #     print('#### EJECUCION DEL CODIGO FASE 2')
+            #     entorno.ejecutar(None)
+            # else:
+            #     print('#### NO SE PUEDE EJECUTAR EL CODIGO HAY ERRORES')
 
-            print('#### CONSOLA DE SALIDA FASE 2')
-            for n in result.consola:
-                print(n)
+            # print('#### CONSOLA DE SALIDA FASE 2')
+            # for n in result.consola:
+            #     print(n)
 
-            print('#### ERRORES EJECUCION DE CODIGO FASE 2')
-            for n in result.errores:
-                print(n)
+            # print('#### ERRORES EJECUCION DE CODIGO FASE 2')
+            # for n in result.errores:
+            #     print(n)
 
             codigo_3_direcciones = ""
 
