@@ -24,7 +24,7 @@ class Generador:
         self.to_upperr = False
         self.summ_strings = False
         self.compare_string = False
-
+        self.lengthh = False
         # Lista de imports
         self.imports = []
         self.imports2 = ['fmt', 'math']
@@ -593,3 +593,79 @@ class Generador:
         self.set_stack('P', t0)
         self.add_end_func()
         self.in_natives = False
+
+    def length(self):
+        # if que reconoce si ya ha sido agregada la funcion length
+        if self.lengthh:
+            return
+        self.lengthh = True
+        self.in_natives = True
+        # declaramos la nueva funcion
+        self.add_begin_func("length")
+
+        #declaracion de una temporal contadora
+        t0 = self.add_temp()
+        self.add_asig(t0, '0') #inicializamos la temporal en 0
+
+
+        # creamos una nueva temporal
+        t2 = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(t2, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack en t2 y contendra la primera cadena
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        self.add_exp(t2, t2, '1', '+')
+
+        #######################
+        # DECLARACION DE LABELS#
+        #######################
+
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
+        # Label para iniciar el ciclo
+        l1 = self.new_label()
+        # Label para la acumulacion del contador
+        l2 = self.new_label()
+
+        #######################
+        # INICIO DEL CICLO    #
+        #######################
+
+        # marcamos la label que inicia el ciclo
+        self.put_label(l1)
+        # obtenemos el caracter de la primera cadena contenido en el heap
+        t6 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t6, t3)
+        self.add_ident()
+        # si la cadena es diferente de menos 1 entonces agregamos hacemos salto a la etiqueta que guarda la primera cadena
+        self.add_if(t6, '-1', '!=', l2)
+        self.add_ident()
+        # Si se encontro el -1 entonces debemos terminar el metodo
+        self.add_if(t6, '-1', '==', return_lbl)
+
+        ###############################
+        # Acumulacion del contador    #
+        ###############################
+        #marcamos la label que hace la acumulacion del contador
+        self.put_label(l2)
+        self.add_ident()
+        #acumulamos 1 en la temporal contadora
+        self.add_exp(t0, t0, '1', '+')
+        self.add_ident()
+        #regresamos a la label que abre el ciclo
+        self.add_goto(l1)
+
+
+        ####################################
+        # Declaracion del final del metodo #
+        ####################################
+
+        # en el stack devolvemos el valor final de la variable contadora
+        self.set_stack('P', t0)
+        self.add_end_func()
+        self.in_natives = False
+
+
+        pass

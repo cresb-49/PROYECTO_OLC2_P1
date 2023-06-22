@@ -4,7 +4,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 
 from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
-from backend.FASE2.Symbol.Exception import Excepcion
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Imprimir(Abstract):
