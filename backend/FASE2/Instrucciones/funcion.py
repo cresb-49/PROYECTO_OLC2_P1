@@ -1,5 +1,7 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.Exception import Excepcion
 from FASE2.Symbol.generador import Generador
 
 
@@ -9,7 +11,7 @@ class Funcion(Abstract):
         super().__init__(resultado, linea, columna)
         self.id = id
         self.tipo = tipo
-        self.sentencias = sentancias
+        self.sentencias: Abstract = sentancias
         self.parametros = parametros
         self.tipo_secundario = tipo_secundario
 
@@ -22,32 +24,18 @@ class Funcion(Abstract):
             if self.validacion_salida_funccion(result):
                 val = {"value": result['value'], "tipo": result['tipo'],
                        "tipo_secundario": result['tipo_secundario'], "linea": self.linea, "columna": self.columna}
-                print(f'Funcion -> {self.id} retorna -> ', val)     
+                print(f'Funcion -> {self.id} retorna -> ', val)
                 return val
-                # print('aquies es')
-                # return {"value": result['value'], "tipo": result['tipo'], "tipo_secundario": result['tipo_tiposecundario'], "linea": self.linea, "columna": self.columna}
             else:
                 val = {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario,
                        "linea": self.linea, "columna": self.columna}
                 print(f'Funcion -> {self.id} retorna -> ', val)
                 return val
-                # if result != None:
-                #     # Validar el tipo de retorno de la funcion
-                #     return {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario, "linea": self.linea, "columna": self.columna}
-                # else:
-                #     if self.tipo == TipoEnum.ARRAY or self.tipo == TipoEnum.BOOLEAN or self.tipo == TipoEnum.NUMBER or self.tipo == TipoEnum.STRING or self.tipo == TipoEnum.STRUCT:
-                #         self.resultado.add_error(
-                #             'Semantico', f'La funcion "{self.id}" necesita retornar un valor de tipo {self.tipo.value} agregue la instruccion', self.linea, self.columna)
-                #         return {"value": 'Null', "tipo": TipoEnum.NULL, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-                #     else:
-                #         return {"value": None, "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
         else:
             val = {"value": None, "tipo": self.tipo, "tipo_secundario": self.tipo_secundario,
                    "linea": self.linea, "columna": self.columna}
             print(f'Funcion -> {self.id} retorna -> ', val)
-            generador.add_begin_func(self.id)
             return val
-            # return {"value": '', "tipo": TipoEnum.ANY, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def validacion_salida_funccion(self, result: dict) -> bool:
         if result == None:
@@ -76,20 +64,45 @@ class Funcion(Abstract):
             return False
 
     def graficar(self, graphviz, padre):
-        mode_funcion = graphviz.add_nodo('Funcion:'+self.id, padre)
-        node_parametros = graphviz.add_nodo('parametros', mode_funcion)
-        if self.parametros != None:
-            for param in self.parametros:
-                param.graficar(graphviz, node_parametros)
-        if (self.sentencias != None):
-            self.sentencias.graficar(graphviz, mode_funcion)
-
-    def generar_c3d(self, scope):
-        genAux = Generador()
-        generador = genAux.get_instance()
-        # anadimos un nuevo comentario al c3d
-        generador.add_comment(f'Compilcion de la funcion {self.id}')  
-        #preparamos una label para retornar
-        label_return = generador.new_label()
-        generador.add_begin_func(self.id)
         pass
+
+    def generar_c3d(self, scope: Scope):
+        print('Estoy compilando funcion ->', scope)
+        try:
+            scope.declarar_funcion(self.id, self)
+            self.compilacion_funcion(scope)
+        except ValueError as e:
+            self.resultado.add_error(
+                'Semantico', str(e), self.linea, self.columna)
+
+    def compilacion_funcion(self, scope: Scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        generador.add_comment(f'Compilacion de la funcion {self.id}')
+        # Generamos el nuevo entorno para la intrucciones de la funcion
+        new_scope_func: Scope = Scope(scope)
+
+        # Generacion de la label de retorno para las funciones
+        lbl_return = generador.new_label()
+        new_scope_func.add_return_label(lbl_return)
+        new_scope_func.size = 1
+
+        if self.parametros != None:
+            for parametro in self.parametros:
+                new_scope_func.declarar_variable(
+                    parametro.id, None, parametro.tipo, parametro.tipo_secundario, self.linea, self.columna)
+                # TODO: debemos de buscar si la variable es tipo estruct y mandar a llamar sus valores
+
+        generador.add_begin_func(self.id)
+        # Generamos un scope solo para las intrucciones que se ejecutan
+        new_inner_scope: Scope = Scope(new_scope_func)
+        if self.sentencias != None:
+            ret = self.sentencias.generar_c3d(new_inner_scope)
+            if isinstance(ret, Excepcion):
+                print(ret)
+
+        generador.add_goto(lbl_return)
+        generador.put_label(lbl_return)
+        generador.add_comment(f'Fin de la compilacion de la funcion {self.id}')
+        generador.add_end_func()
+        generador.add_space()
