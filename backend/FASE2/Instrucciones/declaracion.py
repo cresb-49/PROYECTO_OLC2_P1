@@ -200,9 +200,9 @@ class Declaracion(Abstract):
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
 
-        if(isinstance(result, Excepcion)):
+        if (isinstance(result, Excepcion)):
             return result
-        
+
         generador.add_comment(f'** compilacion de variable {self.id} **')
 
         if (self.validar_tipos(result)):
@@ -212,21 +212,19 @@ class Declaracion(Abstract):
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
             self.resultado.add_error(
-                'Semantico', error, self.linea, self.columna) 
+                'Semantico', error, self.linea, self.columna)
             print('Semantico', str(error), self.linea, self.columna)
             return Excepcion("Semantico", error, self.linea, self.columna)
 
     def declaracion(self, result: Return, generador: Generador, scope: Scope):
         # Primero obtenermos la variable desde el scope generado por ultimo
-        scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), 0, 0)
+        scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.linea, self.columna)
         # Codigo resultante
-        scope.imprimir()
         variable_recuperada = scope.obtener_variable(self.id)
-        recu_pos = scope.get_size()
-        print('Variable -> ', self.id, ' pos ->', recu_pos)
-        variable_recuperada.simbolo_c3d.pos = "pos_"+str(recu_pos)
-        tempPos = variable_recuperada.simbolo_c3d.pos[4:]
-        temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
+        print('Variable -> ', variable_recuperada)
+        tempPos = variable_recuperada.simbolo_c3d.pos
+        temp_Pos = variable_recuperada.simbolo_c3d.pos
+
         if not variable_recuperada.simbolo_c3d.is_global:
             tempPos = generador.add_temp()
             generador.add_exp(tempPos, 'P', temp_Pos, '+')
