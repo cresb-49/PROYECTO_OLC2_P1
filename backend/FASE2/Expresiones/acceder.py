@@ -96,7 +96,6 @@ class Acceder(Abstract):
             f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
         result = scope.obtener_variable(self.id)
-
         if(result == None):
             return Excepcion("Semantico", "No se puedo encontrar la variable", self.linea, self.columna)
         #result = scope.obtener_variable(self.id)

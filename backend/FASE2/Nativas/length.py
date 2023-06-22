@@ -55,7 +55,7 @@ class Length(Abstract):
 
     def generar_c3d(self, scope):
         # mandamos ha traer el c3d de las expreciones que componen el fixed
-        c3d_numero: Return = self.acceder.generar_c3d(scope)
+        c3d_numero: Return = self.acceder[0].generar_c3d(scope)
         if (isinstance(c3d_numero, Excepcion)):
             return c3d_numero
 
