@@ -90,7 +90,7 @@ class Acceder(Abstract):
         generador.add_comment(
             f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
-        result = self.last_scope.obtener_variable(self.id)
+        result = scope.obtener_variable(self.id)
         #result = scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
         temp = generador.add_temp()
@@ -107,8 +107,8 @@ class Acceder(Abstract):
         # Retornamos los datos temp -> el valor que tomo del stack
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
-        # print('Debuj->', result)
-        tipo_variable = self.resultado_valor.tipo
+        print('Debuj->', result)
+        tipo_variable = result.tipo
         if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
             if (tipo_variable == TipoEnum.BOOLEAN):
                 generador.add_comment(
@@ -117,7 +117,7 @@ class Acceder(Abstract):
             else:
                 generador.add_comment(
                     f"** fin compilacion de acceso de variable {self.id} **")
-                return Return(temp, self.resultado_valor.tipo, True, None)
+                return Return(temp, tipo_variable, True, None)
         else:
             calculo = self.calculo_tipo_aux(result.tipo_secundario)
             if calculo == TipoEnum.BOOLEAN:
@@ -127,7 +127,7 @@ class Acceder(Abstract):
             else:
                 generador.add_comment(
                     f"** fin compilacion de acceso de variable {self.id} **")
-                return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
+                return Return(temp, tipo_variable, True, self.calculo_tipo_aux(result.tipo_secundario))
 
     def calculo_tipo_aux(self, tipo_secundario):
         if tipo_secundario == TipoEnum.BOOLEAN.value:
