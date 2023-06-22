@@ -122,11 +122,18 @@ class Aritmetica(Abstract):
 
         # TODO: Falta por implementar operaciones
         if (self.tipo_operacion == "+"):
-            operador = '+'
-            temporal = generador.add_temp()
-            generador.add_exp(temporal, val_izq.get_value(),
-                              val_der.get_value(), operador)
-            return Return(temporal, self.resultado_valor_izq['tipo'], True, None)
+            if self.resultado_valor_izq['tipo'] == TipoEnum.NUMBER:
+                operador = '+'
+                temporal = generador.add_temp()
+                generador.add_exp(temporal, val_izq.get_value(),
+                                  val_der.get_value(), operador)
+                return Return(temporal, self.resultado_valor_izq['tipo'], True, None)
+            elif self.resultado_valor_izq['tipo'] == TipoEnum.STRING:
+                operador = '+'
+                temporal = generador.add_temp()
+                return self.suma_de_strings(temporal, val_izq.get_value(), val_der.get_value(), operador)
+            else:
+                print('Fallo de calculo de tipo')
         elif (self.tipo_operacion == "-"):
             operador = '-'
             temporal = generador.add_temp()
@@ -157,3 +164,6 @@ class Aritmetica(Abstract):
             generador.add_exp(temporal, val_izq.get_value(),
                               val_der.get_value(), operador)
             return Return(temporal, TipoEnum.NUMBER, True, None)
+
+    def suma_de_strings(self, temporal, valor_izquierda, valor_derecha, operador):
+        pass
