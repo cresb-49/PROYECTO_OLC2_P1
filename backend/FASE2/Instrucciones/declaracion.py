@@ -171,6 +171,26 @@ class Declaracion(Abstract):
         if (self.valor != None):
             self.valor.graficar(graphviz, node_result)
 
+    def validar_tipos(self, result: Return):
+
+     
+            if(result.get_tipo() == TipoEnum.ANY):
+                if(self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
+                    return False
+                return True
+            
+            if(result.get_tipo() != self.tipo and self.tipo != TipoEnum.ANY):
+                return False          
+            return True
+        # if(self.tipo != result['tipo'] !=  TipoEnum.STRING):
+        #     return False
+        # if(self.tipo != result['tipo'] !=  TipoEnum.NUMBER):
+        #     return False
+        # if(self.tipo != result['tipo'] !=  TipoEnum.ARRAY):
+        #     return False
+        # if(self.tipo != result['tipo'] !=  TipoEnum.BOOLEAN):
+        #     return False
+
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
@@ -179,8 +199,52 @@ class Declaracion(Abstract):
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
         generador.add_comment(f'** compilacion de variable {self.id} **')
+        
+        
+        
+        if(self.validar_tipos(result)):
+
+            print("--------->se paso la validacion")
+            return
+        else:
+           #si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
+            error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
+            self.resultado.add_error(
+                    'Semantico', error, self.linea, self.columna)
+            print('Semantico', str(error), self.linea, self.columna)
+            return
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         # Primero obtenermos la variable desde el scope generado por ultimo
         variable_recuperada = self.last_scope.obtener_variable(self.id)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         recu_pos = self.last_scope.get_size()
         print('last scope -> ',self.last_scope)
         print('Variable -> ',self.id,' pos ->',recu_pos)
