@@ -103,8 +103,13 @@ class Acceder(Abstract):
         temp = generador.add_temp()
         # Generamos un variable para recuperar las posicion en el stack de la variable
         # Eliminamos los primeros 3 caracteres de lo recuperado
-        temporal_pos = result.simbolo_c3d.pos[4:]
-        temp_pos = result.simbolo_c3d.pos[4:]
+        # temporal_pos = result.simbolo_c3d.pos[4:]
+        # temp_pos = result.simbolo_c3d.pos[4:]
+        temporal_pos = result.simbolo_c3d.pos
+        temp_pos = result.simbolo_c3d.pos
+        
+        print('debuj acceder->',temporal_pos)
+        print('debuj acceder->',temp_pos)
         # Verificamos si la variable es global
         if not result.simbolo_c3d.is_global:
             temp_pos = generador.add_temp()

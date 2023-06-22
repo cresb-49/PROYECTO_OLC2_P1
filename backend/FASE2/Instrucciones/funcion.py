@@ -89,8 +89,8 @@ class Funcion(Abstract):
 
         if self.parametros != None:
             for parametro in self.parametros:
-                new_scope_func.declarar_variable(
-                    parametro.id, None, parametro.tipo, parametro.tipo_secundario, self.linea, self.columna)
+                new_scope_func.declarar_variable(parametro.id, None, parametro.tipo, parametro.tipo_secundario, self.linea, self.columna)
+                new_scope_func.sum_size()
                 # TODO: debemos de buscar si la variable es tipo estruct y mandar a llamar sus valores
 
         generador.add_begin_func(self.id)
