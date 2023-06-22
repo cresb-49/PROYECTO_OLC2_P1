@@ -3,6 +3,7 @@ from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
+from FASE2.Symbol.Exception import Excepcion
 
 class ToFixed(Abstract):
     def __init__(self, resultado, linea, columna, numero, expreciones):
@@ -58,6 +59,11 @@ class ToFixed(Abstract):
         # mandamos ha traer el c3d de las expreciones que componen el fixed
         c3d_numero:Return = self.numero.generar_c3d(scope)
         c3d_expreciones:Return = self.expreciones.generar_c3d(scope)
+
+        if(isinstance(c3d_numero, Excepcion) or isinstance(c3d_expreciones, Excepcion)):
+            return c3d_numero
+
+
         #mandamos ha crear la funcion to fixed del generador
         generador.too_fixed()
 

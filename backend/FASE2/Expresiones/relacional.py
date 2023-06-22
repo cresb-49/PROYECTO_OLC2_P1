@@ -3,6 +3,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
 from FASE2.Expresiones.logico import Logico
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Relacional(Abstract):
@@ -113,7 +114,7 @@ class Relacional(Abstract):
             elif val_izq.tipo == TipoEnum.ANY:
                 return self.operaciones_asociadas(val_izq.tipo, val_izq, val_der, generador, scope)
             else:
-                print('No devolvi nada 2')
+                return Excepcion("Semantico", f"No existe operacion para el tipo  {self.last_exp_izq['tipo'].value} desconocida", self.linea, self.columna)
 
     def operaciones_asociadas(self, tipo, val_izq, val_der, generador, scope):
         if tipo == TipoEnum.NUMBER:
@@ -123,7 +124,7 @@ class Relacional(Abstract):
         elif tipo == TipoEnum.BOOLEAN:
             return self.comparacion_bool(val_izq, val_der, generador, scope)
         else:
-            print('No devolvi nada 3')
+            return Excepcion("Semantico", f"Operacion desconocida  {tipo.value} desconocida", self.linea, self.columna)
 
     def check_labels(self):
         gen_aux = Generador()

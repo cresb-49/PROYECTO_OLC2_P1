@@ -1,7 +1,7 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.scope import Scope
-
+from FASE2.Symbol.Exception import Excepcion
 from FASE2.Instrucciones.funcion import Funcion
 from FASE2.Instrucciones.continuar import Continuar
 from FASE2.Instrucciones.detener import Detener
@@ -46,7 +46,11 @@ class Sentencias(Abstract):
             result = self.intr_izquierda.generar_c3d(scope)
             if isinstance(result, Return):
                 return result
+            elif isinstance(result, Excepcion):
+               print(result)
         if self.instr_derecha != None:
             result = self.instr_derecha.generar_c3d(scope)
             if isinstance(result, Return):
                 return result
+            elif isinstance(result, Excepcion):
+                print(result)

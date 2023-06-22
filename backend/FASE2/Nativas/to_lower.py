@@ -3,6 +3,7 @@ from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
+from FASE2.Symbol.Exception import Excepcion
 
 class ToLowerCase(Abstract):
 
@@ -49,7 +50,8 @@ class ToLowerCase(Abstract):
     def generar_c3d(self,scope):
         # mandamos ha traer el c3d de las expreciones que componen el fixed
         c3d_numero:Return = self.cadena.generar_c3d(scope)
-    
+        if(isinstance(c3d_numero, Excepcion)):
+            return c3d_numero
         generador_aux = Generador()
         generador = generador_aux.get_instance()
 

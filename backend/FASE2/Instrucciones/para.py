@@ -15,6 +15,7 @@ from FASE2.Expresiones.acceder import Acceder
 from FASE2.Expresiones.acceder_array import AccederArray
 from FASE2.Expresiones.arreglo import Arreglo
 from FASE2.Expresiones.relacional import Relacional
+from FASE2.Symbol.Exception import Excepcion
 
 """
 tipo_for = 1 -> for (let i = 0; i < 10; i++) , declaracion, condicion, exprecion
@@ -191,6 +192,10 @@ class Para(Abstract):
             generador.put_label(label_intit)
             # Generacion del codigo para la condicional del for y colocado de la etiqueta true
             ret: Return = self.condicion.generar_c3d(self.last_pre_scope_for)
+            
+            if(isinstance(ret, Excepcion)):
+                return ret
+
             # Ingresamos la etiquetas para el sentencias de break y continue en la generacion del codigo intermedio
             for label in ret.get_false_lbls():
                 self.last_pre_scope_for.add_break_label(label)
@@ -218,4 +223,5 @@ class Para(Abstract):
             generador.add_comment('Fin de compilacion de ciclo for')
         else:
             print('for iterable')
+            return Excepcion("Semantico", 'for iterable', self.linea, self.columna)
             pass

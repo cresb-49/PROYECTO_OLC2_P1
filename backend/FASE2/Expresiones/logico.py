@@ -2,7 +2,7 @@ from FASE2.Abstract.return__ import Return
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
-
+from FASE2.Symbol.Exception import Excepcion
 
 class Logico(Abstract):
     def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
@@ -113,6 +113,8 @@ class Logico(Abstract):
             for label in rigth.get_false_lbls():
                 ret.add_false_lbl(label)
             return ret
+        else:
+            return Excepcion("Semantico", f"Operacion logica  {self.tipo_operacion} desconocida", self.linea, self.columna)
 
     def check_labels(self):
         gen_aux = Generador()
