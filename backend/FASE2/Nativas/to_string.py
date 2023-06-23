@@ -2,6 +2,10 @@ from FASE2.Abstract.abstract import Abstract
 from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
 
+from FASE2.Abstract.return__ import Return
+from FASE2.Symbol.Exception import Excepcion
+from FASE2.Symbol.generador import Generador
+
 
 class ToString(Abstract):
 
@@ -29,31 +33,164 @@ class ToString(Abstract):
         graphviz.add_nodo("toString", result)
 
     def generar_c3d(self, scope):
+        # declaracion de un nuevo generador de c3d
+        generador_aux = Generador()
+        generador = generador_aux.get_instance()
+
         # ejecutamos el diccionario para poder obtener el tipo de dato que se desea convertir ha String
         ejecutar = self.numero.ejecutar(scope)
+        # mandamos ha traer el c3d de la variable a converitir a String
+        a_convertir: Return = self.numero.generar_c3d(scope)
+
         if (ejecutar['tipo'] == TipoEnum.ARRAY):
-            # convercion del valor a String
-            valString = self.imprimir_array_recu(ejecutar)
-        else:
-            # convercion del valor a String
-            valString = str(ejecutar['value'])
+            pass
+        elif (ejecutar['tipo'] == TipoEnum.NUMBER):
+            return self.to_string_number(generador, a_convertir, scope)
+        elif (ejecutar['tipo'] == TipoEnum.BOOLEAN):
+            return self.to_string_boolean(generador, a_convertir, scope)
+        elif (ejecutar['tipo'] == TipoEnum.STRING):
+            return self.to_string_string(generador, a_convertir, scope)
+        elif (ejecutar['tipo'] == TipoEnum.ANY):
+            if (ejecutar['tipo_secundario'] == TipoEnum.NUMBER):
+                return self.to_string_number(generador, a_convertir, scope)
+            elif (ejecutar['tipo_secundario'] == TipoEnum.BOOLEAN):
+                return self.to_string_boolean(generador, a_convertir, scope)
+            elif (ejecutar['tipo_secundario'] == TipoEnum.STRING):
+                return self.to_string_string(generador, a_convertir, scope)
+        elif (ejecutar['tipo'] == TipoEnum.STRUCT):
+            pass
 
-        
-        # segun el tipo de la variable debemos
-        print(f'----DEBUG----->{valString}')
+    def to_string_number(self, generador: Generador, a_convertir: Return, scope):
+        # envihamos ha generar la funcion de sumas
+        generador.to_string_number()
+        # generamos el primer temporal
+        param_temp = generador.add_temp()
+        generador.add_exp(param_temp, 'P', scope.size, '+')
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, a_convertir.get_value())
 
-    def imprimir_array_recu(self, resultado):
-        contenido = []
-        concat = ""
-        # por cada uno de los stings contenidos en el aray de resultado ajuntamos el value del strin al array
-        for string in resultado['value']:
-            if (string['tipo'] == TipoEnum.ARRAY):
-                concat = self.imprimir_array_recu(string)
-            elif (string['tipo'] == TipoEnum.STRUCT):
-                concat = self.imprimir_struct(string)
-            elif (string['tipo'] == TipoEnum.STRING):
-                concat = "\""+string['value']+"\""
-            else:
-                concat = string['value']
-            contenido.append(concat)
-        return str(contenido)
+        # asignamos el segundo valor a la posicion 3 del stack
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, a_convertir.get_value())
+
+        # generar un nuevo entorno
+        generador.new_env(scope.size)
+        # llamamos a la funcion de sumar strings
+        generador.call_fun("to_string_number")
+
+        # anadir un nuevo temporal que guardara el stack en P
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        # retornamos el un entorno
+        generador.ret_env(scope.size)
+
+        generador.add_comment('Fin de toString()')
+        generador.add_space()
+
+        result = Return(temp, TipoEnum.STRING, False, None)
+
+        return result
+
+    def to_string_string(self, generador: Generador, a_convertir: Return, scope):
+        # mandamos ha llamar la funcion to String en su version String
+        generador.to_string_string()
+        temporal_parametro = generador.add_temp()
+        generador.add_exp(temporal_parametro, 'P', scope.size, '+')
+        generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
+
+        generador.set_stack(temporal_parametro, a_convertir.get_value())
+
+        generador.new_env(scope.size)
+        generador.call_fun("to_string_string")
+
+        temporal1 = generador.add_temp()
+        temporal2 = generador.add_temp()
+
+        generador.add_exp(temporal2, 'P', '1', '+')
+        generador.get_stack(temporal1, temporal2)
+
+        # retornamos el un entorno
+        generador.ret_env(scope.size)
+
+        return Return(temporal1, TipoEnum.STRING, True, None)
+
+    def to_string_boolean(self, generador: Generador, a_convertir: Return, scope):
+
+        # mandamos ha llamar la funcion to String en su version String
+        temp_lbl = generador.new_label()
+        for label in a_convertir.get_true_lbls():
+            generador.put_label(label)
+        generador.new_env(scope.size)
+        # guardamos el incio de la nueva cadena
+        generador.add_comment(
+            "INICIO DE LA NUEVA CADENA")
+        t1 = generador.add_temp()
+        #escribimos en el heap la palabra true avanzando 1 a uno las posciones en el heap
+        generador.add_asig(t1, 'H')
+        generador.add_ident()
+        generador.set_heap('H', '116')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '114')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '117')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '101')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.add_goto(temp_lbl)
+        for label in a_convertir.get_false_lbls():
+            generador.put_label(label)
+        generador.new_env(scope.size)
+        # guardamos el incio de la nueva cadena
+        generador.add_comment(
+            "INICIO DE LA NUEVA CADENA")
+        t1 = generador.add_temp()
+        generador.add_asig(t1, 'H')
+        #escribimos en el heap la palabra false avanzando 1 a uno las posciones en el heap
+        generador.add_ident()
+        generador.set_heap('H', '102')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '97')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '108')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '115')
+        generador.add_ident()
+        generador.next_heap()
+        generador.add_ident()
+        generador.set_heap('H', '101')
+        generador.add_ident()
+        generador.next_heap()
+        generador.put_label(temp_lbl)
+        temporal1 = generador.add_temp()
+        temporal2 = generador.add_temp()
+
+        # anadimos el caracter -1 a la nueva cadena
+        generador.set_heap('H', '-1')
+        # aumentamos en uno el heap
+        generador.next_heap()
+
+        # devolvemos la posicion inicial de la cadena
+        generador.set_stack('P', t1)
+
+  
+        generador.add_exp(temporal2, 'P', '1', '+')
+        generador.get_stack(temporal1, temporal2)
+
+        # retornamos el un entorno
+        generador.ret_env(scope.size)
+
+        return Return(temporal1, TipoEnum.STRING, True, None)

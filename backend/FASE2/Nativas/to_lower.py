@@ -71,4 +71,7 @@ class ToLowerCase(Abstract):
         generador.add_exp(temporal2, 'P', '1', '+')
         generador.get_stack(temporal1, temporal2)
 
+        # retornamos el un entorno
+        generador.ret_env(scope.size)
+
         return Return(temporal1, TipoEnum.STRING, True, None)

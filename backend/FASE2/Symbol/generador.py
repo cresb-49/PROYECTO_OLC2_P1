@@ -12,7 +12,10 @@ class Generador:
         self.natives = ''
         self.in_func = False
         self.in_natives = False
-
+        self.to_stringg = False
+        self.to_string_numberr = False
+        self.to_string_stringg = False
+        self.to_string_booleann = False
         # Lista de temporales
         self.temps = []
 
@@ -667,5 +670,306 @@ class Generador:
         self.put_label(return_lbl)
         # en el stack devolvemos el valor final de la variable contadora
         self.set_stack('P', t0)
+        self.add_end_func()
+        self.in_natives = False
+
+    def to_string_number(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.to_string_numberr:
+            return
+        self.to_string_numberr = True
+        self.in_natives = True
+
+        # anadimos la libreria de manipulacion de string
+        self.set_import('strconv')
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("to_string_number")
+        # creamos una nueva temporal
+        t2 = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(t2, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack del numero ha convertir
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+
+        #########################
+        # DECLARACION DE LABELS #
+        #########################
+
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
+        # Label para iniciar el ciclo que convierte un numero ha string
+        l1 = self.new_label()
+        # Label para la creacion de un nuevo string
+        l2 = self.new_label()
+
+        ########################################################
+        # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
+        ########################################################
+
+        #guardamos el incio de la nueva cadena
+        self.add_comment(
+            "INICIO DE LA NUEVA CADENA")
+        t0 = self.add_temp()
+        self.add_asig(t0, 'H')
+
+        # creamos el temporal que se encargara de guardar el length del string que representa al numero
+        t4 = self.add_temp()
+        self.add_comment(
+            "TEMPORAL QUE GUARDA EL LENGTH DE LA CADENA QUE REPRESENTA EL NUMERO A CONVERITR")
+        # asignamos la t4 al length de la cadena que representa el numero t3
+        self.add_asig(
+            t4, f"float64(len(strconv.FormatFloat({t3}, 'f', -1, 64)))")
+
+        # variable contadora que indicara cuantas iteraciones se han hecho
+        t5 = self.add_temp()
+        self.add_comment("TEMPORAL CONTADORA")
+        # asignamos la t4 al length de la cadena que representa el numero t3
+        self.add_asig(t5, f"0")
+
+        #######################
+        # INICIO DEL CICLO    #
+        #######################
+
+        # marcamos la label que inicia el ciclo
+        self.put_label(l1)
+        self.add_ident()
+        # si la condatora es menor a la temporal que guarda el 
+        # length entonces mandamos ha guardar el caracter en la posicion de la contadora dentro del heap
+        self.add_if(t5, t4, '<', l2)
+        self.add_ident()
+        # Si se encontro el -1 entonces debemos terminar el metodo
+        self.add_if(t5, t4, '>=', return_lbl)
+
+        ###############################
+        # Acumulacion del contador    #
+        ###############################
+
+        self.put_label(l2)
+        self.add_ident()
+        # debemos guardar en una temporal la representacions Ascii del caracter posicionado en el contador
+        t6 = self.add_temp()
+        # guardar en una temporal la representacions Ascii del caracter posicionado en el contador
+        self.add_asig(t6, f"float64(strconv.FormatFloat({t3}, 'f', -1, 64)[int({t5})])")
+        self.add_ident()
+        self.set_heap('H', t6)
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        # aumentamos un digito en la variable contadora
+        self.add_exp(t5, t5, '1', '+')
+        self.add_ident()
+        # regresamos a la label que abre el ciclo
+        self.add_goto(l1)
+
+        ####################################
+        # Declaracion del final del metodo #
+        ####################################
+        # declaramos la label que termina el metodo
+        self.put_label(return_lbl)
+        self.add_ident()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        self.add_ident()
+        # aumentamos en uno el heap
+        self.next_heap()
+        self.add_ident()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
+        self.add_end_func()
+        self.in_natives = False
+
+
+    
+    def to_string_string(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.to_string_stringg:
+            return
+        self.to_string_stringg = True
+        self.in_natives = True
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("to_string_string")
+        # creamos una nueva temporal
+        t2 = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(t2, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack del comienzo de la cadena ha convertir
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        #########################
+        # DECLARACION DE LABELS #
+        #########################
+
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
+        # Label para iniciar el ciclo que convierte un numero ha string
+        l1 = self.new_label()
+        # Label para la creacion de un nuevo string
+        l2 = self.new_label()
+
+        ########################################################
+        # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
+        ########################################################
+
+        #guardamos el incio de la nueva cadena
+        self.add_comment(
+            "INICIO DE LA NUEVA CADENA")
+        t1 = self.add_temp()
+        self.add_asig(t1, 'H')
+
+        #######################
+        # INICIO DEL CICLO    #
+        #######################
+
+        # marcamos la label que inicia el ciclo
+        self.put_label(l1)
+        # obtenemos el caracter de la primera cadena contenido en el heap
+        t5 = self.add_temp()
+        self.add_ident()
+        self.get_heap(t5, t3)
+
+        self.add_ident()
+
+        # si la cadena es diferente de menos 1 entonces agregamos hacemos salto a la etiqueta que guarda la primera cadena
+        self.add_if(t5, '-1', '!=', l2)
+        self.add_ident()
+        self.add_if(t5, '-1', '==', return_lbl)
+
+        ##########################################
+        # GUARDANDO CARACTERES EN NUEVA CADENA   #
+        ##########################################
+
+        self.put_label(l2)
+
+        t6 = self.add_temp()
+        self.add_ident()
+        self.add_asig(t6, t5)
+        self.add_ident()
+        self.set_heap('H', t6)
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        # aumentamos un digito a la posicion a buscar en el heap
+        self.add_exp(t3, t3, '1', '+')
+        self.add_ident()
+        # regresamos a la label que abre el ciclo
+        self.add_goto(l1)
+
+        ####################################
+        # Declaracion del final del metodo #
+        ####################################
+        # declaramos la label que termina el metodo
+        self.put_label(return_lbl)
+        self.add_ident()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        self.add_ident()
+        # aumentamos en uno el heap
+        self.next_heap()
+        self.add_ident()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t1)
+        self.add_end_func()
+        self.in_natives = False
+
+
+    def to_string_boolean(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.to_string_booleann:
+            return
+        self.to_string_booleann = True
+        self.in_natives = True
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("to_string_boolean")
+        # creamos una nueva temporal
+        t2 = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(t2, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack del valor del booleano
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        #########################
+        # DECLARACION DE LABELS #
+        #########################
+
+        # Label para salir de la funcion
+        return_lbl = self.new_label()
+        # Label para iniciar el ciclo que convierte un numero ha string
+        l1 = self.new_label()
+        # Label para escribir true
+        l2 = self.new_label()
+        #label para escribir false
+        l3 = self.new_label()
+
+        ########################################################
+        # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
+        ########################################################
+
+        #guardamos el incio de la nueva cadena
+        self.add_comment(
+            "INICIO DE LA NUEVA CADENA")
+        t1 = self.add_temp()
+        self.add_asig(t1, 'H')
+
+        #######################
+        # INICIO DEL CICLO    #
+        #######################
+
+        # marcamos la label que inicia el ciclo
+        self.put_label(l1)
+        self.add_ident()
+
+        # si la cadena es diferente de menos 1 entonces agregamos hacemos salto a la etiqueta que guarda la primera cadena
+        self.add_if(t3, '1', '==', l2)
+        self.add_ident()
+        self.add_if(t3, '0', '==', l3)
+
+        ##########################################
+        # GUARDANDO CARACTERES EN NUEVA CADENA   #
+        ##########################################
+
+# fmt.Printf("%c", int(116));
+# 		fmt.Printf("%c", int(114));
+# 		fmt.Printf("%c", int(117));
+# 		fmt.Printf("%c", int(101));
+        self.put_label(l2)
+
+        self.add_ident()
+        self.set_heap('H', '116')
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        self.set_heap('H', '114')
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        self.set_heap('H', '117')
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        self.set_heap('H', '101')
+        self.add_ident()
+        self.next_heap()
+        self.add_ident()
+        # regresamos a la label que abre el ciclo
+        self.add_goto(return_lbl)
+
+        ####################################
+        # Declaracion del final del metodo #
+        ####################################
+        # declaramos la label que termina el metodo
+        self.put_label(return_lbl)
+        self.add_ident()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        self.add_ident()
+        # aumentamos en uno el heap
+        self.next_heap()
+        self.add_ident()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t1)
         self.add_end_func()
         self.in_natives = False
