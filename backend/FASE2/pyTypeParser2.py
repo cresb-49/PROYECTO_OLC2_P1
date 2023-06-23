@@ -280,8 +280,7 @@ def decla_var_fun(instruccion):
         scope: Scope = memoria.obtener_tope()
         tipo_secundario = instruccion.tipo_secundario
         try:
-            scope.declarar_variable(instruccion.id, None, instruccion.tipo,
-                                    tipo_secundario, instruccion.linea, instruccion.columna)
+            scope.declarar_variable(instruccion.id, None, instruccion.tipo,tipo_secundario, False, instruccion.linea, instruccion.columna)
         except ValueError as error:
             parser_add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
@@ -1183,8 +1182,10 @@ def p_sub_exprecion_12(p):
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
         elif (len(p) == 4):
-            acceder = Acceder(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1])
-            p[0] = AccederEstructura(resultado, p.lineno(1), find_column(input, p.slice[1]), acceder, p[3])
+            acceder = Acceder(resultado, p.lineno(
+                1), find_column(input, p.slice[1]), p[1])
+            p[0] = AccederEstructura(resultado, p.lineno(
+                1), find_column(input, p.slice[1]), acceder, p[3])
 
 
 def p_sub_exprecion_13(p):

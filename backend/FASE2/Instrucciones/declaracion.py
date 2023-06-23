@@ -176,7 +176,7 @@ class Declaracion(Abstract):
     def validar_tipos(self, result: Return):
         if result == None:
             return False
-        
+        print('debuj declaracion =>', self.tipo)
         if (result.get_tipo() == TipoEnum.ANY):
             if (self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
                 return False
@@ -213,15 +213,14 @@ class Declaracion(Abstract):
         else:
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
-            #error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno'
-            self.resultado.add_error(
-                'Semantico', error, self.linea, self.columna)
+            # error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno'
+            self.resultado.add_error('Semantico', error, self.linea, self.columna)
             print('Semantico', str(error), self.linea, self.columna)
             return Excepcion("Semantico", error, self.linea, self.columna)
 
     def declaracion(self, result: Return, generador: Generador, scope: Scope):
         # Primero obtenermos la variable desde el scope generado por ultimo
-        scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.linea, self.columna)
+        scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.tipo == TipoEnum.ANY, self.linea, self.columna)
         # Codigo resultante
         variable_recuperada = scope.obtener_variable(self.id)
         print('Variable -> ', variable_recuperada)

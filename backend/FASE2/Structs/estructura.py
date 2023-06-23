@@ -26,11 +26,12 @@ class Estructura(Abstract):
         for param in self.composicion:
             tmp = self.composicion[param]
             self.configuracion[param] = {
-                'tipo': tmp['tipo'], 'tipo_secundario': tmp['tipo_secundario'], 'pos': params}
+                'tipo': tmp['tipo'], 'tipo_secundario': tmp['tipo_secundario'], 'pos': params, 'is_mutable': tmp['tipo'] == TipoEnum.ANY}
             params += 1
         # Declaracion del struct en el scope
         try:
             scope.declarar_estructura(self.id, self)
         except ValueError as e:
-            self.resultado.add_error('Semantico', str(e), self.linea, self.columna)
+            self.resultado.add_error(
+                'Semantico', str(e), self.linea, self.columna)
             return Excepcion('Semantico', str(e), self.linea, self.columna)

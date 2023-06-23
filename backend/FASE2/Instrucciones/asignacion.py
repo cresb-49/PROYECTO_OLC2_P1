@@ -1,6 +1,8 @@
 from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.Exception import Excepcion
 
 
 class Asignacion(Abstract):
@@ -49,12 +51,38 @@ class Asignacion(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         # Recuperacion de la generacion de codigo 3 direcciones para la signacion del valor
-        result = None
+        result: Return = None
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
-        generador.add_comment(f'** compilacion de asignacion de variable {self.id} **')
+            if isinstance(result, Excepcion):
+                return result
+        generador.add_comment(
+            f'** compilacion de asignacion de variable {self.id} **')
         # Primero obtenermos la variable desde el scope generado por ultimo
         variable_recuperada = scope.obtener_variable(self.id)
+        if variable_recuperada == None:
+            self.resultado.add_error(
+                'Semantico', f'La variable "{self.id}" no esta definida o no es alcanzable', self.linea, self.columna)
+            return Excepcion('Semantico', f'La variable "{self.id}" no esta definida o no es alcanzable', self.linea, self.columna)
+        # Aqui se hace la validacion de tipos
+        if variable_recuperada.is_mutable:
+            variable_recuperada.simbolo_c3d.in_heap = self.calculo_is_heap(
+                result.type)
+            variable_recuperada.tipo = result.type
+            variable_recuperada.tipo_secundario = result.aux_type
+        else:
+            if variable_recuperada.tipo != result.type:
+                self.resultado.add_error(
+                    'Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo.value} no se le puede asignar un {result.type.value}', self.linea, self.columna)
+                return Excepcion('Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo.value} no se le puede asignar un {result.type.value}', self.linea, self.columna)
+        if variable_recuperada.tipo == TipoEnum.STRUCT:
+            if variable_recuperada.tipo_secundario != result.aux_type:
+                self.resultado.add_error(
+                    'Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un {result.aux_type}', self.linea, self.columna)
+                return Excepcion('Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un {result.aux_type}', self.linea, self.columna)
+
+        # TODO: TAMBIEN AGREGAR LAS VALIDACIONES DE LOS TIPOS ARRAY
+
         # Generamos dos variables temporales para el manejo de la informacion
         tempPos = variable_recuperada.simbolo_c3d.pos
         temp_Pos = variable_recuperada.simbolo_c3d.pos
@@ -69,3 +97,8 @@ class Asignacion(Abstract):
             generador.set_stack(tempPos, 0)
         generador.add_comment(
             f'** fin de compilacion de asignacion variable {self.id} **')
+
+    def calculo_is_heap(self, tipo):
+        if tipo == TipoEnum.ARRAY or tipo == TipoEnum.STRING or tipo == TipoEnum.STRUCT:
+            return True
+        return False
