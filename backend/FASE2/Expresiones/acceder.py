@@ -108,8 +108,8 @@ class Acceder(Abstract):
         temporal_pos = result.simbolo_c3d.pos
         temp_pos = result.simbolo_c3d.pos
         
-        print('debuj acceder->',temporal_pos)
-        print('debuj acceder->',temp_pos)
+        # print('debuj acceder->',temporal_pos)
+        # print('debuj acceder->',temp_pos)
         # Verificamos si la variable es global
         if not result.simbolo_c3d.is_global:
             temp_pos = generador.add_temp()
@@ -119,7 +119,7 @@ class Acceder(Abstract):
         # Retornamos los datos temp -> el valor que tomo del stack
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
-        print('Debuj acceder->', result)
+        # print('Debuj acceder->', result)
         tipo_variable = result.tipo
         self.tipo = tipo_variable
         if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
