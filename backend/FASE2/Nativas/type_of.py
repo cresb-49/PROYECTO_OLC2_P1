@@ -5,6 +5,7 @@ from FASE2.Symbol.generador import Generador
 from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.Exception import Excepcion
 
+
 class TypeOf(Abstract):
     def __init__(self, resultado, linea, columna, expreciones):
         super().__init__(resultado, linea, columna)
@@ -53,18 +54,35 @@ class TypeOf(Abstract):
         generador_aux = Generador()
         generador = generador_aux.get_instance()
 
-        # mandamos ha construir la funcion length
-        generador.length()
+        llamada_funcion = ""
+        if (c3d_numero.get_tipo() == TipoEnum.STRING):
+            # mandamos ha construir la funcion type_of_string
+            generador.type_of_string()
+            # llamada funcion sera el nombre de la funcion ha llamar
+            llamada_funcion = "type_of_string"
+        elif (c3d_numero.get_tipo() == TipoEnum.NUMBER):
+            # mandamos ha construir la funcion type_of_number
+            generador.type_of_number()
+            # llamada funcion sera el nombre de la funcion ha llamar
+            llamada_funcion = "type_of_number"
+        elif (c3d_numero.get_tipo() == TipoEnum.BOOLEAN):
 
-        temporal_parametro = generador.add_temp()
-        generador.add_exp(temporal_parametro, 'P', scope.size, '+')
-        generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
+            return self.type_of_boolean(generador, c3d_numero, scope)
 
-        generador.set_stack(temporal_parametro, c3d_numero.get_value())
+        elif (c3d_numero.get_tipo() == TipoEnum.ARRAY):
+            # mandamos ha construir la funcion length
+            generador.type_of_string()
+            # llamada funcion sera el nombre de la funcion ha llamar
+            llamada_funcion = "type_of_boolean"
+        elif (c3d_numero.get_tipo() == TipoEnum.STRUCT):
+            # mandamos ha construir la funcion length
+            generador.type_of_string()
+            # llamada funcion sera el nombre de la funcion ha llamar
+            llamada_funcion = "type_of_boolean"
 
         generador.new_env(scope.size)
-        #llamamos a la funcion length
-        generador.call_fun("length")
+        # llamamos a la funcion length
+        generador.call_fun(llamada_funcion)
 
         # anadir un nuevo temporal que guardara el stack en P
         temp = generador.add_temp()
@@ -72,7 +90,38 @@ class TypeOf(Abstract):
         # retornamos un entorno
         generador.ret_env(scope.size)
 
-        generador.add_comment('Fin del length')
+        generador.add_comment('Fin del type_of')
+        generador.add_space()
+
+        return Return(temp, TipoEnum.STRING, True, None)
+
+    def type_of_boolean(self, generador: Generador, a_convertir: Return, scope):
+        temp_lbl = generador.new_label()
+        for label in a_convertir.get_true_lbls():
+            generador.put_label(label)
+
+        generador.add_goto(temp_lbl)
+        for label in a_convertir.get_false_lbls():
+            generador.put_label(label)
+   
+
+        generador.put_label(temp_lbl)
+        # mandamos ha construir la funcion type_of_boolean
+        generador.type_of_boolean()
+        # llamada funcion sera el nombre de la funcion ha llamar
+        llamada_funcion = "type_of_boolean"
+
+        generador.new_env(scope.size)
+        # llamamos a la funcion length
+        generador.call_fun(llamada_funcion)
+
+        # anadir un nuevo temporal que guardara el stack en P
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        # retornamos un entorno
+        generador.ret_env(scope.size)
+
+        generador.add_comment('Fin del type_of')
         generador.add_space()
 
         return Return(temp, TipoEnum.STRING, True, None)

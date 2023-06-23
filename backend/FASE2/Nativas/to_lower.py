@@ -55,7 +55,9 @@ class ToLowerCase(Abstract):
         generador_aux = Generador()
         generador = generador_aux.get_instance()
 
+        # mandamos ha construir la funcion toUpperCase
         generador.to_lower()
+
         temporal_parametro = generador.add_temp()
         generador.add_exp(temporal_parametro, 'P', scope.size, '+')
         generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
@@ -63,15 +65,16 @@ class ToLowerCase(Abstract):
         generador.set_stack(temporal_parametro, c3d_numero.get_value())
 
         generador.new_env(scope.size)
+        # llamamos a la funcion toUpperCase
         generador.call_fun("toLowerCase")
 
-        temporal1 = generador.add_temp()
-        temporal2 = generador.add_temp()
-
-        generador.add_exp(temporal2, 'P', '1', '+')
-        generador.get_stack(temporal1, temporal2)
-
-        # retornamos el un entorno
+        # anadir un nuevo temporal que guardara el stack en P
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        # retornamos un entorno
         generador.ret_env(scope.size)
 
-        return Return(temporal1, TipoEnum.STRING, True, None)
+        generador.add_comment('Fin del toLowerCase')
+        generador.add_space()
+
+        return Return(temp, TipoEnum.STRING, True, None)

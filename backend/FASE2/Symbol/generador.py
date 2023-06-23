@@ -16,6 +16,9 @@ class Generador:
         self.to_string_numberr = False
         self.to_string_stringg = False
         self.to_string_booleann = False
+        self.type_of_stringg = False
+        self.type_of_numberr = False
+        self.type_of_booleann = False
         # Lista de temporales
         self.temps = []
 
@@ -386,12 +389,14 @@ class Generador:
     def to_lower(self):
         if (self.to_lowerr):
             return
-        # indicamos que se agrego una funcion toLower
         self.to_lowerr = True
-        # indicamos que se creo una nativa
         self.in_natives = True
-        # creamos la funcion toLowerCase
+        # creamos la funcion toUpperCase
         self.add_begin_func('toLowerCase')
+        #creamos un temporal que guarda el incio de la nueva cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, "H")
+
         # etiqueta de retorno
         return_et = self.new_label()
         # Etiqueta que permite la comparacion del valor del string
@@ -420,16 +425,29 @@ class Generador:
         self.add_if(temp_c, '90', '>', pass_et)
         # de no comporbarse los if entonces podemos aumentar en 32 el caracter
         self.add_exp(temp, temp_c, '32', '+')
+
         # guarda el valor de temporal en el heap
-        self.set_heap(temp_h, temp)
+        self.set_heap('H', temp)
+        self.next_heap()
         # agregar etiqueta de conversion
         self.put_label(pass_et)
         # Aumentar en 1 la posicion del heap
         self.add_exp(temp_h, temp_h, '1', '+')
         # Goto que inicializa las conficionales
         self.add_goto(compare_et)
+        
+        ###########################
+        #    FINAL DEL METODO     #
+        ###########################
+
         # Etiueta de salida del metodo
         self.put_label(return_et)
+
+        #agregar la etiqueta de final de cadena
+        self.set_heap('H', "-1")
+        self.next_heap()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
         # cerramos el metodo
         self.add_end_func()
         # Se desactiva flag que indica que se esta en una funcion nativa
@@ -442,6 +460,10 @@ class Generador:
         self.in_natives = True
         # creamos la funcion toUpperCase
         self.add_begin_func('toUpperCase')
+        #creamos un temporal que guarda el incio de la nueva cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, "H")
+
         # etiqueta de retorno
         return_et = self.new_label()
         # Etiqueta que permite la comparacion del valor del string
@@ -470,16 +492,29 @@ class Generador:
         self.add_if(temp_c, '122', '>', pass_et)
         # de no comporbarse los if entonces podemos aumentar en 32 el caracter
         self.add_exp(temp, temp_c, '32', '-')
+
         # guarda el valor de temporal en el heap
-        self.set_heap(temp_h, temp)
+        self.set_heap('H', temp)
+        self.next_heap()
         # agregar etiqueta de conversion
         self.put_label(pass_et)
         # Aumentar en 1 la posicion del heap
         self.add_exp(temp_h, temp_h, '1', '+')
         # Goto que inicializa las conficionales
         self.add_goto(compare_et)
+        
+        ###########################
+        #    FINAL DEL METODO     #
+        ###########################
+
         # Etiueta de salida del metodo
         self.put_label(return_et)
+
+        #agregar la etiqueta de final de cadena
+        self.set_heap('H', "-1")
+        self.next_heap()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
         # cerramos el metodo
         self.add_end_func()
         # Se desactiva flag que indica que se esta en una funcion nativa
@@ -708,7 +743,7 @@ class Generador:
         # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
         ########################################################
 
-        #guardamos el incio de la nueva cadena
+        # guardamos el incio de la nueva cadena
         self.add_comment(
             "INICIO DE LA NUEVA CADENA")
         t0 = self.add_temp()
@@ -735,7 +770,7 @@ class Generador:
         # marcamos la label que inicia el ciclo
         self.put_label(l1)
         self.add_ident()
-        # si la condatora es menor a la temporal que guarda el 
+        # si la condatora es menor a la temporal que guarda el
         # length entonces mandamos ha guardar el caracter en la posicion de la contadora dentro del heap
         self.add_if(t5, t4, '<', l2)
         self.add_ident()
@@ -751,7 +786,8 @@ class Generador:
         # debemos guardar en una temporal la representacions Ascii del caracter posicionado en el contador
         t6 = self.add_temp()
         # guardar en una temporal la representacions Ascii del caracter posicionado en el contador
-        self.add_asig(t6, f"float64(strconv.FormatFloat({t3}, 'f', -1, 64)[int({t5})])")
+        self.add_asig(
+            t6, f"float64(strconv.FormatFloat({t3}, 'f', -1, 64)[int({t5})])")
         self.add_ident()
         self.set_heap('H', t6)
         self.add_ident()
@@ -780,8 +816,6 @@ class Generador:
         self.add_end_func()
         self.in_natives = False
 
-
-    
     def to_string_string(self):
         # if que reconoce si ya ha sido agregada la funcion to_string
         if self.to_string_stringg:
@@ -813,7 +847,7 @@ class Generador:
         # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
         ########################################################
 
-        #guardamos el incio de la nueva cadena
+        # guardamos el incio de la nueva cadena
         self.add_comment(
             "INICIO DE LA NUEVA CADENA")
         t1 = self.add_temp()
@@ -874,7 +908,6 @@ class Generador:
         self.add_end_func()
         self.in_natives = False
 
-
     def to_string_boolean(self):
         # if que reconoce si ya ha sido agregada la funcion to_string
         if self.to_string_booleann:
@@ -901,14 +934,14 @@ class Generador:
         l1 = self.new_label()
         # Label para escribir true
         l2 = self.new_label()
-        #label para escribir false
+        # label para escribir false
         l3 = self.new_label()
 
         ########################################################
         # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
         ########################################################
 
-        #guardamos el incio de la nueva cadena
+        # guardamos el incio de la nueva cadena
         self.add_comment(
             "INICIO DE LA NUEVA CADENA")
         t1 = self.add_temp()
@@ -931,10 +964,6 @@ class Generador:
         # GUARDANDO CARACTERES EN NUEVA CADENA   #
         ##########################################
 
-# fmt.Printf("%c", int(116));
-# 		fmt.Printf("%c", int(114));
-# 		fmt.Printf("%c", int(117));
-# 		fmt.Printf("%c", int(101));
         self.put_label(l2)
 
         self.add_ident()
@@ -971,5 +1000,115 @@ class Generador:
         self.add_ident()
         # devolvemos la posicion inicial de la cadena
         self.set_stack('P', t1)
+        self.add_end_func()
+        self.in_natives = False
+
+    def type_of_string(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.type_of_stringg:
+            return
+        self.type_of_stringg = True
+        self.in_natives = True
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("type_of_string")
+        # creamos una nueva temporal que guardara el inicio de la cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, "H")
+
+        # Escribimos caracter a caracter dentro del heap
+
+        self.set_heap('H', '115')
+        self.next_heap()
+        self.set_heap('H', '116')
+        self.next_heap()
+        self.set_heap('H', '114')
+        self.next_heap()
+        self.set_heap('H', '105')
+        self.next_heap()
+        self.set_heap('H', '110')
+        self.next_heap()
+        self.set_heap('H', '103')
+        self.next_heap()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        # aumentamos en uno el heap
+        self.next_heap()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
+        self.add_end_func()
+        self.in_natives = False
+    
+    def type_of_number(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.type_of_numberr:
+            return
+        self.type_of_numberr = True
+        self.in_natives = True
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("type_of_number")
+        # creamos una nueva temporal que guardara el inicio de la cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, "H")
+
+        # Escribimos caracter a caracter dentro del heap
+
+        self.set_heap('H', '110')
+        self.next_heap()
+        self.set_heap('H', '117')
+        self.next_heap()
+        self.set_heap('H', '109')
+        self.next_heap()
+        self.set_heap('H', '98')
+        self.next_heap()
+        self.set_heap('H', '101')
+        self.next_heap()
+        self.set_heap('H', '114')
+        self.next_heap()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        # aumentamos en uno el heap
+        self.next_heap()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
+        self.add_end_func()
+        self.in_natives = False
+
+    def type_of_boolean(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.type_of_booleann:
+            return
+        self.type_of_booleann = True
+        self.in_natives = True
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("type_of_boolean")
+        # creamos una nueva temporal que guardara el inicio de la cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, "H")
+
+        # Escribimos caracter a caracter dentro del heap
+
+        self.set_heap('H', '98')
+        self.next_heap()
+        self.set_heap('H', '111')
+        self.next_heap()
+        self.set_heap('H', '111')
+        self.next_heap()
+        self.set_heap('H', '108')
+        self.next_heap()
+        self.set_heap('H', '101')
+        self.next_heap()
+        self.set_heap('H', '97')
+        self.next_heap()
+        self.set_heap('H', '110')
+        self.next_heap()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        # aumentamos en uno el heap
+        self.next_heap()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
         self.add_end_func()
         self.in_natives = False
