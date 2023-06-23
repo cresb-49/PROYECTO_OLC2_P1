@@ -3,7 +3,9 @@ import json
 from flask_cors import CORS
 from FASE1.principal_api_fase1 import PrincipalFase1
 from FASE2.principal_api_fase2 import PrincipalFase2
+import sys
 
+sys.setrecursionlimit(10000000)
 app = Flask(__name__)
 CORS(app)
 
