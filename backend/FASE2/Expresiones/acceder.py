@@ -119,7 +119,7 @@ class Acceder(Abstract):
         # Retornamos los datos temp -> el valor que tomo del stack
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
-        print('Debuj->', result)
+        print('Debuj acceder->', result)
         tipo_variable = result.tipo
         self.tipo = tipo_variable
         if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
@@ -152,7 +152,7 @@ class Acceder(Abstract):
         elif tipo_secundario == TipoEnum.STRUCT.value:
             return TipoEnum.NUMBER
         else:
-            print('Debemos de calcular el tipo secundario!!!')
+            return tipo_secundario
 
     def definicion_variable_bool(self, temp, generador: Generador):
         true_label = generador.new_label()

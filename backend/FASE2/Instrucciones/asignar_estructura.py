@@ -1,5 +1,9 @@
 from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.Exception import Excepcion
 
 
 class AsignacionEstructura(Abstract):
@@ -25,12 +29,15 @@ class AsignacionEstructura(Abstract):
                                    self.parametro])['tipo']
                 if tipo_referencia == TipoEnum.ANY or tipo_referencia == valor_asignar['tipo']:
                     if tipo_referencia == TipoEnum.ARRAY:
-                        tipo_secundario_original = ((struct_respectivo.composicion)[self.parametro])['tipo_secundario']
-                        tipo_secundario_calculado = self.calcular_tipo_array(valor_asignar)
+                        tipo_secundario_original = ((struct_respectivo.composicion)[
+                                                    self.parametro])['tipo_secundario']
+                        tipo_secundario_calculado = self.calcular_tipo_array(
+                            valor_asignar)
                         if tipo_secundario_original == tipo_secundario_calculado:
-                            valor_recuperado[self.parametro] = valor_asignar    
+                            valor_recuperado[self.parametro] = valor_asignar
                         else:
-                            self.resultado.add_error('Semantico', f"El parametro \"{self.parametro}\" del estruct solo puede contener valores de tipo: \"{tipo_secundario_original}\" y esta asignando un valor de tipo: \"{tipo_secundario_calculado}\"", self.linea, self.columna)
+                            self.resultado.add_error(
+                                'Semantico', f"El parametro \"{self.parametro}\" del estruct solo puede contener valores de tipo: \"{tipo_secundario_original}\" y esta asignando un valor de tipo: \"{tipo_secundario_calculado}\"", self.linea, self.columna)
                     else:
                         valor_recuperado[self.parametro] = valor_asignar
                 else:
@@ -59,5 +66,46 @@ class AsignacionEstructura(Abstract):
             print('Realizar el calculo del tipo de array')
             return None
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self, scope: Scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        print('Asignacion parametro estructura')
+        # Al ser un struct los valores que ingresemos aqui deben agregarse
+        # a la posicion en el heap segun la recuperacion
+
+        generador.add_comment('Compilacion de asignacion de valor a estruct')
+        # Primero obtenemos los parametros de acceso
+        variable: Return = self.id.generar_c3d(scope)
+        if (isinstance(variable, Excepcion)):
+            return variable
+        print('Varible estruct->', variable)
+        print('Parametro a buscar ->', self.parametro)
+        # Buscamos la base del struct para realizar buscar su configuracion
+        struct = scope.obtener_estructura(variable.aux_type)
+        if struct == None:
+            generador.add_comment('Fin compilacion de asignacion de valor a estruct')
+            self.resultado.add_error('Semantico', f'No existe la estructura {variable.aux_type}', self.linea, self.columna)
+            return Excepcion('Semantico', f'No existe la estructura {variable.aux_type}', self.linea, self.columna)
+        # Verificamos que el parametro existe en el struct
+        if self.parametro in struct.configuracion:
+            config = struct.configuracion[self.parametro]
+            print('Estructura base: ',config)
+            generador.add_comment('Recuperacion del puntero del Heap del stack')
+            pos_heap = generador.add_temp();
+            generador.add_exp(pos_heap,variable.get_value(),config['pos'],'+')
+            asignacion:Return = self.expresion.generar_c3d(scope)
+            if (isinstance(asignacion, Excepcion)):
+                return asignacion
+            # Verificamos que el tipo que vamos a asignar al valor del struct sea el correcto
+            if config['tipo'] == asignacion.type:
+                print('Valor asignacion: ',asignacion)    
+                # Aqui debemos de realizar el set heap del valor nuevo
+                generador.set_heap(pos_heap,asignacion.get_value())
+            else:
+                self.resultado.add_error('Semantico', f'Al parametro {self.parametro} de tipo: {config["tipo"].value}, no se le puede asignar un: {asignacion.type.value}', self.linea, self.columna)
+                return Excepcion('Semantico', f'Al parametro {self.parametro} de tipo: {config["tipo"].value}, no se le puede asignar un: {asignacion.type.value}', self.linea, self.columna)
+            generador.add_comment('Fin compilacion de asignacion de valor a estruct')
+        else:
+            generador.add_comment('Fin compilacion de asignacion de valor a estruct')
+            self.resultado.add_error('Semantico', f'No existe el parametro "{self.parametro}" en la estructura "{variable.aux_type}"', self.linea, self.columna)
+            return Excepcion('Semantico', f'No existe el parametro "{self.parametro}" en la estructura "{variable.aux_type}"', self.linea, self.columna)

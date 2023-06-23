@@ -28,7 +28,6 @@ class Estructura(Abstract):
             self.configuracion[param] = {
                 'tipo': tmp['tipo'], 'tipo_secundario': tmp['tipo_secundario'], 'pos': params}
             params += 1
-        print(self.configuracion)
         # Declaracion del struct en el scope
         try:
             scope.declarar_estructura(self.id, self)
