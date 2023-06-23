@@ -8,6 +8,7 @@ from FASE2.Instrucciones.declaracion import Declaracion
 from FASE2.Instrucciones.asignacion import Asignacion
 from FASE2.Instrucciones.detener import Detener
 from FASE2.Instrucciones.continuar import Continuar
+from FASE2.Nativas.length import Length
 
 from FASE2.Expresiones.primitivo import Primitivo
 from FASE2.Expresiones.aritmetica import Aritmetica
@@ -185,19 +186,17 @@ class Para(Abstract):
         generador = gen_aux.get_instance()
         if self.tipo_for == 1:
             generador.add_comment('Inicio de compilacion de ciclo for')
+            # Genreacion de un scope intermedio
+            pre_scope_for: Scope = Scope(scope)
             # Delaracion o acceso a la variable del ciclo
-            self.declaracion.generar_c3d(scope)
+            self.declaracion.generar_c3d(pre_scope_for)
             # Generacion y colocaldo de la label de inicio del for
             label_intit = generador.new_label()
             generador.put_label(label_intit)
-            # Genreacion de un scope intermedio
-            pre_scope_for: Scope = Scope(scope)
             # Generacion del codigo para la condicional del for y colocado de la etiqueta true
             ret: Return = self.condicion.generar_c3d(pre_scope_for)
-
             if (isinstance(ret, Excepcion)):
                 return ret
-
             # Ingresamos la etiquetas para el sentencias de break y continue en la generacion del codigo intermedio
             for label in ret.get_false_lbls():
                 pre_scope_for.add_break_label(label)
@@ -211,7 +210,7 @@ class Para(Abstract):
                 inner_scope_for: Scope = Scope(pre_scope_for)
                 generador.add_comment('Instrucciones dentro del for')
                 retr = self.sentencias.generar_c3d(inner_scope_for)
-                if (isinstance(ret, Excepcion)):
+                if (isinstance(retr, Excepcion)):
                     return retr
                 generador.add_comment('Fin instrucciones dentro del for')
             # Aqui se debe de agregar etiqueta del continue
@@ -228,5 +227,85 @@ class Para(Abstract):
                 generador.put_label(label)
             generador.add_comment('Fin de compilacion de ciclo for')
         else:
-            print('for iterable')
-            return Excepcion("Semantico", 'for iterable', self.linea, self.columna)
+            generador.add_comment('Inicio de compilacion de ciclo for iterable')
+            # Generacion del scope interior del iterable
+            pre_scope_for: Scope = Scope(scope)
+            # Iniciamos el valor que se va a iterar
+            # Lo metemos en un variable temporal
+            variable_iterable: Declaracion = Declaracion(self.resultado, self.linea, self.columna, '$var1', TipoEnum.STRING, None, self.expresion)
+            variable_iterable.generar_c3d(pre_scope_for)
+            acceder_iterable:Acceder = Acceder(self.resultado,self.linea,self.columna,'$var1')
+            valor_iterable: Return = acceder_iterable.generar_c3d(pre_scope_for)
+            if isinstance(valor_iterable, Excepcion):
+                return valor_iterable
+            temp_valor_iterable = valor_iterable.get_value()
+            # Validamos el tipo de iterable si es string o array
+            if valor_iterable.type == TipoEnum.STRING:
+                # Declaramos la variable contenedora
+                # Debemos de modificar los tipos de la declaracion para que no sea mutable
+                self.declaracion.tipo = TipoEnum.STRING
+                self.declaracion.tipo_secundario = None
+                # Agregamos de valor un primitivo String para tener un puntero del heap para modificar
+                self.declaracion.valor = Primitivo(self.resultado,self.linea,self.columna,TipoEnum.STRING,'$')
+                result_declaracion: Return = self.declaracion.generar_c3d(pre_scope_for)
+                if isinstance(result_declaracion, Excepcion):
+                    return result_declaracion
+                acceder_contenedor:Acceder = Acceder(self.resultado,self.linea,self.columna,self.declaracion.id)
+                puntero_contenedor:Return = acceder_contenedor.generar_c3d(pre_scope_for)
+                if isinstance(puntero_contenedor, Excepcion):
+                    return puntero_contenedor
+                # Debemos de calcular el legth del array
+                inst_largo_string:Length = Length(self.resultado,self.linea,self.columna,[acceder_iterable])
+                largo_string:Return = inst_largo_string.generar_c3d(pre_scope_for)
+                if isinstance(largo_string, Excepcion):
+                    return largo_string
+                temp_largo_string = largo_string.get_value()
+                print('Largo del string ->',temp_largo_string)
+                print('valor iterable -> ', temp_valor_iterable)
+                print('Puntero del heap var iterable ->',puntero_contenedor)
+                # Generamos un contador para el ciclo de las varaibles
+                contador = generador.add_temp()
+                generador.add_asig(contador,0)
+                # Generamos el avance de pasos en base al puntero del valor iterable y contador
+                pos = generador.add_temp()
+                generador.add_exp(pos,temp_valor_iterable,contador,"+")
+                valor_heap_iterable = generador.add_temp()
+                #Generamos los las etiquetas for
+                true_label = generador.new_label()
+                false_label = generador.new_label()
+                label_intit = generador.new_label()
+                generador.put_label(label_intit)
+                generador.add_if(contador,temp_largo_string,'<',true_label)
+                generador.add_goto(false_label)
+                generador.put_label(true_label)
+                # Agregamos las configuraciones de interrupcion del ciclo en el 
+                # pre scope
+                pre_scope_for.add_break_label(false_label)
+                pre_scope_for.admit_continue_label = True
+                ####CODIGO DE ASIGNACION DE VALOR A LA VARIABLE ITERABLE
+                generador.get_heap(valor_heap_iterable,contador)
+                generador.set_heap(puntero_contenedor.get_value(),valor_heap_iterable)
+                #generador.add_debuj('c',f'int({valor_heap_iterable})')
+                ####FIN CODIGO DE ASIGNACION DE VALOR A LA VARIABLE ITERABLE
+                if self.sentencias != None:
+                    # Generacion de un inner scope para las sentencias dentro del for
+                    inner_scope_for: Scope = Scope(pre_scope_for)
+                    generador.add_comment('Instrucciones dentro del for')
+                    retr = self.sentencias.generar_c3d(inner_scope_for)
+                    if (isinstance(retr, Excepcion)):
+                        return retr
+                    generador.add_comment('Fin instrucciones dentro del for')
+                # Aqui se debe de agregar etiqueta del continue
+                if pre_scope_for.continue_label != '':
+                    generador.put_label(pre_scope_for.continue_label)
+                # Sumamos la posicion del contador
+                generador.add_exp(contador,contador,'1','+')
+                generador.add_goto(label_intit)
+                generador.put_label(false_label)
+            elif valor_iterable.type == TipoEnum.ARRAY:
+                print('iterable array')
+            else:
+                self.resultado.add_error(
+                    'Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
+                return Excepcion('Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
+            generador.add_comment('Fin de compilacion de ciclo for iterable')
