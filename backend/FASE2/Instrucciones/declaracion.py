@@ -201,7 +201,7 @@ class Declaracion(Abstract):
         result: Return = None
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
-
+        #print('debuj declaracion',result)
         if (isinstance(result, Excepcion)):
             return result
 

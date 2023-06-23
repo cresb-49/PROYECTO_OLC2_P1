@@ -224,7 +224,10 @@ class Generador:
     ###############
     # INSTRUCCIONES
     ###############
-
+    def add_debuj(self, type, value):
+        self.set_import('fmt')
+        self.code_in(f'fmt.Printf("%{type}", {value});\n')  # %d %f %c %s
+    
     def add_print(self, type, value):
         self.set_import('fmt')
         self.code_in(f'fmt.Printf("%{type}", int({value}));\n')  # %d %f %c %s
