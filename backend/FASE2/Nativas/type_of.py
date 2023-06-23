@@ -76,9 +76,9 @@ class TypeOf(Abstract):
             llamada_funcion = "type_of_boolean"
         elif (c3d_numero.get_tipo() == TipoEnum.STRUCT):
             # mandamos ha construir la funcion length
-            generador.type_of_string()
+            generador.type_of_struct()
             # llamada funcion sera el nombre de la funcion ha llamar
-            llamada_funcion = "type_of_boolean"
+            llamada_funcion = "type_of_struct"
 
         generador.new_env(scope.size)
         # llamamos a la funcion length

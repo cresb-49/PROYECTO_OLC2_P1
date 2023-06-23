@@ -19,6 +19,7 @@ class Generador:
         self.type_of_stringg = False
         self.type_of_numberr = False
         self.type_of_booleann = False
+        self.type_of_structt = False
         # Lista de temporales
         self.temps = []
 
@@ -1103,6 +1104,42 @@ class Generador:
         self.set_heap('H', '97')
         self.next_heap()
         self.set_heap('H', '110')
+        self.next_heap()
+        # anadimos el caracter -1 a la nueva cadena
+        self.set_heap('H', '-1')
+        # aumentamos en uno el heap
+        self.next_heap()
+        # devolvemos la posicion inicial de la cadena
+        self.set_stack('P', t0)
+        self.add_end_func()
+        self.in_natives = False
+
+    def type_of_struct(self):
+        # if que reconoce si ya ha sido agregada la funcion to_string
+        if self.type_of_structt:
+            return
+        self.type_of_structt = True
+        self.in_natives = True
+
+        # declaramos la nueva funcion to_string_number
+        self.add_begin_func("type_of_struct")
+        # creamos una nueva temporal que guardara el inicio de la cadena
+        t0 = self.add_temp()
+        self.add_asig(t0, "H")
+
+        # Escribimos caracter a caracter dentro del heap
+
+        self.set_heap('H', '115')
+        self.next_heap()
+        self.set_heap('H', '116')
+        self.next_heap()
+        self.set_heap('H', '114')
+        self.next_heap()
+        self.set_heap('H', '117')
+        self.next_heap()
+        self.set_heap('H', '99')
+        self.next_heap()
+        self.set_heap('H', '116')
         self.next_heap()
         # anadimos el caracter -1 a la nueva cadena
         self.set_heap('H', '-1')

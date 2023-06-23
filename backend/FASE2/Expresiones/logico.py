@@ -10,6 +10,7 @@ class Logico(Abstract):
         self.expresion_izquierda: Abstract = expresion_izquierda
         self.expresion_derecha: Abstract = expresion_derecha
         self.tipo_operacion = tipo_operacion
+        self.tipo = TipoEnum.BOOLEAN
 
     def __str__(self):
         return f"Logico -> Tipo: {self.tipo}"
