@@ -1,5 +1,9 @@
 from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.Exception import Excepcion
+from FASE2.Symbol.generador import Generador
 
 
 class AccederEstructura(Abstract):
@@ -30,5 +34,29 @@ class AccederEstructura(Abstract):
         graphviz.add_nodo(self.id_acceso, result)
         graphviz.add_nodo(self.parametro, result)
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self, scope: Scope):
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        print('Estoy en acceder estructura', type(self.id_acceso))
+        scope.imprimir()
+        # Mandamos a traer la variable temporal de acceso del struct
+        variable: Return = self.id_acceso.generar_c3d(scope)
+        if isinstance(variable, Excepcion):
+            return variable
+        # Recuperamos la base del struct
+        struct = scope.obtener_estructura(variable.aux_type)
+        print('Configuracion general struct: ', struct.configuracion)
+        # Obtenemos la posicion del parametro segun base del struct
+        param_stats = struct.configuracion[self.parametro]
+        print('Configuracion parametro struct: ', param_stats)
+        generador.add_comment(
+            f'Compilacion del acceso a un valor de struct variable {self.id_acceso.id}')
+        param_struct = generador.add_temp()
+        generador.add_exp(param_struct, variable.get_value(),
+                          param_stats['pos'], '+')
+        parametro = generador.add_temp()
+        generador.get_heap(parametro, param_struct)
+        generador.add_comment(
+            f'Fin compilacion del acceso a un valor de struct variable {self.id_acceso.id}')
+        result: Return = Return(parametro, param_stats['tipo'], True, param_stats['tipo_secundario'])
+        return result

@@ -174,7 +174,9 @@ class Declaracion(Abstract):
             self.valor.graficar(graphviz, node_result)
 
     def validar_tipos(self, result: Return):
-
+        if result == None:
+            return False
+        
         if (result.get_tipo() == TipoEnum.ANY):
             if (self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
                 return False
@@ -211,6 +213,7 @@ class Declaracion(Abstract):
         else:
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
+            #error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno'
             self.resultado.add_error(
                 'Semantico', error, self.linea, self.columna)
             print('Semantico', str(error), self.linea, self.columna)
