@@ -1183,10 +1183,8 @@ def p_sub_exprecion_12(p):
                 p[0] = ToExponential(resultado, p.lineno(1), find_column(
                     input, p.slice[1]), acceder, p[5])
         elif (len(p) == 4):
-            acceder = Acceder(resultado, p.lineno(
-                1), find_column(input, p.slice[1]), p[1])
-            p[0] = AccederEstructura(resultado, p.lineno(
-                1), find_column(input, p.slice[1]), acceder, p[3])
+            acceder = Acceder(resultado, p.lineno(1), find_column(input, p.slice[1]), p[1])
+            p[0] = AccederEstructura(resultado, p.lineno(1), find_column(input, p.slice[1]), acceder, p[3])
 
 
 def p_sub_exprecion_13(p):
@@ -1220,12 +1218,15 @@ def p_error(t):
     try:
         print('Error Parser p_error ->', t, type(t))
         if isinstance(t, LexToken):
-            parser_add_error('Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
+            parser_add_error('Sintactico', "Error sintáctico en '%s" %
+                             t.value,  t.lineno, 'n/a')
             print("Error sintáctico en '%s'" % t.value)
         else:
-            parser_add_error('Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
+            parser_add_error(
+                'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
     except Exception as e:
         parser_add_error('Sintactico', f"Error en parser {str(e)}",  0, 0)
+
 
 def get_errores_parser_lexer():
     lista_errores = []
@@ -1251,6 +1252,7 @@ def clear_errores():
 def get_resultado():
     return resultado
 
+
 # Declaracion de inicio del parser
 parser = yacc.yacc()
 
@@ -1269,15 +1271,15 @@ def parse(ip):
     global variables_estrcuturas
     global funciones_estrucuras
     global errores_parser
-    
+
     global resultado
 
     expreciones_estructuras = []
     variables_estrcuturas = []
     funciones_estrucuras = []
-    
+
     errores_parser = []
-    
+
     input = ip
     memoria = Pila()
     contador = 0
