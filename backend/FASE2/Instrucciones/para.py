@@ -202,7 +202,7 @@ class Para(Abstract):
             for label in ret.get_false_lbls():
                 pre_scope_for.add_break_label(label)
             pre_scope_for.admit_continue_label = True
-            print('labels ->', pre_scope_for)
+            # print('labels ->', pre_scope_for)
             for label in ret.get_true_lbls():
                 generador.put_label(label)
             # Generacion del codigo del las inttrucciones

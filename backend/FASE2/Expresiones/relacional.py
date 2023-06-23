@@ -101,9 +101,9 @@ class Relacional(Abstract):
         tipo_izq = tipos_recuperados1['tipo']
         tipo_der = tipos_recuperados2['tipo']
         
-        print('Manejo operaciones realacionel')
-        print(tipo_izq)
-        print(tipo_der)
+        # print('Manejo operaciones realacionel')
+        # print(tipo_izq)
+        # print(tipo_der)
         
         
         # TODO: Realizar la validacion de tipos

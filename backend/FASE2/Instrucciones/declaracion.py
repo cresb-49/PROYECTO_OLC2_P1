@@ -176,7 +176,7 @@ class Declaracion(Abstract):
     def validar_tipos(self, result: Return):
         if result == None:
             return False
-        print('debuj declaracion =>', self.tipo)
+        # print('debuj declaracion =>', self.tipo)
         if (result.get_tipo() == TipoEnum.ANY):
             if (self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
                 return False
@@ -208,7 +208,7 @@ class Declaracion(Abstract):
         generador.add_comment(f'** compilacion de variable {self.id} **')
 
         if (self.validar_tipos(result)):
-            print("--------->se paso la validacion")
+            #print("--------->se paso la validacion")
             self.declaracion(result, generador, scope)
         else:
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
@@ -223,7 +223,7 @@ class Declaracion(Abstract):
         scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.tipo == TipoEnum.ANY, self.linea, self.columna)
         # Codigo resultante
         variable_recuperada = scope.obtener_variable(self.id)
-        print('Variable -> ', variable_recuperada)
+        # print('Variable -> ', variable_recuperada)
         tempPos = variable_recuperada.simbolo_c3d.pos
         temp_Pos = variable_recuperada.simbolo_c3d.pos
 
@@ -247,4 +247,4 @@ class Declaracion(Abstract):
             generador.set_stack(tempPos, 0)
         generador.add_comment(f'** fin de compilacion variable {self.id} **')
         scope.sum_size()
-        print('last scope -> ', scope)
+        #print('last scope -> ', scope)
