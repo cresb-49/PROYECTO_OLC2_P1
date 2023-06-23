@@ -51,7 +51,7 @@ class Retornar(Abstract):
                 for lable in lista_labels_return:
                     generador.add_goto(lable)
                 for labels in result.get_false_lbls():
-                    generador.add_goto(labels)
+                    generador.put_label(labels)
                 generador.set_stack('P','0')
                 for lable in lista_labels_return:
                     generador.add_goto(lable)

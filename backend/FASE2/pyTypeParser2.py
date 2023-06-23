@@ -5,8 +5,6 @@ from FASE2.Nativas.string import String
 from FASE2.Nativas.number import Number
 from FASE2.Nativas.type_of import TypeOf
 from FASE2.Nativas.length import Length
-from FASE2.Nativas.push import Push
-from FASE2.Nativas.pop import Pop
 # from FASE2.ply.yacc import yacc
 import FASE2.ply.yacc as yacc  # Import de yacc para generar el analizador sintactico
 from FASE2.pyTypeLex2 import lexer  # Import del lexer realizado por el usuario

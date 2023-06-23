@@ -157,7 +157,7 @@ class CallFuncion(Abstract):
             #     if self.false_lbl == '':
             #         self.false_lbl = generador.generator.new_label()
             #     generador.add_if(temp, 1, '==', self.true_lbl)
-            #     generador.add_goto(self.true_lbl)
+            #     generador.add_goto(self.false_lbl)
             #     ret = Return(temp, TipoEnum.BOOLEAN, True, None)
             #     ret.add_true_lbl(self.true_lbl)
             #     ret.add_false_lbl(self.false_lbl)
