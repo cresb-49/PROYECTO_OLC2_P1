@@ -97,7 +97,14 @@ class AsignacionEstructura(Abstract):
             if (isinstance(asignacion, Excepcion)):
                 return asignacion
             # Verificamos que el tipo que vamos a asignar al valor del struct sea el correcto
-            if config['tipo'] == asignacion.type:
+            if config['is_mutable']:
+                #print('====> el parametro es mutable',config)
+                #print('====> el parametro es mutable',asignacion)
+                config['tipo'] = asignacion.type
+                config['tipo_secundario'] = asignacion.aux_type
+                # Aqui debemos de realizar el set heap del valor nuevo
+                generador.set_heap(pos_heap,asignacion.get_value())
+            elif config['tipo'] == asignacion.type:
                 print('Valor asignacion: ',asignacion)    
                 # Aqui debemos de realizar el set heap del valor nuevo
                 generador.set_heap(pos_heap,asignacion.get_value())
