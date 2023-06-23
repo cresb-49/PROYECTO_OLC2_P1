@@ -96,6 +96,5 @@ class ToFixed(Abstract):
         generador.add_comment('fin de to fixed')
         generador.add_space()
 
-        result = Return(temp, TipoEnum.NUMBER, False, None)
+        result = Return(temp, TipoEnum.NUMBER, True, None)
         return result
-        pass

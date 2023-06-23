@@ -87,7 +87,7 @@ class ToString(Abstract):
         generador.add_comment('Fin de toString()')
         generador.add_space()
 
-        result = Return(temp, TipoEnum.STRING, False, None)
+        result = Return(temp, TipoEnum.STRING, True, None)
 
         return result
 
@@ -103,16 +103,17 @@ class ToString(Abstract):
         generador.new_env(scope.size)
         generador.call_fun("to_string_string")
 
-        temporal1 = generador.add_temp()
-        temporal2 = generador.add_temp()
 
-        generador.add_exp(temporal2, 'P', '1', '+')
-        generador.get_stack(temporal1, temporal2)
+        temp = generador.add_temp()
+        generador.get_stack(temp,'P')
+        generador.ret_env(scope.size)
+
+
 
         # retornamos el un entorno
         generador.ret_env(scope.size)
 
-        return Return(temporal1, TipoEnum.STRING, True, None)
+        return Return(temp, TipoEnum.STRING, True, None)
 
     def to_string_boolean(self, generador: Generador, a_convertir: Return, scope):
 
@@ -175,8 +176,8 @@ class ToString(Abstract):
         generador.add_ident()
         generador.next_heap()
         generador.put_label(temp_lbl)
-        temporal1 = generador.add_temp()
-        temporal2 = generador.add_temp()
+
+
 
         # anadimos el caracter -1 a la nueva cadena
         generador.set_heap('H', '-1')
@@ -187,10 +188,8 @@ class ToString(Abstract):
         generador.set_stack('P', t1)
 
   
-        generador.add_exp(temporal2, 'P', '1', '+')
-        generador.get_stack(temporal1, temporal2)
-
-        # retornamos el un entorno
+        temp = generador.add_temp()
+        generador.get_stack(temp,'P')
         generador.ret_env(scope.size)
 
-        return Return(temporal1, TipoEnum.STRING, True, None)
+        return Return(temp, TipoEnum.STRING, True, None)
