@@ -98,9 +98,7 @@ class Imprimir(Abstract):
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-
-        # TODO: por el momento solo el print del primer parametro
-
+        generador.add_comment('Inicio funcion de console log')
         for expr in self.exprecion:
             result = expr.generar_c3d(scope)
             # if len(self.exprecion) >= 2:
@@ -118,7 +116,7 @@ class Imprimir(Abstract):
                 else:
                     print('Encontre variable sin clasificar ->', result)
                     return  Excepcion("Semantico", "Variable sin clasificar", self.linea, self.columna)
-                    
+        generador.add_comment('Fin funcion de console log')
         generador.add_print_salto_linea()
 
     def imprmir_bool(self, generador: Generador, result: Return):
