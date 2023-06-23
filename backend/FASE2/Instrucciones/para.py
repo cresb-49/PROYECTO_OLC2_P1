@@ -260,9 +260,9 @@ class Para(Abstract):
                 if isinstance(largo_string, Excepcion):
                     return largo_string
                 temp_largo_string = largo_string.get_value()
-                print('Largo del string ->',temp_largo_string)
-                print('valor iterable -> ', temp_valor_iterable)
-                print('Puntero del heap var iterable ->',puntero_contenedor)
+                # print('Largo del string ->',temp_largo_string)
+                # print('valor iterable -> ', temp_valor_iterable)
+                # print('Puntero del heap var iterable ->',puntero_contenedor)
                 # Generamos un contador para el ciclo de las varaibles
                 contador = generador.add_temp()
                 generador.add_asig(contador,0)
