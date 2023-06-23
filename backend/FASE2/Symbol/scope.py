@@ -17,8 +17,9 @@ class SimboloC3D:
 
 
 class Simbolo:
-    def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna, simbolo_c3d):
+    def __init__(self, valor, id_, tipo, tipo_secundario, linea, columna, simbolo_c3d, is_mutable=False):
         self.valor = valor
+        self.is_mutable = is_mutable
         self.id = id_
         self.tipo = tipo
         self.tipo_secundario = tipo_secundario
@@ -27,7 +28,7 @@ class Simbolo:
         self.simbolo_c3d = simbolo_c3d
 
     def __str__(self) -> str:
-        return f"Variable: {self.id}, Tipo: {self.tipo}, Tipo_Secundario: {self.tipo_secundario} Pos: {self.simbolo_c3d.pos} IsGlobal: {self.simbolo_c3d.is_global} Inheap: {self.simbolo_c3d.in_heap}"
+        return f"Variable: {self.id}, Tipo: {self.tipo}, Tipo_Secundario: {self.tipo_secundario} Pos: {self.simbolo_c3d.pos} IsMutable: {self.is_mutable} IsGlobal: {self.simbolo_c3d.is_global} Inheap: {self.simbolo_c3d.in_heap}"
 
 
 class Scope:
@@ -110,7 +111,7 @@ class Scope:
     def __str__(self) -> str:
         return f"Nombre: {self.nombre}, Tipo: {self.tipo} Anterior: {self.anterior}"
 
-    def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario, linea, columna):
+    def declarar_variable(self, id: str, valor: any, tipo, tipo_secundario,is_mutable, linea, columna):
         try:
             # Calculo si los datos esta ubicados en el heap o en el stack
             # Lo hacemos por medio del tipo principal y secundario de la variable
@@ -119,7 +120,7 @@ class Scope:
                 is_heap = True
             # Generacion de parametros del simbolo en 3 direcciones
             simbolo_c3d: SimboloC3D = SimboloC3D(is_heap)
-            new_symbol = Simbolo(valor, id, tipo, tipo_secundario, linea, columna, simbolo_c3d)
+            new_symbol = Simbolo(valor, id, tipo, tipo_secundario, linea, columna, simbolo_c3d,is_mutable)
             self.variables.add(id, new_symbol)
             # Asignamos la direccion del stack a la variable ingresada
             variable = self.get_size()
@@ -141,7 +142,7 @@ class Scope:
 
     def sum_size(self):
         self.size += 1
-    
+
     def res_size(self):
         self.size -= 1
 
