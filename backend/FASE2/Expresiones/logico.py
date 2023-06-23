@@ -4,12 +4,14 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
 from FASE2.Symbol.Exception import Excepcion
 
+
 class Logico(Abstract):
     def __init__(self, resultado, linea, columna, expresion_izquierda, expresion_derecha, tipo_operacion):
         super().__init__(resultado, linea, columna)
         self.expresion_izquierda: Abstract = expresion_izquierda
         self.expresion_derecha: Abstract = expresion_derecha
         self.tipo_operacion = tipo_operacion
+        self.tipo = TipoEnum.BOOLEAN
 
     def __str__(self):
         return f"Logico -> Tipo: {self.tipo}"
