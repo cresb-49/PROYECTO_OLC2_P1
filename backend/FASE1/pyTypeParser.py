@@ -13,10 +13,15 @@ from FASE1.pyTypeLex import lexer  # Import del lexer realizado por el usuario
 from FASE1.pyTypeLex import tokens
 from FASE1.ply.lex import LexToken
 
+from datetime import datetime
+
 # Seccion para importar las abstracciones y ED para verificar la infomacion
 from FASE1.ED.Pila import Pila
 from FASE1.pyTypeLex import find_column
+from FASE1.pyTypeLex import clear_errores_lexer
+from FASE1.pyTypeLex import get_errores_lexer
 from FASE1.pyTypeLex import resultado
+from FASE1.pyTypeLex import Error
 from FASE1.Models.resultado import Resultado
 from FASE1.Instrucciones.sentencias import Scope
 from FASE1.Symbol.tipoEnum import TipoEnum
@@ -88,6 +93,8 @@ expreciones_estructuras = []
 variables_estrcuturas = []
 funciones_estrucuras = []
 
+errores_parser = []
+
 
 def filtro_funciones_vars_estructuras(intruccion):
     if isinstance(intruccion, Funcion):
@@ -109,14 +116,14 @@ def validacion_info_estructuras():
                     resultados.append(scope_tmp[estrucura])
             if len(resultados) == 0:
                 # print('Generico')
-                resultado.add_error(
+                parser_add_error(
                     'Semantico', 'El tipo de estructura no esta definina el proyecto', exprecion.linea, exprecion.columna)
             elif len(resultados) == 1:
                 tipo_secundario = resultados[0].id
                 exprecion.tipo_secundario = tipo_secundario
                 # print(exprecion)
             else:
-                resultado.add_error(
+                parser_add_error(
                     'Semantico', 'Existe ambiguedad al deducir la estructura', exprecion.linea, exprecion.columna)
                 # print('Generico')
         for funcion in funciones_estrucuras:
@@ -124,14 +131,14 @@ def validacion_info_estructuras():
             result = scope_global_fin_analisis.obtener_estructura(
                 tipo_secundario)
             if result == None:
-                resultado.add_error(
+                parser_add_error(
                     'Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la funcion', funcion.linea, funcion.columna)
         for variable in variables_estrcuturas:
             tipo_secundario = variable.tipo_secundario
             result = scope_global_fin_analisis.obtener_estructura(
                 tipo_secundario)
             if result == None:
-                resultado.add_error(
+                parser_add_error(
                     'Semantico', f'No existe una estructura "{tipo_secundario}", no puede declarar la variable', variable.linea, variable.columna)
 
 
@@ -172,7 +179,7 @@ def validar_interrupciones():
                 top = pila_sentencias.obtener_tope()
                 if isinstance(top, Retornar):
                     if not pila_sentencias.existe_elemento_abajo_arriba(ESPACIO_FUNCION):
-                        resultado.add_error(
+                        parser_add_error(
                             'Semantico', 'No puede agregar un "return" si no esta contenido en una funcion', top.linea, top.columna)
                         print(
                             'Semantico', 'No puede agregar un "return" si no esta contenido en una funcion', top.linea, top.columna)
@@ -184,7 +191,7 @@ def validar_interrupciones():
                             pila_sentencias, top, 'return')
                 elif isinstance(top, Continuar):
                     if not pila_sentencias.existe_elemento_arriba_abajo(ESPACIO_CICLO):
-                        resultado.add_error(
+                        parser_add_error(
                             'Semantico', 'No puede agregar un "continue" si no esta contenido en un ciclo for o while', top.linea, top.columna)
                         print(
                             'Semantico', 'No puede agregar un "continue" si no esta contenido en un ciclo for o while', top.linea, top.columna)
@@ -197,7 +204,7 @@ def validar_interrupciones():
                 elif isinstance(top, Detener):
                     if not pila_sentencias.existe_elemento_arriba_abajo(ESPACIO_CICLO):
 
-                        resultado.add_error(
+                        parser_add_error(
                             'Semantico', 'No puede agregar un "break" si no esta contenido en un ciclo for o while', top.linea, top.columna)
                         print(
                             'Semantico', 'No puede agregar un "break" si no esta contenido en un ciclo for o while', top.linea, top.columna)
@@ -218,9 +225,9 @@ def verificacion_codigo_basura_return(pila: Pila, inst: Abstract, nombre):
         for ins in instrucciones:
             # print('ccc', ins)
             if isinstance(ins, Abstract):
-                resultado.add_error(
+                parser_add_error(
                     'Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
-                resultado.add_error(
+                parser_add_error(
                     'Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
                 break
     else:
@@ -230,9 +237,9 @@ def verificacion_codigo_basura_return(pila: Pila, inst: Abstract, nombre):
             for ins in instrucciones:
                 # print('ccc', ins)
                 if isinstance(ins, Abstract):
-                    resultado.add_error(
+                    parser_add_error(
                         'Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
-                    resultado.add_error(
+                    parser_add_error(
                         'Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
                     break
         else:
@@ -241,9 +248,9 @@ def verificacion_codigo_basura_return(pila: Pila, inst: Abstract, nombre):
             for ins in instrucciones:
                 # print('ccc', ins)
                 if isinstance(ins, Abstract):
-                    resultado.add_error(
+                    parser_add_error(
                         'Semantico', f'El "{nombre}" nunca se ejecutara', inst.linea, inst.columna)
-                    resultado.add_error(
+                    parser_add_error(
                         'Semantico', f'Las instrucciones contenidas en el bloque que empieza en la linea: {ins.linea+1} no se ejecutaran debido a hay una instruccion de interrupcion que le precede', inst.linea, inst.columna)
                     break
 
@@ -277,7 +284,7 @@ def decla_var_fun(instruccion):
             scope.declarar_variable(instruccion.id, None, instruccion.tipo,
                                     tipo_secundario, instruccion.linea, instruccion.columna)
         except ValueError as error:
-            resultado.add_error('Semantico', str(
+            parser_add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
             print(str(error))
     if isinstance(instruccion, Funcion):
@@ -285,7 +292,7 @@ def decla_var_fun(instruccion):
         try:
             scope.declarar_funcion(instruccion.id, instruccion)
         except ValueError as error:
-            resultado.add_error('Semantico', str(
+            parser_add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
             print(str(error))
     if isinstance(instruccion, Estructura):
@@ -293,7 +300,7 @@ def decla_var_fun(instruccion):
         try:
             scope.declarar_estructura(instruccion.id, instruccion)
         except ValueError as error:
-            resultado.add_error('Semantico', str(
+            parser_add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
             print(str(error))
 
@@ -715,13 +722,13 @@ def p_valores(p):
 
 def agregar_parametros_definicion_struct(diccionario: dict, p, index, tipo):
     if p[index] in diccionario:
-        resultado.add_error('Semantico', f'Ya existe un parametro {p[index]} en el struct', p.lineno(
+        parser_add_error('Semantico', f'Ya existe un parametro {p[index]} en el struct', p.lineno(
             index), find_column(input, p.slice[index]))
     else:
         if tipo['tipo'] != TipoEnum.STRUCT:
             diccionario[p[index]] = tipo
         else:
-            resultado.add_error('Semantico', 'No se pueden declarar parametros de tipo Struct', p.lineno(
+            parser_add_error('Semantico', 'No se pueden declarar parametros de tipo Struct', p.lineno(
                 index), find_column(input, p.slice[index]))
     return diccionario
 
@@ -1037,7 +1044,7 @@ def p_sub_exprecion_3(p):
         result = int(p[1])
     except ValueError:
         print("Float value too large %d", p[1])
-        resultado.add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(
+        parser_add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(
             input, p.slice[1]))
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.NUMBER, result)
@@ -1050,7 +1057,7 @@ def p_sub_exprecion_4(p):
         result = float(p[1])
     except ValueError:
         print("Float value too large %d", p[1])
-        resultado.add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(
+        parser_add_error('Sintanctico', ("Float value too large %d", p[1]), p.lineno(1), find_column(
             input, p.slice[1]))
     p[0] = Primitivo(resultado, p.lineno(1), find_column(
         input, p.slice[1]), TipoEnum.NUMBER, result)
@@ -1194,7 +1201,7 @@ def p_asignacion_struct(p):
     """asignacion_struct : asignacion_struct COMMA ID COLON exprecion"""
     dict_init: dict = p[1]
     if p[3] in dict_init:
-        resultado.add_error('Semantico', f'Ya existe un parametro {p[3]} en la inicializacion del struct', p.lineno(
+        parser_add_error('Semantico', f'Ya existe un parametro {p[3]} en la inicializacion del struct', p.lineno(
             3), find_column(input, p.slice[3]))
     else:
         dict_init[p[3]] = p[5]
@@ -1214,14 +1221,39 @@ def p_error(t):
     print('Error Parser p_error ->', t, type(t))
     try:
         if isinstance(t, LexToken):
-            resultado.add_error(
+            parser_add_error(
                 'Sintactico', "Error sintáctico en '%s" % t.value,  t.lineno, 'n/a')
             print("Error sintáctico en '%s'" % t.value)
         else:
-            resultado.add_error(
+            parser_add_error(
                 'Sintactico', "Error sintáctico en '%s'" % t.value,  0, 0)
     except Exception as e:
-        resultado.add_error('Sintactico', f"Error en parser {str(e)}",  0, 0)
+        parser_add_error('Sintactico', f"Error en parser {str(e)}",  0, 0)
+
+
+def get_errores_parser_lexer():
+    lista_errores = []
+    for err in get_errores_lexer():
+        lista_errores.append(err)
+    for err in errores_parser:
+        lista_errores.append(err)
+    return lista_errores
+
+
+def parser_add_error(tipo, desc, linea, columna):
+    fecha_hora_actual = datetime.now()
+    fecha_hora_formateada = fecha_hora_actual.strftime("%d/%m/%Y %H:%M")
+    error = Error(tipo, desc, linea, columna, fecha_hora_formateada)
+    errores_parser.append(error)
+
+
+def clear_errores():
+    errores_parser.clear()
+    clear_errores_lexer()
+
+
+def get_resultado():
+    return resultado
 
 
 # Declaracion de inicio del parser
@@ -1241,12 +1273,16 @@ def parse(ip):
     global expreciones_estructuras
     global variables_estrcuturas
     global funciones_estrucuras
+    global errores_parser
 
     global resultado
 
     expreciones_estructuras = []
     variables_estrcuturas = []
     funciones_estrucuras = []
+
+    errores_parser = []
+
     input = ip
     memoria = Pila()
     contador = 0

@@ -56,8 +56,8 @@ class Asignacion(Abstract):
         # Primero obtenermos la variable desde el scope generado por ultimo
         variable_recuperada = scope.obtener_variable(self.id)
         # Generamos dos variables temporales para el manejo de la informacion
-        tempPos = variable_recuperada.simbolo_c3d.pos[4:]
-        temp_Pos = variable_recuperada.simbolo_c3d.pos[4:]
+        tempPos = variable_recuperada.simbolo_c3d.pos
+        temp_Pos = variable_recuperada.simbolo_c3d.pos
         # Validacion si la varaible no es de tipo global
         if not variable_recuperada.simbolo_c3d.is_global:
             tempPos = generador.add_temp()
