@@ -1,16 +1,20 @@
 from FASE2.Abstract.abstract import Abstract
+from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.tipoEnum import TipoEnum
+from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.scope import Scope
+from FASE2.Symbol.Exception import Excepcion
 
 
 class AsignacionArray(Abstract):
-    def __init__(self, resultado, linea, columna, array, index_exprecion, value_exprecion):
+    def __init__(self, resultado, linea, columna, id_array, list_index_exprecion, value_exprecion):
         super().__init__(resultado, linea, columna)
-        self.array = array
-        self.index_exprecion = index_exprecion
+        self.id_array = id_array
+        self.index_exprecion = list_index_exprecion
         self.value_exprecion = value_exprecion
 
     def __str__(self):
-        return f"Asignacion Array: {self.array}, index: {self.index_exprecion}, value: {self.value_exprecion}"
+        return f"Asignacion Array: {self.id_array}, index: {self.list_index_exprecion}, value: {self.value_exprecion}"
 
     def ejecutar(self, scope):
         # Ejecutamos primero el array? asi verificamos tipo e index
@@ -95,5 +99,15 @@ class AsignacionArray(Abstract):
         else:
             return numero_float
 
-    def generar_c3d(self,scope):
-        pass
+    def generar_c3d(self,scope:Scope):
+        print('ASIGNAR VALOR ARRAY')
+        # Obtenemos la variable del scope
+        variable = scope.obtener_variable(self.id_array)
+        # Verificamos que se ade tipo array
+        if variable.tipo == TipoEnum.ARRAY:
+            print('ARRAY: ',variable)
+            
+        else:
+            self.resultado.add_error('Semantico', 'No esta operando un array', self.linea, self.columna)
+            return Excepcion('Semantico', 'No esta operando un array', self.linea, self.columna)
+        
