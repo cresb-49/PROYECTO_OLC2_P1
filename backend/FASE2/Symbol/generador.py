@@ -228,7 +228,7 @@ class Generador:
     def add_debuj(self, type, value):
         self.set_import('fmt')
         self.code_in(f'fmt.Printf("%{type}", {value});\n')  # %d %f %c %s
-    
+
     def add_print(self, type, value):
         self.set_import('fmt')
         self.code_in(f'fmt.Printf("%{type}", int({value}));\n')  # %d %f %c %s
@@ -384,9 +384,25 @@ class Generador:
         t4 = self.add_temp()
         self.get_stack(t4, t2)
 
+        # Termporal que guardara el pow con exponente t4
+        pow = self.add_temp()
+        self.add_asig(pow, f"math.Pow(10, {t4})")
+
+        # temporal que guardara la multiplicacion del t3 por el t5
+        round_content = self.add_temp()
+        self.add_exp(round_content, t3, pow, "*")
+
+        # temporal que guarda el resultado de round
+        round = self.add_temp()
+        self.add_asig(round, f"math.Round({round_content})")
+
+        # temporal que guarda el resultado de round dividido el pow
+        respuesta = self.add_temp()
+        self.add_exp(respuesta, round, pow, "/")
+
         # seteamos el pointer con el valor de la operacion to fixed
         self.set_stack(
-            'P', f"math.Round({t3}*(math.Pow(10, float64({t4})))) / (math.Pow(10, float64({t4})))")
+            'P', respuesta)
 
         self.add_end_func()
         self.in_natives = False
@@ -701,113 +717,113 @@ class Generador:
         self.add_end_func()
         self.in_natives = False
 
-    def to_string_number(self):
-        # if que reconoce si ya ha sido agregada la funcion to_string
-        if self.to_string_numberr:
-            return
-        self.to_string_numberr = True
-        self.in_natives = True
+    # def to_string_number(self):
+    #     # if que reconoce si ya ha sido agregada la funcion to_string
+    #     if self.to_string_numberr:
+    #         return
+    #     self.to_string_numberr = True
+    #     self.in_natives = True
 
-        # anadimos la libreria de manipulacion de string
-        self.set_import('strconv')
+    #     # anadimos la libreria de manipulacion de string
+    #     self.set_import('strconv')
 
-        # declaramos la nueva funcion to_string_number
-        self.add_begin_func("to_string_number")
-        # creamos una nueva temporal
-        t2 = self.add_temp()
-        # a la temporal asignamos la posicion actual de P
-        self.add_exp(t2, 'P', '1', '+')
-        # anadir temporal que guardara la referencia del stack del numero ha convertir
-        t3 = self.add_temp()
-        self.get_stack(t3, t2)
+    #     # declaramos la nueva funcion to_string_number
+    #     self.add_begin_func("to_string_number")
+    #     # creamos una nueva temporal
+    #     t2 = self.add_temp()
+    #     # a la temporal asignamos la posicion actual de P
+    #     self.add_exp(t2, 'P', '1', '+')
+    #     # anadir temporal que guardara la referencia del stack del numero ha convertir
+    #     t3 = self.add_temp()
+    #     self.get_stack(t3, t2)
 
-        #########################
-        # DECLARACION DE LABELS #
-        #########################
+    #     #########################
+    #     # DECLARACION DE LABELS #
+    #     #########################
 
-        # Label para salir de la funcion
-        return_lbl = self.new_label()
-        # Label para iniciar el ciclo que convierte un numero ha string
-        l1 = self.new_label()
-        # Label para la creacion de un nuevo string
-        l2 = self.new_label()
+    #     # Label para salir de la funcion
+    #     return_lbl = self.new_label()
+    #     # Label para iniciar el ciclo que convierte un numero ha string
+    #     l1 = self.new_label()
+    #     # Label para la creacion de un nuevo string
+    #     l2 = self.new_label()
 
-        ########################################################
-        # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
-        ########################################################
+    #     ########################################################
+    #     # CONVIRTIENDO NUEMRO HA STRING Y OBTENIENDO SU LENGTH #
+    #     ########################################################
 
-        # guardamos el incio de la nueva cadena
-        self.add_comment(
-            "INICIO DE LA NUEVA CADENA")
-        t0 = self.add_temp()
-        self.add_asig(t0, 'H')
+    #     # guardamos el incio de la nueva cadena
+    #     self.add_comment(
+    #         "INICIO DE LA NUEVA CADENA")
+    #     t0 = self.add_temp()
+    #     self.add_asig(t0, 'H')
 
-        # creamos el temporal que se encargara de guardar el length del string que representa al numero
-        t4 = self.add_temp()
-        self.add_comment(
-            "TEMPORAL QUE GUARDA EL LENGTH DE LA CADENA QUE REPRESENTA EL NUMERO A CONVERITR")
-        # asignamos la t4 al length de la cadena que representa el numero t3
-        self.add_asig(
-            t4, f"float64(len(strconv.FormatFloat({t3}, 'f', -1, 64)))")
+    #     # creamos el temporal que se encargara de guardar el length del string que representa al numero
+    #     t4 = self.add_temp()
+    #     self.add_comment(
+    #         "TEMPORAL QUE GUARDA EL LENGTH DE LA CADENA QUE REPRESENTA EL NUMERO A CONVERITR")
+    #     # asignamos la t4 al length de la cadena que representa el numero t3
+    #     self.add_asig(
+    #         t4, f"float64(len(strconv.FormatFloat({t3}, 'f', -1, 64)))")
 
-        # variable contadora que indicara cuantas iteraciones se han hecho
-        t5 = self.add_temp()
-        self.add_comment("TEMPORAL CONTADORA")
-        # asignamos la t4 al length de la cadena que representa el numero t3
-        self.add_asig(t5, f"0")
+    #     # variable contadora que indicara cuantas iteraciones se han hecho
+    #     t5 = self.add_temp()
+    #     self.add_comment("TEMPORAL CONTADORA")
+    #     # asignamos la t4 al length de la cadena que representa el numero t3
+    #     self.add_asig(t5, f"0")
 
-        #######################
-        # INICIO DEL CICLO    #
-        #######################
+    #     #######################
+    #     # INICIO DEL CICLO    #
+    #     #######################
 
-        # marcamos la label que inicia el ciclo
-        self.put_label(l1)
-        self.add_ident()
-        # si la condatora es menor a la temporal que guarda el
-        # length entonces mandamos ha guardar el caracter en la posicion de la contadora dentro del heap
-        self.add_if(t5, t4, '<', l2)
-        self.add_ident()
-        # Si se encontro el -1 entonces debemos terminar el metodo
-        self.add_if(t5, t4, '>=', return_lbl)
+    #     # marcamos la label que inicia el ciclo
+    #     self.put_label(l1)
+    #     self.add_ident()
+    #     # si la condatora es menor a la temporal que guarda el
+    #     # length entonces mandamos ha guardar el caracter en la posicion de la contadora dentro del heap
+    #     self.add_if(t5, t4, '<', l2)
+    #     self.add_ident()
+    #     # Si se encontro el -1 entonces debemos terminar el metodo
+    #     self.add_if(t5, t4, '>=', return_lbl)
 
-        ###############################
-        # Acumulacion del contador    #
-        ###############################
+    #     ###############################
+    #     # Acumulacion del contador    #
+    #     ###############################
 
-        self.put_label(l2)
-        self.add_ident()
-        # debemos guardar en una temporal la representacions Ascii del caracter posicionado en el contador
-        t6 = self.add_temp()
-        # guardar en una temporal la representacions Ascii del caracter posicionado en el contador
-        self.add_asig(
-            t6, f"float64(strconv.FormatFloat({t3}, 'f', -1, 64)[int({t5})])")
-        self.add_ident()
-        self.set_heap('H', t6)
-        self.add_ident()
-        self.next_heap()
-        self.add_ident()
-        # aumentamos un digito en la variable contadora
-        self.add_exp(t5, t5, '1', '+')
-        self.add_ident()
-        # regresamos a la label que abre el ciclo
-        self.add_goto(l1)
+    #     self.put_label(l2)
+    #     self.add_ident()
+    #     # debemos guardar en una temporal la representacions Ascii del caracter posicionado en el contador
+    #     t6 = self.add_temp()
+    #     # guardar en una temporal la representacions Ascii del caracter posicionado en el contador
+    #     self.add_asig(
+    #         t6, f"float64(strconv.FormatFloat({t3}, 'f', -1, 64)[int({t5})])")
+    #     self.add_ident()
+    #     self.set_heap('H', t6)
+    #     self.add_ident()
+    #     self.next_heap()
+    #     self.add_ident()
+    #     # aumentamos un digito en la variable contadora
+    #     self.add_exp(t5, t5, '1', '+')
+    #     self.add_ident()
+    #     # regresamos a la label que abre el ciclo
+    #     self.add_goto(l1)
 
-        ####################################
-        # Declaracion del final del metodo #
-        ####################################
-        # declaramos la label que termina el metodo
-        self.put_label(return_lbl)
-        self.add_ident()
-        # anadimos el caracter -1 a la nueva cadena
-        self.set_heap('H', '-1')
-        self.add_ident()
-        # aumentamos en uno el heap
-        self.next_heap()
-        self.add_ident()
-        # devolvemos la posicion inicial de la cadena
-        self.set_stack('P', t0)
-        self.add_end_func()
-        self.in_natives = False
+    #     ####################################
+    #     # Declaracion del final del metodo #
+    #     ####################################
+    #     # declaramos la label que termina el metodo
+    #     self.put_label(return_lbl)
+    #     self.add_ident()
+    #     # anadimos el caracter -1 a la nueva cadena
+    #     self.set_heap('H', '-1')
+    #     self.add_ident()
+    #     # aumentamos en uno el heap
+    #     self.next_heap()
+    #     self.add_ident()
+    #     # devolvemos la posicion inicial de la cadena
+    #     self.set_stack('P', t0)
+    #     self.add_end_func()
+    #     self.in_natives = False
 
     def to_string_string(self):
         # if que reconoce si ya ha sido agregada la funcion to_string
@@ -1143,184 +1159,190 @@ class Generador:
         self.in_natives = False
 
     def to_exponential(self):
-        # if que reconoce si ya ha sido agregada la funcion to_exponential
-        if self.to_exponentiall:
-            return
-        self.to_exponentiall = True
-        self.in_natives = True
-        # anadimos la libreria math para operaciones matematicas
-        self.set_import('math')
-        # anadimos la libreria math para operaciones matematicas
-        self.set_import('strconv')
-        # declaramos la nueva funcion to_string_number
-        self.add_begin_func("to_exponential")
+        pass
+        ###############################
+        # DEPRECADO POR INCUMPLIR C3D #
+        ###############################
 
-        ####################################################
-        # Variable que guarda el inicio de la nueva cadena #
-        ####################################################
 
-        t0 = self.add_temp()  # creamos la nueva temporal
-        # guardamos la posicion actua del hap antes demanipularlo
-        self.add_asig(t0, "H")
+        # # if que reconoce si ya ha sido agregada la funcion to_exponential
+        # if self.to_exponentiall:
+        #     return
+        # self.to_exponentiall = True
+        # self.in_natives = True
+        # # anadimos la libreria math para operaciones matematicas
+        # self.set_import('math')
+        # # anadimos la libreria math para operaciones matematicas
+        # self.set_import('strconv')
+        # # declaramos la nueva funcion to_string_number
+        # self.add_begin_func("to_exponential")
 
-        ###################################################################
-        #   Creacion de temporales que guardan el primer y segundo numero #
-        ###################################################################
+        # ####################################################
+        # # Variable que guarda el inicio de la nueva cadena #
+        # ####################################################
 
-        # creamos una nueva temporal que guardara la poscion actual del Pointer
-        t1 = self.add_temp()
-        # a la temporal asignamos la posicion actual de P
-        self.add_exp(t1, 'P', '1', '+')
-        # Temporal que gurada el primer numero
-        t2 = self.add_temp()
-        # obtenemos el primer numero y lo guradamos en la temporal t2
-        self.get_stack(t2, t1)
-        # aumentamos el Ponter del Stack
-        self.add_exp(t1, t1, '1', '+')
+        # t0 = self.add_temp()  # creamos la nueva temporal
+        # # guardamos la posicion actua del hap antes demanipularlo
+        # self.add_asig(t0, "H")
 
-        # anadimos el temporal que gurada el segundo numero
-        t4 = self.add_temp()
-        self.get_stack(t4, t1)
+        # ###################################################################
+        # #   Creacion de temporales que guardan el primer y segundo numero #
+        # ###################################################################
 
-        ############################################
-        # Operaciones previas al inicio del blucle #
-        ############################################
+        # # creamos una nueva temporal que guardara la poscion actual del Pointer
+        # t1 = self.add_temp()
+        # # a la temporal asignamos la posicion actual de P
+        # self.add_exp(t1, 'P', '1', '+')
+        # # Temporal que gurada el primer numero
+        # t2 = self.add_temp()
+        # # obtenemos el primer numero y lo guradamos en la temporal t2
+        # self.get_stack(t2, t1)
+        # # aumentamos el Ponter del Stack
+        # self.add_exp(t1, t1, '1', '+')
 
-        # Temporal que guarda el resultado de hacer el pow 10 a la exponente
-        t5 = self.add_temp()
-        self.add_asig(
-            t5, f"(math.Round({t2}*math.Pow(10, float64({t4}))) / math.Pow(10, float64({t4})))")
-        # # Temporal que guarda el resultado de multiplicar base * 10 ^exponente
-        # t6 = self.add_temp()
-        # self.add_asig(t6, f"float64({t2} * {t5})")
+        # # anadimos el temporal que gurada el segundo numero
+        # t4 = self.add_temp()
+        # self.get_stack(t4, t1)
 
-        # Temporal que gurada el length de la cadena del resultado de la notacion cientifica
-        length_cadena_1 = self.add_temp()
-        self.add_asig(length_cadena_1,
-                      f"float64(len(strconv.FormatFloat({t5}, 'f', -1, 64)))")
+        # ############################################
+        # # Operaciones previas al inicio del blucle #
+        # ############################################
 
-        # Temporal que gurarda el length del string del exponente
-        length_cadena_2 = self.add_temp()
-        self.add_asig(length_cadena_2,
-                      f"float64(len(strconv.FormatFloat({t4}, 'f', -1, 64)))")
+        # # Temporal que guarda el resultado de hacer el pow 10 a la exponente
+        # t5 = self.add_temp()
+        # self.add_asig(
+        #     t5, f"(math.Round({t2}*math.Pow(10, float64({t4}))) / math.Pow(10, float64({t4})))")
+        # # # Temporal que guarda el resultado de multiplicar base * 10 ^exponente
+        # # t6 = self.add_temp()
+        # # self.add_asig(t6, f"float64({t2} * {t5})")
 
-        # contadora del primer bucle
-        contadora_1 = self.add_temp()
-        self.add_asig(contadora_1, "0")
-        # contadora del segundo bucle bucle
-        contadora_2 = self.add_temp()
-        self.add_asig(contadora_2, "0")
+        # # Temporal que gurada el length de la cadena del resultado de la notacion cientifica
+        # length_cadena_1 = self.add_temp()
+        # self.add_asig(length_cadena_1,
+        #               f"float64(len(strconv.FormatFloat({t5}, 'f', -1, 64)))")
 
-        #########################
-        # Declaracion de labels #
-        #########################
+        # # Temporal que gurarda el length del string del exponente
+        # length_cadena_2 = self.add_temp()
+        # self.add_asig(length_cadena_2,
+        #               f"float64(len(strconv.FormatFloat({t4}, 'f', -1, 64)))")
 
-        # label que inicia el bucle para la generacion de la cadena del primer bucle
-        bucle_1 = self.new_label()
-        # label que inicia el bucle para la generacion de la cadena del primer bucle
-        bucle_2 = self.new_label()
-        # label que inicia la acumulacion de una nueva cadena en el heap
-        creacion_cadena_1 = self.new_label()
-        # label que inicia la acumulacion de una nueva cadena en el heap
-        creacion_cadena_2 = self.new_label()
-        # label que inicia la acumulacion de una nueva cadena en el heap
-        creacion_cadena_e = self.new_label()
-        # label que termina el bucle
-        return_label = self.new_label()
+        # # contadora del primer bucle
+        # contadora_1 = self.add_temp()
+        # self.add_asig(contadora_1, "0")
+        # # contadora del segundo bucle bucle
+        # contadora_2 = self.add_temp()
+        # self.add_asig(contadora_2, "0")
 
-        #############################################################################################
-        # Inicio del bucle_1 que genera la primera cadena del resultado de hacer base * 10 ^exponente #
-        #############################################################################################
+        # #########################
+        # # Declaracion de labels #
+        # #########################
 
-        # anadimos la etiqueta del blucle
-        self.put_label(bucle_1)
+        # # label que inicia el bucle para la generacion de la cadena del primer bucle
+        # bucle_1 = self.new_label()
+        # # label que inicia el bucle para la generacion de la cadena del primer bucle
+        # bucle_2 = self.new_label()
+        # # label que inicia la acumulacion de una nueva cadena en el heap
+        # creacion_cadena_1 = self.new_label()
+        # # label que inicia la acumulacion de una nueva cadena en el heap
+        # creacion_cadena_2 = self.new_label()
+        # # label que inicia la acumulacion de una nueva cadena en el heap
+        # creacion_cadena_e = self.new_label()
+        # # label que termina el bucle
+        # return_label = self.new_label()
 
-        self.add_ident()
-        # if que compara la variable contadora con le length de la cadena resultado de base * 10 ^exponente
-        self.add_if(contadora_1, length_cadena_1, "<", creacion_cadena_1)
-        self.add_ident()
-        self.add_if(contadora_1, length_cadena_1, ">=", creacion_cadena_e)
+        # #############################################################################################
+        # # Inicio del bucle_1 que genera la primera cadena del resultado de hacer base * 10 ^exponente #
+        # #############################################################################################
 
-        ###########################################################################
-        # Creacion de la nueva cadena representacion e+ #
-        ###########################################################################
+        # # anadimos la etiqueta del blucle
+        # self.put_label(bucle_1)
 
-        self.put_label(creacion_cadena_e)
-        self.add_ident()
-        self.set_heap("H", "101")
-        self.add_ident()
-        self.next_heap()
-        self.add_ident()
-        self.set_heap("H", "43")
-        self.add_ident()
-        self.next_heap()
-        self.add_ident()
-        self.add_goto(bucle_2)
+        # self.add_ident()
+        # # if que compara la variable contadora con le length de la cadena resultado de base * 10 ^exponente
+        # self.add_if(contadora_1, length_cadena_1, "<", creacion_cadena_1)
+        # self.add_ident()
+        # self.add_if(contadora_1, length_cadena_1, ">=", creacion_cadena_e)
 
-        ###########################################################################
-        # Creacion de la nueva cadena representacion de  base * 10 ^exponente #
-        ###########################################################################
+        # ###########################################################################
+        # # Creacion de la nueva cadena representacion e+ #
+        # ###########################################################################
 
-        # anadir la label que inicia la creacion de la cadena
-        self.put_label(creacion_cadena_1)
-        self.add_ident()
-        # en el heap guardamos el caracter de la cadena en la pos contadora_1
-        self.set_heap(
-            "H", f"float64(strconv.FormatFloat({t5}, 'f', -1, 64)[int({contadora_1})])")
-        self.add_ident()
-        self.next_heap()
-        self.add_ident()
-        # aumentamos la contadora_1
-        self.add_exp(contadora_1, contadora_1, "1", "+")
-        self.add_ident()
-        # regreamos a la etiqueta que comienza el primer loop
-        self.add_goto(bucle_1)
+        # self.put_label(creacion_cadena_e)
+        # self.add_ident()
+        # self.set_heap("H", "101")
+        # self.add_ident()
+        # self.next_heap()
+        # self.add_ident()
+        # self.set_heap("H", "43")
+        # self.add_ident()
+        # self.next_heap()
+        # self.add_ident()
+        # self.add_goto(bucle_2)
 
-        #############################################################################################
-        # Inicio del bucle_2 que genera la primera cadena del resultado de hacer base * 10 ^exponente #
-        #############################################################################################
+        # ###########################################################################
+        # # Creacion de la nueva cadena representacion de  base * 10 ^exponente #
+        # ###########################################################################
 
-        # anadimos la etiqueta del blucle
-        self.put_label(bucle_2)
+        # # anadir la label que inicia la creacion de la cadena
+        # self.put_label(creacion_cadena_1)
+        # self.add_ident()
+        # # en el heap guardamos el caracter de la cadena en la pos contadora_1
+        # self.set_heap(
+        #     "H", f"float64(strconv.FormatFloat({t5}, 'f', -1, 64)[int({contadora_1})])")
+        # self.add_ident()
+        # self.next_heap()
+        # self.add_ident()
+        # # aumentamos la contadora_1
+        # self.add_exp(contadora_1, contadora_1, "1", "+")
+        # self.add_ident()
+        # # regreamos a la etiqueta que comienza el primer loop
+        # self.add_goto(bucle_1)
 
-        self.add_ident()
-        # if que compara la variable contadora con le length de la cadena resultado de base * 10 ^exponente
-        self.add_if(contadora_2, length_cadena_2, "<", creacion_cadena_2)
-        self.add_ident()
-        self.add_if(contadora_2, length_cadena_2, ">=", return_label)
+        # #############################################################################################
+        # # Inicio del bucle_2 que genera la primera cadena del resultado de hacer base * 10 ^exponente #
+        # #############################################################################################
 
-        ###########################################################################
-        # Creacion de la nueva cadena que representa el exponente enviado por el usuario#
-        ###########################################################################
+        # # anadimos la etiqueta del blucle
+        # self.put_label(bucle_2)
 
-        # anadir la label que inicia la creacion de la cadena
-        self.put_label(creacion_cadena_2)
-        self.add_ident()
-        # en el heap guardamos el caracter de la cadena en la pos contadora_2
-        self.set_heap(
-            "H", f"float64(strconv.FormatFloat({t4}, 'f', -1, 64)[int({contadora_2})])")
-        self.add_ident()
-        self.next_heap()
-        self.add_ident()
-        # aumentamos la contadora_1
-        self.add_exp(contadora_2, contadora_2, "1", "+")
-        self.add_ident()
-        # regreamos a la etiqueta que comienza el primer loop
-        self.add_goto(bucle_2)
+        # self.add_ident()
+        # # if que compara la variable contadora con le length de la cadena resultado de base * 10 ^exponente
+        # self.add_if(contadora_2, length_cadena_2, "<", creacion_cadena_2)
+        # self.add_ident()
+        # self.add_if(contadora_2, length_cadena_2, ">=", return_label)
 
-        #####################
-        # Fin de la funcion #
-        #####################
+        # ###########################################################################
+        # # Creacion de la nueva cadena que representa el exponente enviado por el usuario#
+        # ###########################################################################
 
-        # anadimos la label que indica el fin de la funcion
-        self.put_label(return_label)
-        self.add_ident()
-        # colocamos el -1 en el heap
-        self.set_heap("H", "-1")
-        self.add_ident()
-        self.next_heap()
-        self.add_ident()
-        # devolvemos la posicion inicial de la cadena
-        self.set_stack('P', t0)
-        self.add_end_func()
-        self.in_natives = False
+        # # anadir la label que inicia la creacion de la cadena
+        # self.put_label(creacion_cadena_2)
+        # self.add_ident()
+        # # en el heap guardamos el caracter de la cadena en la pos contadora_2
+        # self.set_heap(
+        #     "H", f"float64(strconv.FormatFloat({t4}, 'f', -1, 64)[int({contadora_2})])")
+        # self.add_ident()
+        # self.next_heap()
+        # self.add_ident()
+        # # aumentamos la contadora_1
+        # self.add_exp(contadora_2, contadora_2, "1", "+")
+        # self.add_ident()
+        # # regreamos a la etiqueta que comienza el primer loop
+        # self.add_goto(bucle_2)
+
+        # #####################
+        # # Fin de la funcion #
+        # #####################
+
+        # # anadimos la label que indica el fin de la funcion
+        # self.put_label(return_label)
+        # self.add_ident()
+        # # colocamos el -1 en el heap
+        # self.set_heap("H", "-1")
+        # self.add_ident()
+        # self.next_heap()
+        # self.add_ident()
+        # # devolvemos la posicion inicial de la cadena
+        # self.set_stack('P', t0)
+        # self.add_end_func()
+        # self.in_natives = False

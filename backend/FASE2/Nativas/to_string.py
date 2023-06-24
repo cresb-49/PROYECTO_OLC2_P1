@@ -61,35 +61,34 @@ class ToString(Abstract):
             pass
 
     def to_string_number(self, generador: Generador, a_convertir: Return, scope):
-        # envihamos ha generar la funcion de sumas
-        generador.to_string_number()
-        # generamos el primer temporal
-        param_temp = generador.add_temp()
-        generador.add_exp(param_temp, 'P', scope.size, '+')
-        generador.add_exp(param_temp, param_temp, '1', '+')
-        generador.set_stack(param_temp, a_convertir.get_value())
+        # # envihamos ha generar la funcion de sumas
+        # generador.to_string_number()
+        # # generamos el primer temporal
+        # param_temp = generador.add_temp()
+        # generador.add_exp(param_temp, 'P', scope.size, '+')
+        # generador.add_exp(param_temp, param_temp, '1', '+')
+        # generador.set_stack(param_temp, a_convertir.get_value())
 
-        # asignamos el segundo valor a la posicion 3 del stack
-        generador.add_exp(param_temp, param_temp, '1', '+')
-        generador.set_stack(param_temp, a_convertir.get_value())
+        # # asignamos el segundo valor a la posicion 3 del stack
+        # generador.add_exp(param_temp, param_temp, '1', '+')
+        # generador.set_stack(param_temp, a_convertir.get_value())
 
-        # generar un nuevo entorno
-        generador.new_env(scope.size)
-        # llamamos a la funcion de sumar strings
-        generador.call_fun("to_string_number")
+        # # generar un nuevo entorno
+        # generador.new_env(scope.size)
+        # # llamamos a la funcion de sumar strings
+        # generador.call_fun("to_string_number")
 
-        # anadir un nuevo temporal que guardara el stack en P
-        temp = generador.add_temp()
-        generador.get_stack(temp, 'P')
-        # retornamos el un entorno
-        generador.ret_env(scope.size)
+        # # anadir un nuevo temporal que guardara el stack en P
+        # temp = generador.add_temp()
+        # generador.get_stack(temp, 'P')
+        # # retornamos el un entorno
+        # generador.ret_env(scope.size)
 
-        generador.add_comment('Fin de toString()')
-        generador.add_space()
+        # generador.add_comment('Fin de toString()')
+        # generador.add_space()
 
-        result = Return(temp, TipoEnum.STRING, True, None)
+        return Excepcion("Semantico", "Existe la funcion ToString en numeros", self.linea, self.columna)
 
-        return result
 
     def to_string_string(self, generador: Generador, a_convertir: Return, scope):
         # mandamos ha llamar la funcion to String en su version String
