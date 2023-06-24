@@ -1,7 +1,9 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Modulos.funcion_nativa import FuncionNativa
 from FASE2.Symbol.tipoEnum import TipoEnum
-
+from FASE2.Symbol.generador import Generador
+from FASE2.Abstract.return__ import Return
+from FASE2.Symbol.Exception import Excepcion
 
 class ToExponential(Abstract):
     def __init__(self, resultado, linea, columna, numero, expreciones):
@@ -51,4 +53,42 @@ class ToExponential(Abstract):
         self.expreciones.graficar(graphviz, node_expo) 
     
     def generar_c3d(self,scope):
-        pass
+        
+        c3d_numero : Return= self.numero.generar_c3d(scope)
+        exponente: Return = self.expreciones.generar_c3d(scope)
+
+        #verificamos los tipos del c3d para asegurarnos que la operacion se haga sobre numbers
+        if(c3d_numero.get_tipo() != TipoEnum.NUMBER or exponente.get_tipo() != TipoEnum.NUMBER):
+            return Excepcion("Semantico", "No se puede aplicar toExponential con valores no numerico", self.linea, self.columna)
+
+        gen_aux = Generador()
+        generador = gen_aux.get_instance()
+        # envihamos ha generar la funcion de sumas
+        generador.to_exponential()
+        # generamos el primer temporal que guarda el valor del la base
+        param_temp = generador.add_temp()
+        generador.add_exp(param_temp, 'P', scope.size, '+')
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, c3d_numero.get_value())
+
+        # asignamos el segundo valor que guarda el valor del exponente
+        generador.add_exp(param_temp, param_temp, '1', '+')
+        generador.set_stack(param_temp, exponente.get_value())
+
+        # generar un nuevo entorno
+        generador.new_env(scope.size)
+        # llamamos a la funcion de sumar to_exponential
+        generador.call_fun("to_exponential")
+
+        # anadir un nuevo temporal que guardara el stack en P
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        # retornamos el un entorno
+        generador.ret_env(scope.size)
+
+        generador.add_comment('Fin de la suma de to_exponential')
+        generador.add_space()
+
+        result = Return(temp, TipoEnum.STRING, False, None)
+
+        return result
