@@ -236,12 +236,15 @@ class Para(Abstract):
             if isinstance(valor_iterable, Excepcion):
                 return valor_iterable
             if valor_iterable.type == TipoEnum.STRING:
-                self.for_string(valor_iterable, generador, pre_scope_for)
+                result = self.for_string(valor_iterable, generador, pre_scope_for)
+                if isinstance(result, Excepcion):
+                    return result
             elif valor_iterable.type == TipoEnum.ARRAY:
-                print('iterable array')
+                result = self.for_array(valor_iterable, generador, pre_scope_for)
+                if isinstance(result, Excepcion):
+                    return result
             else:
-                self.resultado.add_error(
-                    'Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
+                self.resultado.add_error('Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
                 return Excepcion('Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
             generador.add_comment('Fin de compilacion de ciclo for iterable')
 
@@ -288,7 +291,7 @@ class Para(Abstract):
         # Generacion de un scope para trabajo del for
         inner_scope: Scope = Scope(scope_pre_for)
         # Generacion del if
-        generador.add_if(temp_iterable,'-1','!=',true_label)
+        generador.add_if(temp_iterable, '-1', '!=', true_label)
         generador.add_goto(false_label)
         generador.put_label(true_label)
         # Sentencias del ciclo for
@@ -302,3 +305,66 @@ class Para(Abstract):
         generador.add_exp(contador, contador, '1', '+')
         generador.add_goto(init_label)
         generador.put_label(false_label)
+
+    def for_array(self, iterable: Return, generador: Generador, scope_pre_for: Scope):
+        print('iterable array',iterable)
+        # Modificamos la variable declarada en el for
+        self.declaracion.tipo = self.calculo_tipo(iterable.get_tipo_aux())
+        self.declaracion.tipo_secundario = iterable.get_tipo_aux()
+        # Generacion de codigo direcciones para la asignacion
+        result = self.declaracion.generar_c3d(scope_pre_for)
+        if isinstance(result,Excepcion): return result
+        # Recuperacion de la variable desde el scope para ontener la posicion del stack
+        variable = scope_pre_for.obtener_variable(self.declaracion.id)
+        if variable == None: 
+            self.resultado.add_error('Semantico', f'No se encuentra la variable {self.declaracion.id}', self.linea, self.columna)
+            return Excepcion('Semantico', f'No se encuentra la variable {self.declaracion.id}', self.linea, self.columna)
+        puntero_heap = iterable.get_value()
+        temp_pos = generador.add_temp()
+        generador.add_exp(temp_pos, 'P', variable.simbolo_c3d.pos, '+')
+        print('DEBUJ FOR OF ARRAY: ',puntero_heap)
+        
+        max_size = generador.add_temp()
+        generador.get_heap(max_size,puntero_heap)
+        contador = generador.add_temp()
+        init_label = generador.new_label()
+        generador.add_exp(contador,puntero_heap,'0','+')
+        # Inicio de del cilo for
+        generador.put_label(init_label)
+        generador.add_exp(contador,contador,'1','+')
+        true_label = generador.new_label()
+        false_label = generador.new_label()
+        generador.add_if(contador,max_size,'<',true_label)
+        generador.add_goto(false_label)
+        generador.put_label(true_label)
+        get_heap = generador.add_temp()
+        generador.get_heap(get_heap,contador)
+        generador.set_stack(temp_pos,get_heap)
+        # Asignacion de las labels al scope del for
+        scope_pre_for.add_break_label(false_label)
+        scope_pre_for.admit_continue_label = True
+        scope_pre_for.continue_label = init_label
+        # Sentencias dentro del for
+        if self.sentencias != None:
+            result = self.sentencias.generar_c3d(scope_pre_for)
+            if isinstance(result,Excepcion): return result
+        # Sentencias dentro del for
+        generador.add_goto(init_label)
+        generador.put_label(false_label)
+        
+    def calculo_tipo(self,tipo_secundario):
+        if isinstance(tipo_secundario,TipoEnum):
+            return tipo_secundario
+        else:
+            return TipoEnum.STRUCT
+        
+    # def valor_por_defecto(self,tipo):
+    #     if tipo == TipoEnum.NUMBER:
+    #         return Primitivo(self.resultado, self.linea, self.columna, TipoEnum.NUMBER, 0)
+    #     elif tipo == TipoEnum.STRING:
+    #         return Primitivo(self.resultado, self.linea, self.columna, TipoEnum.STRING, '')
+    #     elif tipo == TipoEnum.ARRAY:
+    #         return Primitivo(self.resultado, self.linea, self.columna, TipoEnum.ARRAY, '')
+    #     else:
+    #         self.resultado.add_error('Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
+    #         return Excepcion('Semantico', 'Solo se permiten iteraciones de array y string', self.linea, self.columna)
