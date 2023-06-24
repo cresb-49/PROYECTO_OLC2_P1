@@ -1,7 +1,9 @@
 from FASE2.Abstract.abstract import Abstract
 from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.generador import Generador
+from FASE2.Symbol.Exception import Excepcion
 from FASE2.Abstract.return__ import Return
+from FASE2.Expresiones.val_funcion import ValFuncion
 
 
 class Aritmetica(Abstract):
@@ -105,10 +107,23 @@ class Aritmetica(Abstract):
         operador = ''
 
         # Recuperamos los valores
+        val_izq: Return = None
+        val_der: Return = None
         val_izq: Return = self.expresion_izquierda.generar_c3d(scope)
-        val_der: Return = self.expresion_derecha.generar_c3d(scope)
+        if isinstance(val_izq, Excepcion):
+            return val_izq
+        if isinstance(self.expresion_derecha, ValFuncion):
+            self.expresion_derecha.guardar_temporales(generador, scope, [val_izq.get_value()])
+            val_der: Return = self.expresion_derecha.generar_c3d(scope)
+            if isinstance(val_der, Excepcion):
+                return val_der
+            self.expresion_derecha.recuperar_temporales(generador, scope, [val_izq.get_value()])
+        else:
+            val_der: Return = self.expresion_derecha.generar_c3d(scope)
+            if isinstance(val_der, Excepcion):
+                return val_der
 
-        if not (val_izq.get_tipo() == val_der.get_tipo()):
+        if val_izq.get_tipo() != val_der.get_tipo():
             print('Error en aritmetica')
 
         if (self.tipo_operacion == "+"):
