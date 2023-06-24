@@ -128,9 +128,8 @@ class Acceder(Abstract):
                     f"** fin compilacion de acceso de variable {self.id} **")
                 return self.definicion_variable_bool(temp, generador)
             else:
-                generador.add_comment(
-                    f"** fin compilacion de acceso de variable {self.id} **")
-                return Return(temp, tipo_variable, True, None)
+                generador.add_comment(f"** fin compilacion de acceso de variable {self.id} **")
+                return Return(temp, tipo_variable, True, self.calculo_tipo_aux(result.tipo_secundario))
         else:
             calculo = self.calculo_tipo_aux(result.tipo_secundario)
             if calculo == TipoEnum.BOOLEAN:
