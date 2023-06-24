@@ -175,7 +175,7 @@ class Declaracion(Abstract):
 
     def validar_tipos(self, result: Return):
         if result == None:
-            return False
+            return True
         # print('debuj declaracion =>', self.tipo)
         if (result.get_tipo() == TipoEnum.ANY):
             if (self.tipo != result.get_tipo_aux() and self.tipo != TipoEnum.ANY):
@@ -201,7 +201,7 @@ class Declaracion(Abstract):
         result: Return = None
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
-
+        #print('debuj declaracion',result)
         if (isinstance(result, Excepcion)):
             return result
 
@@ -220,7 +220,11 @@ class Declaracion(Abstract):
 
     def declaracion(self, result: Return, generador: Generador, scope: Scope):
         # Primero obtenermos la variable desde el scope generado por ultimo
-        scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.tipo == TipoEnum.ANY, self.linea, self.columna)
+        # Verificamos si el result es none ya que puede ser una declaracion vacia
+        if result == None:
+            scope.declarar_variable(self.id, None, self.tipo, self.tipo_secundario, self.tipo == TipoEnum.ANY, self.linea, self.columna)
+        else:
+            scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.tipo == TipoEnum.ANY, self.linea, self.columna)
         # Codigo resultante
         variable_recuperada = scope.obtener_variable(self.id)
         # print('Variable -> ', variable_recuperada)
