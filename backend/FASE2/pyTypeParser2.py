@@ -280,7 +280,8 @@ def decla_var_fun(instruccion):
         scope: Scope = memoria.obtener_tope()
         tipo_secundario = instruccion.tipo_secundario
         try:
-            scope.declarar_variable(instruccion.id, None, instruccion.tipo,tipo_secundario, False, instruccion.linea, instruccion.columna)
+            scope.declarar_variable(instruccion.id, None, instruccion.tipo,
+                                    tipo_secundario, False, instruccion.linea, instruccion.columna)
         except ValueError as error:
             parser_add_error('Semantico', str(
                 error), instruccion.linea, instruccion.columna)
@@ -409,20 +410,20 @@ def p_manipulacion_array(p):
 
 
 def p_asignar_array(p):
-    """asignar_array : sub_array LBRA exprecion RBRA IGUAL exprecion SEMICOLON"""
+    """asignar_array : ID sub_array IGUAL exprecion SEMICOLON"""
     p[0] = AsignacionArray(resultado, p.lineno(
-        5), find_column(input, p.slice[5]), p[1], p[3], p[6])
+        1), find_column(input, p.slice[1]), p[1], p[2], p[4])
 
 
 def p_sub_array(p):
     """sub_array : sub_array LBRA exprecion RBRA
-                 | ID """
-    if len(p) == 2:
-        p[0] = Acceder(resultado, p.lineno(
-            1), find_column(input, p.slice[1]), p[1])
+                 | LBRA exprecion RBRA """
+    if len(p) == 4:
+        p[0] = [p[2]]
     else:
-        p[0] = AccederArray(resultado, p.lineno(
-            2), find_column(input, p.slice[2]), p[1], p[3])
+        array = p[0]
+        array.append(p[3])
+        p[0] = array
 
 
 def p_asignar_struct(p):
@@ -1112,9 +1113,22 @@ def p_sub_exprecion_10(p):
 
 
 def p_sub_exprecion_11(p):
-    """sub_exprecion : exprecion LBRA exprecion RBRA"""
-    p[0] = AccederArray(resultado, p.lineno(2), find_column(
-        input, p.slice[2]), p[1], p[3])
+    """sub_exprecion : ID sub_exprecion_array"""
+    acceder: Acceder = Acceder(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), p[1])
+    p[0] = AccederArray(resultado, p.lineno(
+        1), find_column(input, p.slice[1]), acceder, p[2])
+
+
+def p_sub_exprecion_array(p):
+    """sub_exprecion_array : sub_exprecion_array LBRA exprecion RBRA
+                           | LBRA exprecion RBRA"""
+    if len(p) == 4:
+        p[0] = [p[2]]
+    else:
+        array = p[1]
+        array.append(p[3])
+        p[0] = array
 
 
 def p_sub_exprecion_12(p):
