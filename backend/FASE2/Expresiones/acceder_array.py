@@ -49,6 +49,7 @@ class AccederArray(Abstract):
                 if isinstance(index_result, Excepcion):
                     return index_result
                 if index_result.get_tipo() == TipoEnum.NUMBER:
+                    generador.p_out_of_bouns()
                     inicio_array_heap = exprecion.get_value()
                     index = index_result.get_value()
                     print('DEBUJ ACCEDER INICIO ARRAY: ', exprecion)
@@ -67,7 +68,12 @@ class AccederArray(Abstract):
                         pasos_array, inicio_array_heap, paso, '+')
                     valor_array = generador.add_temp()
                     generador.get_heap(valor_array, pasos_array)
+                    salto_error = generador.new_label()
+                    generador.add_goto(salto_error)
                     generador.put_label(false_label)
+                    generador.call_fun('outOfBounds')
+                    generador.add_goto_out()
+                    generador.put_label(salto_error)
                     # Funcion para que muestre error de parametros de acceso
                     return Return(valor_array, exprecion.get_tipo_aux(), True, None)
                 else:
@@ -75,8 +81,22 @@ class AccederArray(Abstract):
                         'Semantico', 'El valor de acceso para el array debe se un numero', self.linea, self.columna)
                     return Excepcion('Semantico', 'El valor de acceso para el array debe se un numero', self.linea, self.columna)
             else:
-                pass
+                res = self.acceso_array_multidimencional(generador,scope)
+                if isinstance(res, Excepcion):
+                    return res
         else:
             self.resultado.add_error(
                 'Semantico', 'No esta operando un array', self.linea, self.columna)
             return Excepcion('Semantico', 'No esta operando un array', self.linea, self.columna)
+
+    def acceso_array_multidimencional(self,generador: Generador,scope:Scope):
+        generador.add_comment('Compilacion de las expreciones para utilizarlas en las operaciones de acceso')
+        index_compilados = []
+        for index_exp in self.list_index_exprecion:
+            result:Return = index_exp.generar_c3d(scope)
+            if isinstance(result,Excepcion): return result
+            index_compilados.append(result)
+        for compilado in index_compilados:
+            print(compilado)
+            
+        return Excepcion('Prubebas','pruebas de acceder array',self.linea,self.columna)

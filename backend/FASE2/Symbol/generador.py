@@ -6,6 +6,9 @@ class Generador:
         self.count_temp = 0
         self.count_label = 0
 
+        # Label salida de programa
+        self.label_out = ''
+        
         # Codigo
         self.codigo = ""
         self.funcs = ''
@@ -33,6 +36,7 @@ class Generador:
         self.summ_strings = False
         self.compare_string = False
         self.lengthh = False
+        self.out_of_bouns = False
         # Lista de imports
         self.imports = []
         self.imports2 = ['fmt', 'math']
@@ -91,6 +95,8 @@ class Generador:
         return code
 
     def get_code(self):
+        if self.label_out != '':
+            self.put_label(self.label_out)
         return f'{self.get_header()}{self.natives}{self.funcs}\nfunc main(){{\n{self.codigo}\n}}'
 
     def code_in(self, code, tab="\t"):
@@ -145,6 +151,9 @@ class Generador:
 
     def add_goto(self, label):
         self.code_in(f'goto {label};\n')
+    
+    def add_goto_out(self):
+        self.code_in(f'goto {self.label_out};\n')
 
     ###################
     # IF
@@ -1158,6 +1167,22 @@ class Generador:
         self.add_end_func()
         self.in_natives = False
 
+    def p_out_of_bouns(self):
+        if self.out_of_bouns:
+            return
+        label_out_program = self.new_label()
+        self.label_out = label_out_program
+        self.out_of_bouns = True
+        self.in_natives = True
+        self.add_begin_func('outOfBounds')
+        error = "Acceso de array fuera de rango"
+        for char in error:
+            self.add_ident()
+            self.add_print("c",ord(char))
+        self.add_end_func()
+        self.add_space()
+        self.in_natives = False
+    
     def to_exponential(self):
         pass
         ###############################
