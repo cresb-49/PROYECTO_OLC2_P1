@@ -6,7 +6,7 @@ console.log("===================================================================
 
 if (array[4] > 50) {
     console.log("IF CORRECTO");
-} else if (array[4] == 56) {
+} else if (array[4] === 56) {
     console.log("IF INCORRECTO");
 } else {
     console.log("IF INCORRECTO");
@@ -19,7 +19,7 @@ console.log("===================================================================
 let aux: number = 10;
 if (aux > 0) {
     console.log("PRIMER IF CORRECTO");
-    if (true && (aux == 1)) {
+    if (true && (aux === 1)) {
         console.log("SEGUNDO IF INCORRECTO");
     } else if (aux > 10) {
         console.log("SEGUNDO IF INCORRECTO");
@@ -28,16 +28,16 @@ if (aux > 0) {
     };
 } else if (aux <= 3) {
     console.log("PRIMER IF INCORRECTO");
-    if (true && (aux == 1)) {
+    if (true && (aux === 1)) {
         console.log("SEGUNDO IF INCORRECTO");
     } else if (aux > 10) {
         console.log("SEGUNDO IF INCORRECTO");
     } else {
         console.log("SEGUNDO IF CORRECTO");
     };
-} else if (aux == array[4]) {
+} else if (aux === array[4]) {
     console.log("PRIMER IF INCORRECTO");
-    if (true && (aux == 1)) {
+    if (true && (aux === 1)) {
         console.log("SEGUNDO IF INCORRECTO");
     } else if (aux > 10) {
         console.log("SEGUNDO IF INCORRECTO");
@@ -54,7 +54,7 @@ console.log("===================================================================
 let index: number;
 index = 0;
 while (index >= 0) {
-    if (index == 0) {
+    if (index === 0) {
         index = index + 100;
     } else if (index > 50) {
         index = index / 2 - 25;
@@ -77,15 +77,15 @@ while (index !== 12) {
 
     if (index === 0 || index === 1 || index === 11 || index === 12) {
         console.log("*********************************************************************************************************");
-    } else if (index == 2) {
+    } else if (index === 2) {
         console.log("**********  ***************  ******                 ******                 ******              **********");
     } else if (index >= 3 && index <= 5) {
         console.log("**********  ***************  ******  *********************  *************  ******  **********************");
-    } else if (index == 6) {
+    } else if (index === 6) {
         console.log("**********  ***************  ******                 ******                 ******  **********************");
     } else if (index >= 7 && index <= 9) {
         console.log("**********  ***************  ********************   ******  *************  ******  **********************");
-    } else if (index == 10) {
+    } else if (index === 10) {
         console.log("**********                   ******                 ******  *************  ******              **********");
     };
 };
@@ -101,7 +101,7 @@ while (a < 5) {
     if (a === 3) {
         console.log("a");
         continue;
-    } else if (a == 4) {
+    } else if (a === 4) {
         console.log("b");
         break;
     };
