@@ -319,37 +319,52 @@ class Para(Abstract):
         if variable == None: 
             self.resultado.add_error('Semantico', f'No se encuentra la variable {self.declaracion.id}', self.linea, self.columna)
             return Excepcion('Semantico', f'No se encuentra la variable {self.declaracion.id}', self.linea, self.columna)
+        generador.add_comment('posicion recuperada del stack para realizar lo movimientos')
+        # Declaramos la variable tendra temportalmente el valor iterable
+        temp_val = generador.add_temp()
+        # Realizamos un pedazo de logica de acceder para realizar un set heap
+        temporal_pos = variable.simbolo_c3d.pos
+        temp_pos = variable.simbolo_c3d.pos
+        if not variable.simbolo_c3d.is_global:
+            temp_pos = generador.add_temp()
+            generador.add_exp(temp_pos, 'P', temporal_pos, '+')
+        print('DEBUJ 3 DIRECCIONES: ',temp_pos)
         puntero_heap = iterable.get_value()
-        temp_pos = generador.add_temp()
-        generador.add_exp(temp_pos, 'P', variable.simbolo_c3d.pos, '+')
         print('DEBUJ FOR OF ARRAY: ',puntero_heap)
-        
+        tmp_puntero_heap= generador.add_temp()
+        generador.add_asig(tmp_puntero_heap,puntero_heap)
+        generador.add_comment('Asignacion del tamanio maximo del array')
         max_size = generador.add_temp()
         generador.get_heap(max_size,puntero_heap)
-        contador = generador.add_temp()
-        init_label = generador.new_label()
-        generador.add_exp(contador,puntero_heap,'0','+')
+        # Contador del carro que avanza en el heap
+        carro = generador.add_temp()
+        generador.add_asig(carro,'-1')
+        generador.add_comment('Etiqueta de inicio del iterable')
+        label_init = generador.new_label()
+        generador.put_label(label_init)
+        generador.add_comment('Asignacion a varaible que recorre el heap en base al puntero del array utilizado')
+        generador.add_exp(tmp_puntero_heap,tmp_puntero_heap,'1','+')
+        generador.add_exp(carro,carro,'1','+')
         # Inicio de del cilo for
-        generador.put_label(init_label)
-        generador.add_exp(contador,contador,'1','+')
         true_label = generador.new_label()
         false_label = generador.new_label()
-        generador.add_if(contador,max_size,'<',true_label)
+        generador.add_if(carro,max_size,'<',true_label)
         generador.add_goto(false_label)
         generador.put_label(true_label)
-        get_heap = generador.add_temp()
-        generador.get_heap(get_heap,contador)
-        generador.set_stack(temp_pos,get_heap)
+        # Intruccion para obtener la referencia del stack
+        generador.add_comment('Asignamos el valor del heap en la variable iterable en el stack')
+        generador.get_heap(temp_val,tmp_puntero_heap)
+        generador.set_stack(temp_pos,temp_val)
         # Asignacion de las labels al scope del for
         scope_pre_for.add_break_label(false_label)
         scope_pre_for.admit_continue_label = True
-        scope_pre_for.continue_label = init_label
+        scope_pre_for.continue_label = label_init
         # Sentencias dentro del for
         if self.sentencias != None:
             result = self.sentencias.generar_c3d(scope_pre_for)
             if isinstance(result,Excepcion): return result
         # Sentencias dentro del for
-        generador.add_goto(init_label)
+        generador.add_goto(label_init)
         generador.put_label(false_label)
         
     def calculo_tipo(self,tipo_secundario):
