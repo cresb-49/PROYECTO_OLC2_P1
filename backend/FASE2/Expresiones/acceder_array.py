@@ -81,7 +81,9 @@ class AccederArray(Abstract):
                         'Semantico', 'El valor de acceso para el array debe se un numero', self.linea, self.columna)
                     return Excepcion('Semantico', 'El valor de acceso para el array debe se un numero', self.linea, self.columna)
             else:
-                res = self.acceso_array_multidimencional(generador,scope)
+                generador.p_out_of_bouns()
+                res = self.acceso_array_multidimencional(
+                    generador, scope, exprecion)
                 if isinstance(res, Excepcion):
                     return res
         else:
@@ -89,14 +91,59 @@ class AccederArray(Abstract):
                 'Semantico', 'No esta operando un array', self.linea, self.columna)
             return Excepcion('Semantico', 'No esta operando un array', self.linea, self.columna)
 
-    def acceso_array_multidimencional(self,generador: Generador,scope:Scope):
-        generador.add_comment('Compilacion de las expreciones para utilizarlas en las operaciones de acceso')
+    def acceso_array_multidimencional(self, generador: Generador, scope: Scope, exprecion: Return):
+        generador.add_comment(
+            'Compilacion de las expreciones para utilizarlas en las operaciones de acceso')
         index_compilados = []
         for index_exp in self.list_index_exprecion:
-            result:Return = index_exp.generar_c3d(scope)
-            if isinstance(result,Excepcion): return result
+            result: Return = index_exp.generar_c3d(scope)
+            if isinstance(result, Excepcion):
+                return result
             index_compilados.append(result)
         for compilado in index_compilados:
-            print(compilado)
-            
-        return Excepcion('Prubebas','pruebas de acceder array',self.linea,self.columna)
+            print(type(compilado))
+        self.validacion_accesos(generador, index_compilados, exprecion)
+        return Excepcion('Prubebas', 'pruebas de acceder array', self.linea, self.columna)
+
+    def validacion_accesos(self, generador: Generador, index_compilados, exprecion: Return):
+        if len(index_compilados) != len(exprecion.dimenciones):
+            self.resultado.add_error(
+                'Semantico', f'El array al cual quiere acceder es de: {len(exprecion.dimenciones)} dimenciones y su instruccion de acceso es de: {len(index_compilados)} dimenciones', self.linea, self.columna)
+            return Excepcion('Semantico', f'El array al cual quiere acceder es de: {len(exprecion.dimenciones)} dimenciones y su intruccion de acceso es de: {len(index_compilados)} dimenciones', self.linea, self.columna)
+        false_label = generador.new_label()
+        for index, size in zip(index_compilados, exprecion.dimenciones):
+            true_label = generador.new_label()
+            generador.add_if(index.get_value(), size, '<', true_label)
+            generador.add_goto(false_label)
+            generador.put_label(true_label)
+            print(size)
+            print(index.get_value())
+
+        salto_error = generador.new_label()
+        generador.add_goto(salto_error)
+        generador.put_label(false_label)
+        generador.call_fun('outOfBounds')
+        generador.add_goto_out()
+        generador.put_label(salto_error)
+        # Logica para el calculo del index
+        self.generacion_pos_recursiva(generador,index_compilados, exprecion)
+
+    def generacion_pos_recursiva(self,generador:Generador, index_compilados, exprecion):
+        contador = 0
+        heredado = ''
+        for index, size in zip(index_compilados, exprecion.dimenciones):
+            if contador == 0:
+                temp = generador.add_temp()
+                generador.add_exp(temp,index.get_value(),'0','-')
+                heredado = temp
+            else:
+                temp1 = generador.add_temp()
+                generador.add_exp(temp1,heredado,size,'*')
+                temp2 = generador.add_temp()
+                generador.add_exp(temp2,temp1,index.get_value(),'+')
+                temp3 = generador.add_temp()
+                generador.add_exp(temp3,temp2,0,'-')
+                heredado = temp3
+            contador += 1
+        print('resultado Final: ',heredado)
+        generador.add_debuj('f',heredado)
