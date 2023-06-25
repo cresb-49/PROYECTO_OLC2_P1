@@ -86,6 +86,7 @@ class AccederArray(Abstract):
                     generador, scope, exprecion)
                 if isinstance(res, Excepcion):
                     return res
+                return Return(res, exprecion.get_tipo_aux(), True, None)
         else:
             self.resultado.add_error(
                 'Semantico', 'No esta operando un array', self.linea, self.columna)
@@ -102,8 +103,7 @@ class AccederArray(Abstract):
             index_compilados.append(result)
         for compilado in index_compilados:
             print(type(compilado))
-        self.validacion_accesos(generador, index_compilados, exprecion)
-        return Excepcion('Prubebas', 'pruebas de acceder array', self.linea, self.columna)
+        return self.validacion_accesos(generador, index_compilados, exprecion)
 
     def validacion_accesos(self, generador: Generador, index_compilados, exprecion: Return):
         if len(index_compilados) != len(exprecion.dimenciones):
@@ -126,7 +126,14 @@ class AccederArray(Abstract):
         generador.add_goto_out()
         generador.put_label(salto_error)
         # Logica para el calculo del index
-        self.generacion_pos_recursiva(generador,index_compilados, exprecion)
+        index_array = self.generacion_pos_recursiva(generador,index_compilados, exprecion)
+        inicio_array_heap = exprecion.get_value()
+        valor_heap = generador.add_temp()
+        pos = generador.add_temp()
+        generador.add_exp(pos,inicio_array_heap,index_array,'+')
+        generador.get_heap(valor_heap,pos)
+        return valor_heap
+        
 
     def generacion_pos_recursiva(self,generador:Generador, index_compilados, exprecion):
         contador = 0
@@ -145,5 +152,5 @@ class AccederArray(Abstract):
                 generador.add_exp(temp3,temp2,0,'-')
                 heredado = temp3
             contador += 1
-        print('resultado Final: ',heredado)
-        generador.add_debuj('f',heredado)
+        generador.add_exp(heredado,heredado,'1','+')
+        return heredado
