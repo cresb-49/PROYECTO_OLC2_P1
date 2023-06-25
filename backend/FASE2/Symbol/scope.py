@@ -11,6 +11,7 @@ class SimboloC3D:
         self.length = 0
         self.referencia = False
         self.params = None
+        self.dimenciones = []
 
     def __str__(self):
         return f"Pos: {self.pos}, Is Global: {self.is_global}, In Heap: {self.in_heap}, Value: {self.value}, Tipo Aux: {self.tipo_aux}, Length: {self.length}, Referencia: {self.referencia}, Params: {self.params}"

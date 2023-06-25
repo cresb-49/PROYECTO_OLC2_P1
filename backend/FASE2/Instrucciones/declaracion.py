@@ -194,6 +194,29 @@ class Declaracion(Abstract):
         # if(self.tipo != result['tipo'] !=  TipoEnum.BOOLEAN):
         #     return False
 
+    def validar_tipo_secundario(self, result: Return):
+        if result == None:
+            return True
+        if self.tipo == TipoEnum.ANY:
+            return True
+        return self.get_enum() == result.get_tipo_aux()
+    
+    def get_enum(self):
+        if self.tipo_secundario == TipoEnum.ANY.value:
+            return TipoEnum.ANY
+        elif self.tipo_secundario == TipoEnum.NUMBER.value:
+            return TipoEnum.NUMBER
+        elif self.tipo_secundario == TipoEnum.BOOLEAN.value:
+            return TipoEnum.BOOLEAN
+        elif self.tipo_secundario == TipoEnum.ARRAY.value:
+            return TipoEnum.ARRAY
+        elif self.tipo_secundario == TipoEnum.STRING.value:
+            return TipoEnum.STRING
+        elif self.tipo_secundario == TipoEnum.STRUCT.value:
+            return TipoEnum.STRUCT
+        else:
+            return self.tipo_secundario
+    
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
@@ -208,8 +231,17 @@ class Declaracion(Abstract):
         generador.add_comment(f'** compilacion de variable {self.id} **')
 
         if (self.validar_tipos(result)):
-            #print("--------->se paso la validacion")
-            self.declaracion(result, generador, scope)
+            if self.validar_tipo_secundario(result):
+                self.declaracion(result, generador, scope)
+            else:
+                if self.tipo == TipoEnum.ARRAY:
+                    error = f'No pude declrar un array de tipo {self.tipo_secundario} y asignarle un array de tipo {result.get_tipo_aux()}'
+                    self.resultado.add_error('Semantico', error, self.linea, self.columna)
+                    return Excepcion('Semantico', error, self.linea, self.columna)
+                else:
+                    error = f'No pude declrar un struct de tipo {self.tipo_secundario} y asignarle un struct de tipo {result.get_tipo_aux()}'
+                    self.resultado.add_error('Semantico', error, self.linea, self.columna)
+                    return Excepcion('Semantico', error, self.linea, self.columna)
         else:
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
