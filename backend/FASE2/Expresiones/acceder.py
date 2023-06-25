@@ -129,7 +129,9 @@ class Acceder(Abstract):
                 return self.definicion_variable_bool(temp, generador)
             else:
                 generador.add_comment(f"** fin compilacion de acceso de variable {self.id} **")
-                return Return(temp, tipo_variable, True, self.calculo_tipo_aux(result.tipo_secundario))
+                ret:Return = Return(temp, tipo_variable, True, self.calculo_tipo_aux(result.tipo_secundario))
+                ret.dimenciones = result.simbolo_c3d.dimenciones
+                return ret
         else:
             calculo = self.calculo_tipo_aux(result.tipo_secundario)
             if calculo == TipoEnum.BOOLEAN:
@@ -137,9 +139,10 @@ class Acceder(Abstract):
                     f"** fin compilacion de acceso de variable {self.id} **")
                 return self.definicion_variable_bool(temp, generador)
             else:
-                generador.add_comment(
-                    f"** fin compilacion de acceso de variable {self.id} **")
-                return Return(temp, tipo_variable, True, self.calculo_tipo_aux(result.tipo_secundario))
+                generador.add_comment(f"** fin compilacion de acceso de variable {self.id} **")
+                ret:Return = Return(temp, tipo_variable, True, self.calculo_tipo_aux(result.tipo_secundario))
+                ret.dimenciones = result.simbolo_c3d.dimenciones
+                return ret
 
     def calculo_tipo_aux(self, tipo_secundario):
         if tipo_secundario == TipoEnum.BOOLEAN.value:
