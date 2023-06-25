@@ -66,10 +66,13 @@ class Asignacion(Abstract):
             return Excepcion('Semantico', f'La variable "{self.id}" no esta definida o no es alcanzable', self.linea, self.columna)
         # Aqui se hace la validacion de tipos
         if variable_recuperada.is_mutable:
-            variable_recuperada.simbolo_c3d.in_heap = self.calculo_is_heap(
-                result.type)
+            variable_recuperada.simbolo_c3d.in_heap = self.calculo_is_heap(result.type)
             variable_recuperada.tipo = result.type
             variable_recuperada.tipo_secundario = result.aux_type
+            if result.type == TipoEnum.ARRAY:
+                variable_recuperada.simbolo_c3d.dimenciones = result.dimenciones
+            else:
+                variable_recuperada.simbolo_c3d.dimenciones = []   
         else:
             if variable_recuperada.tipo != result.type:
                 self.resultado.add_error(
@@ -77,12 +80,13 @@ class Asignacion(Abstract):
                 return Excepcion('Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo.value} no se le puede asignar un {result.type.value}', self.linea, self.columna)
         if variable_recuperada.tipo == TipoEnum.STRUCT:
             if variable_recuperada.tipo_secundario != result.aux_type:
-                self.resultado.add_error(
-                    'Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un {result.aux_type}', self.linea, self.columna)
+                self.resultado.add_error('Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un {result.aux_type}', self.linea, self.columna)
                 return Excepcion('Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un {result.aux_type}', self.linea, self.columna)
-
-        # TODO: TAMBIEN AGREGAR LAS VALIDACIONES DE LOS TIPOS ARRAY
-
+        elif variable_recuperada.tipo == TipoEnum.ARRAY:
+            if variable_recuperada.tipo_secundario != result.aux_type:
+                self.resultado.add_error('Semantico', f'La variable "{self.id}" array de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un array {result.aux_type}', self.linea, self.columna)
+                return Excepcion('Semantico', f'La variable "{self.id}" de tipo: {variable_recuperada.tipo_secundario} no se le puede asignar un array {result.aux_type}', self.linea, self.columna)
+            variable_recuperada.simbolo_c3d.dimenciones = result.dimenciones
         # Generamos dos variables temporales para el manejo de la informacion
         tempPos = variable_recuperada.simbolo_c3d.pos
         temp_Pos = variable_recuperada.simbolo_c3d.pos

@@ -4,6 +4,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Symbol.scope import Scope
 from FASE2.Symbol.generador import Generador
 from FASE2.Symbol.Exception import Excepcion
+import numpy
 
 
 class Arreglo(Abstract):
@@ -12,6 +13,8 @@ class Arreglo(Abstract):
         self.tipo = tipo
         self.tipo_secundario = tipo_secundario
         self.arreglo = arreglo
+        self.dimenciones = []
+        self.linealizado = []
 
     def ejecutar(self, scope):
         results = []
@@ -39,7 +42,11 @@ class Arreglo(Abstract):
         generador = gen_aux.get_instance()
         print('generando c3d array')
         # calculamos el largo del array
-        largo = len(self.arreglo)
+
+        result = self.calculo_caracteristicas_array()
+        if isinstance(result, Excepcion):
+            return result
+        largo = len(self.linealizado)
         print('DEBUJ ARRAY LARGO: ', largo)
         # Debemos sumar un espacio mas para tener el espacio a utilizar en el heap
         largo_final = largo + 1
@@ -53,7 +60,7 @@ class Arreglo(Abstract):
         generador.add_exp('H', 'H', str(largo_final), '+')
 
         tipo_array = ''
-        for elemento in self.arreglo:
+        for elemento in self.linealizado:
             elem: Return = elemento.generar_c3d(scope)
             if isinstance(elem, Excepcion):
                 return elem
@@ -62,7 +69,7 @@ class Arreglo(Abstract):
             if tipo_array != '':
                 if tipo_array == elem.get_tipo():
                     generador.set_heap(iterador, elem.get_value())
-                    print('DEBUJ ARRAY TIPO ELEMENTO: ', tipo_array)
+                    # print('DEBUJ ARRAY TIPO ELEMENTO: ', tipo_array)
                     generador.add_exp(iterador, iterador, '1', '+')
                 else:
                     concat = f'El tipo del array es {tipo_array.value} y esta agregando un {elem.get_tipo()}'
@@ -71,5 +78,50 @@ class Arreglo(Abstract):
                     return Excepcion('Semantico', concat, self.linea, self.columna)
         generador.add_comment('Fin compilacion de array')
         result: Return = Return(init_array, TipoEnum.ARRAY, True, tipo_array)
-        return result;
-        
+        result.dimenciones = self.dimenciones
+        return result
+
+    def calculo_caracteristicas_array(self):
+        # Linealizacion del array
+        lienalizado = []
+        for elemento in self.arreglo:
+            if isinstance(elemento, Arreglo):
+                self.linealizacion(lienalizado, elemento)
+            else:
+                lienalizado.append(elemento)
+        des_encriptado = []
+        for elemento in self.arreglo:
+            if isinstance(elemento, Arreglo):
+                des_encriptado.append(self.sub_array(elemento))
+            else:
+                des_encriptado.append(elemento)
+        # print('Array desencriptado: ', des_encriptado)
+        metadata = ''
+        try:
+            metadata = numpy.shape(des_encriptado)
+        except ValueError as e:
+            self.resultado.add_error(
+                'Semantico', 'Esta declarando un array que no es homogeneo sus dimenciones deben ser simetricas', self.linea, self.columna)
+            return Excepcion('Semantico', 'Esta declarando un array que no es homogeneo sus dimenciones deben ser simetricas', self.linea, self.columna)
+        dimenciones = str(metadata).replace(' ', '').replace('(', '').replace(')', '').split(',')
+        if '' in dimenciones:
+            dimenciones.remove('')
+        # print('dimenciones: ', dimenciones)
+        self.dimenciones = dimenciones
+        self.linealizado = lienalizado
+
+    def linealizacion(self, array, sub_array):
+        for elemento in sub_array.arreglo:
+            if isinstance(elemento, Arreglo):
+                self.linealizacion(array, elemento)
+            else:
+                array.append(elemento)
+
+    def sub_array(self, exprecion):
+        des_encriptado = []
+        for elemento in exprecion.arreglo:
+            if isinstance(elemento, Arreglo):
+                des_encriptado.append(self.sub_array(elemento))
+            else:
+                des_encriptado.append(elemento)
+        return des_encriptado

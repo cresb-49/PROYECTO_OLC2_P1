@@ -8,6 +8,7 @@ class Return:
         self.is_temp = is_temp
         self.list_true_lbls = []
         self.list_false_lbls = []
+        self.dimenciones = []
 
     def __str__(self):
         return f"Value: {self.value}, Type: {self.type}, Aux Type: {self.aux_type}, True Labels: {self.list_true_lbls}, False Labels: {self.list_false_lbls}"
