@@ -69,7 +69,7 @@ class Arreglo(Abstract):
             if tipo_array != '':
                 if tipo_array == elem.get_tipo():
                     generador.set_heap(iterador, elem.get_value())
-                    print('DEBUJ ARRAY TIPO ELEMENTO: ', tipo_array)
+                    # print('DEBUJ ARRAY TIPO ELEMENTO: ', tipo_array)
                     generador.add_exp(iterador, iterador, '1', '+')
                 else:
                     concat = f'El tipo del array es {tipo_array.value} y esta agregando un {elem.get_tipo()}'
@@ -89,15 +89,13 @@ class Arreglo(Abstract):
                 self.linealizacion(lienalizado, elemento)
             else:
                 lienalizado.append(elemento)
-        for elemento in lienalizado:
-            print(elemento)
         des_encriptado = []
         for elemento in self.arreglo:
             if isinstance(elemento, Arreglo):
                 des_encriptado.append(self.sub_array(elemento))
             else:
                 des_encriptado.append(elemento)
-        print('Array desencriptado: ', des_encriptado)
+        # print('Array desencriptado: ', des_encriptado)
         metadata = ''
         try:
             metadata = numpy.shape(des_encriptado)
@@ -108,7 +106,7 @@ class Arreglo(Abstract):
         dimenciones = str(metadata).replace(' ', '').replace('(', '').replace(')', '').split(',')
         if '' in dimenciones:
             dimenciones.remove('')
-        print('dimenciones: ', dimenciones)
+        # print('dimenciones: ', dimenciones)
         self.dimenciones = dimenciones
         self.linealizado = lienalizado
 
