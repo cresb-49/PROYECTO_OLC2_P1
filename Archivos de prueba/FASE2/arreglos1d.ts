@@ -1,4 +1,4 @@
-function swap(i: number, j: number, arr: any[]) {
+function swap(i: number, j: number, arr: number[]) {
     let temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;

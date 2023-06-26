@@ -121,7 +121,7 @@ class AsignacionArray(Abstract):
                 # Asignacion de valor en la posicion del heap del array 
                 generador.set_heap(pos_heap,result.get_value())
             else:
-                error = f'El array es de tipo {result2.get_tipo_aux()} y esta asignando un valor de tipo {result.get_tipo()}'
+                error = f'El array "{self.id_array}" es de tipo {result2.get_tipo_aux()} y esta asignando un valor de tipo {result.get_tipo()}'
                 self.resultado.add_error('Semantico', error, self.linea, self.columna)
                 return Excepcion('Semantico', error, self.linea, self.columna)
         else:

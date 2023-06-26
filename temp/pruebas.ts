@@ -1,7 +1,11 @@
 function bubbleSort(arr: number[]) {
-    let largo = length(arr);
-    console.log(largo)
+    for (let i = 0; i < length(arr) - 1; i++) {
+        console.log(arr[i]);
+    }
 }
 
-let arreglo = [32, 7 * 3, 7, 89, 56, 909, 109, 2, 9, 9874 * 0, 44, 3, 820 * 10, 11, 8 * 0 + 8, 10];
-bubbleSort(arreglo);
+let arreglo = [5, 2, 8, 1, 9, 4, 7, 3, 10, 6];
+//bubbleSort(arreglo);
+
+arreglo[0] = 0;
+console.log(arreglo[0])
