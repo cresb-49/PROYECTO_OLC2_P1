@@ -336,6 +336,16 @@ class Para(Abstract):
         generador.add_comment('Asignacion del tamanio maximo del array')
         max_size = generador.add_temp()
         generador.get_heap(max_size,puntero_heap)
+        # Agregado de posciciones en el hep de las dimenciones
+        pos_heap = generador.add_temp()
+        generador.add_asig(pos_heap,puntero_heap)
+        generador.add_exp(pos_heap,pos_heap,'1','+')
+        dimenciones = generador.add_temp()
+        generador.get_heap(dimenciones,pos_heap)
+        salto = generador.add_temp()         
+        generador.add_exp(salto,puntero_heap,'1','+')
+        generador.add_exp(salto,salto,dimenciones,'+')
+        generador.add_asig(tmp_puntero_heap,salto)
         # Contador del carro que avanza en el heap
         carro = generador.add_temp()
         generador.add_asig(carro,'-1')
