@@ -47,7 +47,12 @@ class AccederArray(Abstract):
             res = self.acceso_array_multidimencional(generador, scope, exprecion)
             if isinstance(res, Excepcion):
                 return res
-            return Return(res, exprecion.get_tipo_aux(), True, None)
+            valor = Return(res, exprecion.get_tipo_aux(), True, None)
+            if exprecion.get_tipo_aux() != None:
+                if not isinstance(exprecion.get_tipo_aux(),TipoEnum):
+                    valor.set_tipo(TipoEnum.STRUCT)
+                    valor.set_tipo_aux(exprecion.get_tipo_aux())
+            return valor
         else:
             self.resultado.add_error(
                 'Semantico', 'No esta operando un array', self.linea, self.columna)

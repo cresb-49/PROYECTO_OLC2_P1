@@ -49,10 +49,10 @@ class Arreglo(Abstract):
         print('DEBUJ CANTIDAD ELEMENTOS: ', largo)
         dimenciones = len(self.dimenciones)
         print('DEBUJ ARRAY DIMENCIONES: ', dimenciones)
-        cont =0;
+        cont = 0
         for dim in self.dimenciones:
-            cont+=1;
-            print(f'VALOR DIMENCION {cont}: ',dim)
+            cont += 1
+            print(f'VALOR DIMENCION {cont}: ', dim)
         # El largo representa que informacion del array de la siguinte forma
         # largo_final = un_espacio_para_largo + un_espacio_cantidad_dimenciones + (tamanios_cada_dimencion) + cantidad_datos
         largo_final = 1 + 1 + cont + largo
@@ -81,20 +81,35 @@ class Arreglo(Abstract):
             if isinstance(elem, Excepcion):
                 return elem
             if tipo_array == '':
-                tipo_array = elem.get_tipo()
+                if elem.get_tipo() == TipoEnum.STRUCT:
+                    tipo_array = elem.get_tipo_aux()
+                else:
+                    tipo_array = elem.get_tipo()
             if tipo_array != '':
-                if tipo_array == elem.get_tipo():
+                if elem.get_tipo() == TipoEnum.STRUCT:
+                    if elem.get_tipo_aux() == tipo_array:
+                        generador.set_heap(iterador, elem.get_value())
+                        generador.add_exp(iterador, iterador, '1', '+')
+                    else:
+                        concat = f'El tipo del array es {tipo_array} y esta agregando un {elem.get_tipo_aux()}'
+                        self.resultado.add_error('Semantico', concat, self.linea, self.columna)
+                        return Excepcion('Semantico', concat, self.linea, self.columna)
+                elif tipo_array == elem.get_tipo():
                     generador.set_heap(iterador, elem.get_value())
                     generador.add_exp(iterador, iterador, '1', '+')
                 else:
-                    concat = f'El tipo del array es {tipo_array.value} y esta agregando un {elem.get_tipo()}'
-                    self.resultado.add_error(
-                        'Semantico', concat, self.linea, self.columna)
+                    concat = ''
+                    if isinstance(tipo_array,TipoEnum):
+                        concat = f'El tipo del array es {tipo_array.value} y esta agregando un {elem.get_tipo()}'
+                    else:
+                        concat = f'El tipo del array es {tipo_array} y esta agregando un {elem.get_tipo()}'
+                    self.resultado.add_error('Semantico', concat, self.linea, self.columna)
                     return Excepcion('Semantico', concat, self.linea, self.columna)
         generador.add_comment('Fin elementos array')
         result: Return = Return(init_array, TipoEnum.ARRAY, True, tipo_array)
         result.dimenciones = self.dimenciones
         generador.add_comment('Fin compilacion de array')
+        print('Tipos del array: ', result)
         return result
 
     def calculo_caracteristicas_array(self):
@@ -119,7 +134,8 @@ class Arreglo(Abstract):
             self.resultado.add_error(
                 'Semantico', 'Esta declarando un array que no es homogeneo sus dimenciones deben ser simetricas', self.linea, self.columna)
             return Excepcion('Semantico', 'Esta declarando un array que no es homogeneo sus dimenciones deben ser simetricas', self.linea, self.columna)
-        dimenciones = str(metadata).replace(' ', '').replace('(', '').replace(')', '').split(',')
+        dimenciones = str(metadata).replace(' ', '').replace(
+            '(', '').replace(')', '').split(',')
         if '' in dimenciones:
             dimenciones.remove('')
         # print('dimenciones: ', dimenciones)
