@@ -262,8 +262,9 @@ class Declaracion(Abstract):
         # print('Variable -> ', variable_recuperada)
         tempPos = variable_recuperada.simbolo_c3d.pos
         temp_Pos = variable_recuperada.simbolo_c3d.pos
-        if result.get_tipo() == TipoEnum.ARRAY:
-            variable_recuperada.simbolo_c3d.dimenciones = result.dimenciones
+        if result != None:
+            if result.get_tipo() == TipoEnum.ARRAY:
+                variable_recuperada.simbolo_c3d.dimenciones = result.dimenciones
 
         if not variable_recuperada.simbolo_c3d.is_global:
             tempPos = generador.add_temp()
