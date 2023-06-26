@@ -47,10 +47,12 @@ class Sentencias(Abstract):
             if isinstance(result, Return):
                 return result
             elif isinstance(result, Excepcion):
-               print(result)
+                print(result)
+                return result
         if self.instr_derecha != None:
             result = self.instr_derecha.generar_c3d(scope)
             if isinstance(result, Return):
                 return result
             elif isinstance(result, Excepcion):
                 print(result)
+                return result

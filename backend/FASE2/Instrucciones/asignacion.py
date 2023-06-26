@@ -61,8 +61,7 @@ class Asignacion(Abstract):
         # Primero obtenermos la variable desde el scope generado por ultimo
         variable_recuperada = scope.obtener_variable(self.id)
         if variable_recuperada == None:
-            self.resultado.add_error(
-                'Semantico', f'La variable "{self.id}" no esta definida o no es alcanzable', self.linea, self.columna)
+            self.resultado.add_error('Semantico', f'La variable "{self.id}" no esta definida o no es alcanzable', self.linea, self.columna)
             return Excepcion('Semantico', f'La variable "{self.id}" no esta definida o no es alcanzable', self.linea, self.columna)
         # Aqui se hace la validacion de tipos
         if variable_recuperada.is_mutable:

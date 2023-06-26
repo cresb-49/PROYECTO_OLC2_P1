@@ -103,8 +103,7 @@ class CallFuncion(Abstract):
         generador = gen_aux.get_instance()
         funcion = scope.obtener_funcion(self.id)
         if funcion == None:
-            self.resultado.add_error(
-                'Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.columna, self.columna)
+            self.resultado.add_error('Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.columna, self.columna)
             return Excepcion('Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.linea, self.columna)
 
         param_values = []
