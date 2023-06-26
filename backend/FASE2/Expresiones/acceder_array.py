@@ -42,51 +42,12 @@ class AccederArray(Abstract):
         exprecion: Return = self.exprecion.generar_c3d(scope)
         if isinstance(exprecion, Excepcion):
             return exprecion
-        if exprecion.get_tipo() == TipoEnum.ARRAY:
-            if len(self.list_index_exprecion) == 1:
-                index_result: Return = self.list_index_exprecion[0].generar_c3d(
-                    scope)
-                if isinstance(index_result, Excepcion):
-                    return index_result
-                if index_result.get_tipo() == TipoEnum.NUMBER:
-                    generador.p_out_of_bouns()
-                    inicio_array_heap = exprecion.get_value()
-                    index = index_result.get_value()
-                    print('DEBUJ ACCEDER INICIO ARRAY: ', exprecion)
-                    size_array = generador.add_temp()
-                    generador.get_heap(size_array, inicio_array_heap)
-                    true_label = generador.new_label()
-                    false_label = generador.new_label()
-                    generador.add_if(index, size_array, '<', true_label)
-                    generador.add_goto(false_label)
-                    # Codigo Para acceder al array
-                    generador.put_label(true_label)
-                    pasos_array = generador.add_temp()
-                    paso = generador.add_temp()
-                    generador.add_exp(paso, index, '1', '+')
-                    generador.add_exp(
-                        pasos_array, inicio_array_heap, paso, '+')
-                    valor_array = generador.add_temp()
-                    generador.get_heap(valor_array, pasos_array)
-                    salto_error = generador.new_label()
-                    generador.add_goto(salto_error)
-                    generador.put_label(false_label)
-                    generador.call_fun('outOfBounds')
-                    generador.add_goto_out()
-                    generador.put_label(salto_error)
-                    # Funcion para que muestre error de parametros de acceso
-                    return Return(valor_array, exprecion.get_tipo_aux(), True, None)
-                else:
-                    self.resultado.add_error(
-                        'Semantico', 'El valor de acceso para el array debe se un numero', self.linea, self.columna)
-                    return Excepcion('Semantico', 'El valor de acceso para el array debe se un numero', self.linea, self.columna)
-            else:
-                generador.p_out_of_bouns()
-                res = self.acceso_array_multidimencional(
-                    generador, scope, exprecion)
-                if isinstance(res, Excepcion):
-                    return res
-                return Return(res, exprecion.get_tipo_aux(), True, None)
+        if exprecion.get_tipo() == TipoEnum.ARRAY:           
+            generador.p_out_of_bouns()
+            res = self.acceso_array_multidimencional(generador, scope, exprecion)
+            if isinstance(res, Excepcion):
+                return res
+            return Return(res, exprecion.get_tipo_aux(), True, None)
         else:
             self.resultado.add_error(
                 'Semantico', 'No esta operando un array', self.linea, self.columna)
@@ -106,51 +67,77 @@ class AccederArray(Abstract):
         return self.validacion_accesos(generador, index_compilados, exprecion)
 
     def validacion_accesos(self, generador: Generador, index_compilados, exprecion: Return):
-        if len(index_compilados) != len(exprecion.dimenciones):
-            self.resultado.add_error(
-                'Semantico', f'El array al cual quiere acceder es de: {len(exprecion.dimenciones)} dimenciones y su instruccion de acceso es de: {len(index_compilados)} dimenciones', self.linea, self.columna)
-            return Excepcion('Semantico', f'El array al cual quiere acceder es de: {len(exprecion.dimenciones)} dimenciones y su intruccion de acceso es de: {len(index_compilados)} dimenciones', self.linea, self.columna)
+        puntero_heap = exprecion.get_value()
+        print(puntero_heap)
+        generador.add_comment('Cantidad de dimenciones del array')
+        cantidad_dimenciones = generador.add_temp()
+        # Variable temporal que alamecena la posicion el heap para realizar los calculos
+        pos_heap = generador.add_temp()
+        generador.add_exp(pos_heap, puntero_heap, '1', '+')
+        generador.get_heap(cantidad_dimenciones, pos_heap)
+        generador.add_comment('Validacion de acceso a dimenciones')
+        t_label = generador.new_label()
         false_label = generador.new_label()
-        for index, size in zip(index_compilados, exprecion.dimenciones):
+        generador.add_if(len(index_compilados),
+                         cantidad_dimenciones, '<=', t_label)
+        generador.add_goto(false_label)
+        generador.put_label(t_label)
+        generador.add_comment('Validacion size de cada dimencion')
+        cont = 2
+        for index in index_compilados:
             true_label = generador.new_label()
-            generador.add_if(index.get_value(), size, '<', true_label)
+            pos_size_dimencion = generador.add_temp()
+            generador.add_exp(pos_heap, puntero_heap, cont, '+')
+            generador.get_heap(pos_size_dimencion, pos_heap)
+            generador.add_if(index.get_value(),
+                             pos_size_dimencion, '<', true_label)
             generador.add_goto(false_label)
             generador.put_label(true_label)
-            print(size)
-            print(index.get_value())
-
+            cont += 1
         salto_error = generador.new_label()
         generador.add_goto(salto_error)
         generador.put_label(false_label)
         generador.call_fun('outOfBounds')
         generador.add_goto_out()
         generador.put_label(salto_error)
+        generador.add_comment('Calculo de acceso al array')
         # Logica para el calculo del index
-        index_array = self.generacion_pos_recursiva(generador,index_compilados, exprecion)
-        inicio_array_heap = exprecion.get_value()
+        index_array = self.generacion_pos_recursiva(
+            generador, index_compilados, puntero_heap)
+        generador.add_comment('Calculo de la posicion en el heap')
+        # Calculo en la ubicacion en el heap del dato del array
+        # Se le suma dos para la posicion del tamanio y de la cantidad de dimenciones del array
+        generador.add_exp(pos_heap, puntero_heap, '2', '+')
+        # Sumamos la cantidad de dimenciones ya que es la cantidad de espacios a correr
+        generador.add_exp(pos_heap, pos_heap, cantidad_dimenciones, '+')
+        # Ahora sumamos la posicion que tiene en el array el elemento
+        generador.add_exp(pos_heap, pos_heap, index_array, '+')
         valor_heap = generador.add_temp()
-        pos = generador.add_temp()
-        generador.add_exp(pos,inicio_array_heap,index_array,'+')
-        generador.get_heap(valor_heap,pos)
+        generador.get_heap(valor_heap, pos_heap)
         return valor_heap
-        
 
-    def generacion_pos_recursiva(self,generador:Generador, index_compilados, exprecion):
+    def generacion_pos_recursiva(self, generador: Generador, index_compilados, puntero_heap):
+        # Variable temporal que alamecena la posicion el heap para realizar los calculos
+        pos_heap = generador.add_temp()
         contador = 0
+        pos = 2
         heredado = ''
-        for index, size in zip(index_compilados, exprecion.dimenciones):
+        for index in index_compilados:
             if contador == 0:
                 temp = generador.add_temp()
-                generador.add_exp(temp,index.get_value(),'0','-')
+                generador.add_exp(temp, index.get_value(), '0', '-')
                 heredado = temp
             else:
                 temp1 = generador.add_temp()
-                generador.add_exp(temp1,heredado,size,'*')
+                size = generador.add_temp()
+                generador.add_exp(pos_heap, puntero_heap, pos, '+')
+                generador.get_heap(size, pos_heap)
+                generador.add_exp(temp1, heredado, size, '*')
                 temp2 = generador.add_temp()
-                generador.add_exp(temp2,temp1,index.get_value(),'+')
+                generador.add_exp(temp2, temp1, index.get_value(), '+')
                 temp3 = generador.add_temp()
-                generador.add_exp(temp3,temp2,0,'-')
+                generador.add_exp(temp3, temp2, 0, '-')
                 heredado = temp3
             contador += 1
-        generador.add_exp(heredado,heredado,'1','+')
+            pos += 1
         return heredado

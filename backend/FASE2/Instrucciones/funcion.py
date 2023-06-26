@@ -67,7 +67,7 @@ class Funcion(Abstract):
         pass
 
     def generar_c3d(self, scope: Scope):
-        print('Estoy compilando funcion ->', scope)
+        print('Estoy compilando funcion ->', self.id)
         try:
             scope.declarar_funcion(self.id, self)
             self.compilacion_funcion(scope)

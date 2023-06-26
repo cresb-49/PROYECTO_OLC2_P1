@@ -42,23 +42,39 @@ class Arreglo(Abstract):
         generador = gen_aux.get_instance()
         print('generando c3d array')
         # calculamos el largo del array
-
         result = self.calculo_caracteristicas_array()
         if isinstance(result, Excepcion):
             return result
         largo = len(self.linealizado)
-        print('DEBUJ ARRAY LARGO: ', largo)
-        # Debemos sumar un espacio mas para tener el espacio a utilizar en el heap
-        largo_final = largo + 1
-        print('DEBUJ ARRAY ESPACIO HEAP: ', largo_final)
+        print('DEBUJ CANTIDAD ELEMENTOS: ', largo)
+        dimenciones = len(self.dimenciones)
+        print('DEBUJ ARRAY DIMENCIONES: ', dimenciones)
+        cont =0;
+        for dim in self.dimenciones:
+            cont+=1;
+            print(f'VALOR DIMENCION {cont}: ',dim)
+        # El largo representa que informacion del array de la siguinte forma
+        # largo_final = un_espacio_para_largo + un_espacio_cantidad_dimenciones + (tamanios_cada_dimencion) + cantidad_datos
+        largo_final = 1 + 1 + cont + largo
+        print('CANTIDAD DE ESPACIO A RESERVAR: ', largo_final)
         generador.add_comment('Inicio compilacion de array')
         init_array = generador.add_temp()
         iterador = generador.add_temp()
         generador.add_asig(init_array, 'H')
         generador.add_exp(iterador, init_array, '1', '+')
+        generador.add_comment('Cantidad de elementos')
         generador.set_heap('H', largo)
         generador.add_exp('H', 'H', str(largo_final), '+')
-
+        generador.add_comment('Cantidad de dimenciones del array')
+        generador.set_heap(iterador, dimenciones)
+        generador.add_exp(iterador, iterador, '1', '+')
+        # Ciclo de ingreso del size de cada dimencion del array
+        generador.add_comment('Size de cada dimencion')
+        for size_dim in self.dimenciones:
+            generador.set_heap(iterador, size_dim)
+            generador.add_exp(iterador, iterador, '1', '+')
+        # Ingreso de los valores al array
+        generador.add_comment('Elementos del array')
         tipo_array = ''
         for elemento in self.linealizado:
             elem: Return = elemento.generar_c3d(scope)
@@ -69,16 +85,16 @@ class Arreglo(Abstract):
             if tipo_array != '':
                 if tipo_array == elem.get_tipo():
                     generador.set_heap(iterador, elem.get_value())
-                    # print('DEBUJ ARRAY TIPO ELEMENTO: ', tipo_array)
                     generador.add_exp(iterador, iterador, '1', '+')
                 else:
                     concat = f'El tipo del array es {tipo_array.value} y esta agregando un {elem.get_tipo()}'
                     self.resultado.add_error(
                         'Semantico', concat, self.linea, self.columna)
                     return Excepcion('Semantico', concat, self.linea, self.columna)
-        generador.add_comment('Fin compilacion de array')
+        generador.add_comment('Fin elementos array')
         result: Return = Return(init_array, TipoEnum.ARRAY, True, tipo_array)
         result.dimenciones = self.dimenciones
+        generador.add_comment('Fin compilacion de array')
         return result
 
     def calculo_caracteristicas_array(self):
