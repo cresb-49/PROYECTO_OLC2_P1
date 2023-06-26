@@ -79,6 +79,7 @@ class Logico(Abstract):
         if self.tipo_operacion == "!":
             ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
             rigth = self.expresion_derecha.generar_c3d(scope)
+            if isinstance(rigth,Excepcion): return rigth
             # Invertimos las lista de verdadero y falso
             for label in rigth.get_true_lbls():
                 ret.add_false_lbl(label)
@@ -88,9 +89,11 @@ class Logico(Abstract):
         elif self.tipo_operacion == '&&':
             ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
             left: Return = self.expresion_izquierda.generar_c3d(scope)
+            if isinstance(left,Excepcion): return left
             for label in left.get_true_lbls():
                 generador.put_label(label)
             rigth: Return = self.expresion_derecha.generar_c3d(scope)
+            if isinstance(rigth,Excepcion): return rigth
             # Asignacion de nueva estiquetas verdaderas - las etiquetas verdaderas del segundo son las de este nuevo
             for label in rigth.get_true_lbls():
                 ret.list_true_lbls.append(label)
@@ -103,9 +106,11 @@ class Logico(Abstract):
         elif self.tipo_operacion == '||':
             ret: Return = Return(None, TipoEnum.BOOLEAN, False, None)
             left: Return = self.expresion_izquierda.generar_c3d(scope)
+            if isinstance(left,Excepcion): return left
             for label in left.get_false_lbls():
                 generador.put_label(label)
             rigth: Return = self.expresion_derecha.generar_c3d(scope)
+            if isinstance(rigth,Excepcion): return rigth
             # Asignacion de nueva estiquetas verdaderas - las etiquetas verdaderas del segundo son las de este nuevo
             for label in left.get_true_lbls():
                 ret.add_true_lbl(label)
@@ -116,6 +121,7 @@ class Logico(Abstract):
                 ret.add_false_lbl(label)
             return ret
         else:
+            self.resultado.add_error("Semantico", f"Operacion logica  {self.tipo_operacion} desconocida", self.linea, self.columna)
             return Excepcion("Semantico", f"Operacion logica  {self.tipo_operacion} desconocida", self.linea, self.columna)
 
     def check_labels(self):

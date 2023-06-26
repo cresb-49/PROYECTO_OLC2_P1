@@ -20,8 +20,19 @@ class AccederArray(Abstract):
         if isinstance(tipo, TipoEnum):
             return tipo
         else:
+            return self.convertir_strig_enum(tipo)
+    
+    def convertir_strig_enum(self,tipo):
+        if tipo == TipoEnum.STRING.value:
+            return TipoEnum.STRING
+        elif tipo == TipoEnum.NUMBER.value:
+            return TipoEnum.NUMBER
+        elif tipo == TipoEnum.BOOLEAN.value:
+            return TipoEnum.BOOLEAN
+        elif tipo == TipoEnum.STRUCT.value:
             return TipoEnum.STRUCT
-
+        return TipoEnum.STRUCT
+    
     def graficar(self, graphviz, padre):
         node_padre = graphviz.add_nodo('[]', padre)
         self.exprecion.graficar(graphviz, node_padre)

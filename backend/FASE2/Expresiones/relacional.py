@@ -119,7 +119,8 @@ class Relacional(Abstract):
             elif tipo_izq == TipoEnum.ANY:
                 return self.operaciones_asociadas(tipo_izq, val_izq, val_der, generador, scope)
             else:
-                return Excepcion("Semantico", f"No existe operacion para el tipo  {self.last_exp_izq['tipo'].value} desconocida", self.linea, self.columna)
+                self.resultado.add_error("Semantico", f"No existe operacion para el tipo  {tipo_izq} desconocida", self.linea, self.columna)
+                return Excepcion("Semantico", f"No existe operacion para el tipo  {tipo_izq} desconocida", self.linea, self.columna)
 
     def operaciones_asociadas(self, tipo, val_izq, val_der, generador, scope):
         if tipo == TipoEnum.NUMBER:
@@ -129,6 +130,7 @@ class Relacional(Abstract):
         elif tipo == TipoEnum.BOOLEAN:
             return self.comparacion_bool(val_izq, val_der, generador, scope)
         else:
+            self.resultado.add_error("Semantico", f"Operacion desconocida  {tipo.value} desconocida", self.linea, self.columna)
             return Excepcion("Semantico", f"Operacion desconocida  {tipo.value} desconocida", self.linea, self.columna)
 
     def check_labels(self):
@@ -141,7 +143,9 @@ class Relacional(Abstract):
 
     def comparacion_number(self, exp_izq: Abstract, exp_der: Abstract, generador: Generador, scope):
         val_izq: Return = exp_izq.generar_c3d(scope)
+        if isinstance(val_izq,Excepcion): return val_izq
         val_der: Return = exp_der.generar_c3d(scope)
+        if isinstance(val_der,Excepcion): return val_der
         true_label = generador.new_label()
         false_label = generador.new_label()
 
@@ -152,8 +156,7 @@ class Relacional(Abstract):
             generador.add_if(val_izq.get_value(),
                              val_der.get_value(), '!=', true_label)
         else:
-            generador.add_if(
-                val_izq.get_value(), val_der.get_value(), self.tipo_operacion, true_label)
+            generador.add_if(val_izq.get_value(), val_der.get_value(), self.tipo_operacion, true_label)
         generador.add_goto(false_label)
         generador.add_comment('Fin de la exprecion relacional')
         generador.add_space()

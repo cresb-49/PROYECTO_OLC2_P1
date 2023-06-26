@@ -421,7 +421,7 @@ def p_sub_array(p):
     if len(p) == 4:
         p[0] = [p[2]]
     else:
-        array = p[0]
+        array = p[1]
         array.append(p[3])
         p[0] = array
 
