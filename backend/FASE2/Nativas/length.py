@@ -28,25 +28,7 @@ class Length(Abstract):
             return False
 
     def ejecutar(self, scope):
-        # Verificar que solo venga un parametro
-        if (len(self.acceder) == 1):
-            expresion = self.acceder[0]
-            # Enviar ha ejecutar la exprecion para obtener su diccionario
-            ejecutar_expresion = expresion.ejecutar(scope)
-            # enviar ha validar si se trata de un array o un string
-            if (self.validar_tipos(ejecutar_expresion['tipo'])):
-                # obtenemos el valor del el diccionario
-                parametro = ejecutar_expresion['value']
-                # mandamos ha ejecutar la funcion nativa con los valores recabados
-                length = FuncionNativa.length(None, parametro)
-                # retornamos el valor calculado por la funcion nativa
-                return {"value": length, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-            else:
-                return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
-        else:
-            self.resultado.add_error(
-                'Semantico', 'length(), no se puede ejecutar con mas de 1 parametro', self.linea, self.columna)
-            return {"value": None, "tipo": TipoEnum.ERROR, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
+        return {"value": None, "tipo": TipoEnum.NUMBER, "tipo_secundario": None, "linea": self.linea, "columna": self.columna}
 
     def graficar(self, graphviz, padre):
         # agregarmos el nombre del nodo (el de la operacion) y el nodo padre
@@ -68,7 +50,7 @@ class Length(Abstract):
             return self.generar_c3d_array_de_array(scope, generador, c3d_numero)
         elif (c3d_numero.get_tipo() == TipoEnum.ARRAY):
             return self.generar_c3d_array(scope, generador, c3d_numero)
-        
+
         else:
             # mandamos ha construir la funcion length
             generador.length()
@@ -118,12 +100,11 @@ class Length(Abstract):
         generador.add_space()
 
         return Return(temp, TipoEnum.NUMBER, True, None)
-    
 
     def generar_c3d_array_de_array(self, scope, generador: Generador, a_convertir):
-        
+
         for x in self.acceder[0].list_index_exprecion:
-            print("----------->",x)
+            print("----------->", x)
         # mandamos ha construir la funcion length_of_array
         generador.length_of_array_dimension()
 
@@ -134,14 +115,13 @@ class Length(Abstract):
 
         generador.set_stack(temporal_parametro, a_convertir.get_value())
 
-
-
         parametro_zice = generador.add_temp()
-        
-        #guardamos el segundo parametro una pocion despues del
+
+        # guardamos el segundo parametro una pocion despues del
         generador.add_exp(parametro_zice, temporal_parametro, '1', '+')
 
-        generador.set_stack(parametro_zice, len(self.acceder[0].list_index_exprecion))
+        generador.set_stack(parametro_zice, len(
+            self.acceder[0].list_index_exprecion))
 
         generador.new_env(scope.size)
         # llamamos a la funcion length
@@ -157,4 +137,3 @@ class Length(Abstract):
         generador.add_space()
 
         return Return(temp, TipoEnum.NUMBER, True, None)
-
