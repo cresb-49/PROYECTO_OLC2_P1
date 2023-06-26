@@ -12,10 +12,11 @@ class Acceder(Abstract):
         self.resultado_valor = None
         self.last_scope = None
 
+    def __str__(self):
+        return f"Acceder(linea={self.linea}, columna={self.columna}, id={self.id})"
+
     def ejecutar(self, scope):
         recuperacion = scope.obtener_variable(self.id)
-        self.resultado_valor = recuperacion
-        self.last_scope = scope
         if (recuperacion == None):
             self.resultado.add_error(
                 'Semantico', f"La variable {self.id} no existe", self.linea, self.columna)
@@ -62,15 +63,15 @@ class Acceder(Abstract):
             diccionario_tmp = ((scope_tmp[estrucura]).composicion)
             if self.comparar_diccionarios(diccionario_tmp, valor_recuperado):
                 resultados.append(scope_tmp[estrucura])
-            if len(resultados) == 0:
-                self.resultado.add_error(
-                    'Semantico', 'El tipo de estructura no esta definina el proyecto', self.linea, self.columna)
-            elif len(resultados) == 1:
-                tipo_secundario = resultados[0].id
-                return tipo_secundario
-            else:
-                self.resultado.add_error(
-                    'Semantico', 'Existe ambiguedad al deducir la estructura', self.linea, self.columna)
+        if len(resultados) == 0:
+            self.resultado.add_error(
+                'Semantico', 'El tipo de estructura no esta definina el proyecto', self.linea, self.columna)
+        elif len(resultados) == 1:
+            tipo_secundario = resultados[0].id
+            return tipo_secundario
+        else:
+            self.resultado.add_error(
+                'Semantico', 'Existe ambiguedad al deducir la estructura', self.linea, self.columna)
 
     def comparar_diccionarios(self, diccionario1, diccionario2):
         claves1 = diccionario1.keys()
@@ -86,8 +87,7 @@ class Acceder(Abstract):
         # inicializamos las variables que hacen la generacion de codigo 3 direcciones
         gen_aux = Generador()
         generador = gen_aux.get_instance()
-        generador.add_comment(
-            f"** compilacion de acceso de variable {self.id} **")
+        generador.add_comment(f"** compilacion de acceso de variable {self.id} **")
         # Recuperamos variable desde el ultimo scope generado
         result = self.last_scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
@@ -107,14 +107,14 @@ class Acceder(Abstract):
         # Retornamos los datos temp -> el valor que tomo del stack
         # El tipo de valor retornado en la ejecucion del codigo
         # Si la variable es temporal
-        #print('Debuj->', result)
+        # print('Debuj->', result)
         tipo_variable = self.resultado_valor.tipo
-        if tipo_variable !=TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
+        if tipo_variable != TipoEnum.ANY and tipo_variable != TipoEnum.STRUCT:
             return Return(temp, self.resultado_valor.tipo, True, None)
         else:
             return Return(temp, self.resultado_valor.tipo, True, self.calculo_tipo_aux(result.tipo_secundario))
-    
-    def calculo_tipo_aux(self,tipo_secundario):
+
+    def calculo_tipo_aux(self, tipo_secundario):
         if tipo_secundario == TipoEnum.BOOLEAN.value:
             return TipoEnum.BOOLEAN
         elif tipo_secundario == TipoEnum.NUMBER.value:

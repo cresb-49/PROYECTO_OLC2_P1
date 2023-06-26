@@ -38,7 +38,7 @@ class AccederEstructura(Abstract):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
         # print('Estoy en acceder estructura', type(self.id_acceso))
-        scope.imprimir()
+        # scope.imprimir()
         # Mandamos a traer la variable temporal de acceso del struct
         variable: Return = self.id_acceso.generar_c3d(scope)
         if isinstance(variable, Excepcion):

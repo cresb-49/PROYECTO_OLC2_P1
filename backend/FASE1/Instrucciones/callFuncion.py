@@ -46,7 +46,7 @@ class CallFuncion(Abstract):
                                 param_fun.ejecutar(scope_funcion)
                                 result = param_send.ejecutar(scope)
                                 self.asignacion_valor_funcion(param_fun.id,scope_funcion,result)
-                        scope_funcion.imprimir()
+                        # scope_funcion.imprimir()
                         fun.ejecutar(scope_funcion)
                     except Exception as e:
                         print(
@@ -70,6 +70,7 @@ class CallFuncion(Abstract):
                 param.graficar(graphviz,node_params)
 
     def asignacion_valor_funcion(self, id, scope_funcion, result_exprecion):
+        print('ASIGNACION DE VALORES: ',id)
         variable_recuperada = scope_funcion.obtener_variable(id)
         if variable_recuperada != None:
             # Verificamos una variable any ya que a esta le debemos cambiar su tipo secundario

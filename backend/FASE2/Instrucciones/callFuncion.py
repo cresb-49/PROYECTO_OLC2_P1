@@ -55,7 +55,7 @@ class CallFuncion(Abstract):
                                 result = param_send.ejecutar(scope)
                                 self.asignacion_valor_funcion(
                                     param_fun.id, scope_funcion, result)
-                        scope_funcion.imprimir()
+                        # scope_funcion.imprimir()
                         fun.ejecutar(scope_funcion)
                     except Exception as e:
                         print(
