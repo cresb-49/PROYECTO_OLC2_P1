@@ -789,7 +789,7 @@ class Generador:
 
         #Temporal contadora que servira para dicidr si seguir el bucle o no
         contadora = self.add_temp()
-        self.add_asig(contadora, "0")
+        self.add_asig(contadora, "-1")
         ############################
         # Declaracion de labels ####
         ############################

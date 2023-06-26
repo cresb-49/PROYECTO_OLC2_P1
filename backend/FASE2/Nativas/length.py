@@ -6,6 +6,7 @@ from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.Exception import Excepcion
 from FASE2.Symbol.generador import Generador
 from FASE2.Expresiones.acceder_array import AccederArray
+from FASE2.Expresiones.acceder import Acceder
 
 
 class Length(Abstract):
@@ -47,7 +48,9 @@ class Length(Abstract):
         if (isinstance(c3d_numero, Excepcion)):
             return c3d_numero
         elif (isinstance(self.acceder[0], AccederArray)):
-            return self.generar_c3d_array_de_array(scope, generador, c3d_numero)
+            acceder = Acceder(self.resultado, self.linea, self.columna, self.acceder[0].exprecion.id)
+            c3d_acceder = acceder.generar_c3d(scope)
+            return self.generar_c3d_array_de_array(scope, generador, c3d_acceder)
         elif (c3d_numero.get_tipo() == TipoEnum.ARRAY):
             return self.generar_c3d_array(scope, generador, c3d_numero)
 
