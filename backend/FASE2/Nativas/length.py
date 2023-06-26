@@ -5,6 +5,7 @@ from FASE2.Symbol.tipoEnum import TipoEnum
 from FASE2.Abstract.return__ import Return
 from FASE2.Symbol.Exception import Excepcion
 from FASE2.Symbol.generador import Generador
+from FASE2.Expresiones.acceder_array import AccederArray
 
 
 class Length(Abstract):
@@ -55,27 +56,57 @@ class Length(Abstract):
         graphviz.add_nodo("length", result)
 
     def generar_c3d(self, scope):
-        # mandamos ha traer el c3d de las expreciones que componen el fixed
-        c3d_numero: Return = self.acceder[0].generar_c3d(scope)
-        if (isinstance(c3d_numero, Excepcion)):
-            return c3d_numero
-
         # declaracion de un nuevo generador de c3d
         generador_aux = Generador()
         generador = generador_aux.get_instance()
 
-        # mandamos ha construir la funcion length
-        generador.length()
+        # mandamos ha traer el c3d de las expreciones que componen el fixed
+        c3d_numero: Return = self.acceder[0].generar_c3d(scope)
+        if (isinstance(c3d_numero, Excepcion)):
+            return c3d_numero
+        elif (isinstance(self.acceder[0], AccederArray)):
+            return self.generar_c3d_array_de_array(scope, generador, c3d_numero)
+        elif (c3d_numero.get_tipo() == TipoEnum.ARRAY):
+            return self.generar_c3d_array(scope, generador, c3d_numero)
+        
+        else:
+            # mandamos ha construir la funcion length
+            generador.length()
+
+            temporal_parametro = generador.add_temp()
+            generador.add_exp(temporal_parametro, 'P', scope.size, '+')
+            generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
+
+            generador.set_stack(temporal_parametro, c3d_numero.get_value())
+
+            generador.new_env(scope.size)
+            # llamamos a la funcion length
+            generador.call_fun("length")
+
+            # anadir un nuevo temporal que guardara el stack en P
+            temp = generador.add_temp()
+            generador.get_stack(temp, 'P')
+            # retornamos un entorno
+            generador.ret_env(scope.size)
+
+            generador.add_comment('Fin del length')
+            generador.add_space()
+
+            return Return(temp, TipoEnum.NUMBER, True, None)
+
+    def generar_c3d_array(self, scope, generador: Generador, a_convertir):
+        # mandamos ha construir la funcion length_of_array
+        generador.length_of_array()
 
         temporal_parametro = generador.add_temp()
         generador.add_exp(temporal_parametro, 'P', scope.size, '+')
         generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
 
-        generador.set_stack(temporal_parametro, c3d_numero.get_value())
+        generador.set_stack(temporal_parametro, a_convertir.get_value())
 
         generador.new_env(scope.size)
-        #llamamos a la funcion length
-        generador.call_fun("length")
+        # llamamos a la funcion length
+        generador.call_fun("length_of_array")
 
         # anadir un nuevo temporal que guardara el stack en P
         temp = generador.add_temp()
@@ -87,3 +118,43 @@ class Length(Abstract):
         generador.add_space()
 
         return Return(temp, TipoEnum.NUMBER, True, None)
+    
+
+    def generar_c3d_array_de_array(self, scope, generador: Generador, a_convertir):
+        
+        for x in self.acceder[0].list_index_exprecion:
+            print("----------->",x)
+        # mandamos ha construir la funcion length_of_array
+        generador.length_of_array_dimension()
+
+        temporal_parametro = generador.add_temp()
+
+        generador.add_exp(temporal_parametro, 'P', scope.size, '+')
+        generador.add_exp(temporal_parametro, temporal_parametro, '1', '+')
+
+        generador.set_stack(temporal_parametro, a_convertir.get_value())
+
+
+
+        parametro_zice = generador.add_temp()
+        
+        #guardamos el segundo parametro una pocion despues del
+        generador.add_exp(parametro_zice, temporal_parametro, '1', '+')
+
+        generador.set_stack(parametro_zice, len(self.acceder[0].list_index_exprecion))
+
+        generador.new_env(scope.size)
+        # llamamos a la funcion length
+        generador.call_fun("length_of_array_dimension")
+
+        # anadir un nuevo temporal que guardara el stack en P
+        temp = generador.add_temp()
+        generador.get_stack(temp, 'P')
+        # retornamos un entorno
+        generador.ret_env(scope.size)
+
+        generador.add_comment('Fin del xxxx')
+        generador.add_space()
+
+        return Return(temp, TipoEnum.NUMBER, True, None)
+
