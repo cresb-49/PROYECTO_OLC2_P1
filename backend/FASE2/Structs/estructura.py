@@ -32,6 +32,5 @@ class Estructura(Abstract):
         try:
             scope.declarar_estructura(self.id, self)
         except ValueError as e:
-            self.resultado.add_error(
-                'Semantico', str(e), self.linea, self.columna)
+            self.resultado.add_error('Semantico', str(e), self.linea, self.columna)
             return Excepcion('Semantico', str(e), self.linea, self.columna)

@@ -47,13 +47,12 @@ class Length(Abstract):
         c3d_numero: Return = self.acceder[0].generar_c3d(scope)
         if (isinstance(c3d_numero, Excepcion)):
             return c3d_numero
-        elif (isinstance(self.acceder[0], AccederArray)):
+        if (isinstance(self.acceder[0], AccederArray)):
             acceder = Acceder(self.resultado, self.linea, self.columna, self.acceder[0].exprecion.id)
             c3d_acceder = acceder.generar_c3d(scope)
             return self.generar_c3d_array_de_array(scope, generador, c3d_acceder)
         elif (c3d_numero.get_tipo() == TipoEnum.ARRAY):
             return self.generar_c3d_array(scope, generador, c3d_numero)
-
         else:
             # mandamos ha construir la funcion length
             generador.length()

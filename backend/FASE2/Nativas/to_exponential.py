@@ -59,6 +59,7 @@ class ToExponential(Abstract):
     def generar_c3d(self, scope):
         ######
         # deprecado
+        self.resultado.add_error("Semantico", "No existe la funcion toExponential", self.linea, self.columna)
         return Excepcion("Semantico", "Existe la funcion toExponential", self.linea, self.columna)
     
         # c3d_numero : Return= self.numero.generar_c3d(scope)

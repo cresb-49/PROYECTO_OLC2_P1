@@ -86,7 +86,7 @@ class ToString(Abstract):
 
         # generador.add_comment('Fin de toString()')
         # generador.add_space()
-
+        self.resultado.add_error("Semantico", "No existe la funcion ToString en numeros", self.linea, self.columna)
         return Excepcion("Semantico", "Existe la funcion ToString en numeros", self.linea, self.columna)
 
 
