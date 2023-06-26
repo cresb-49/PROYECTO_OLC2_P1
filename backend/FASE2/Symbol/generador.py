@@ -24,6 +24,8 @@ class Generador:
         self.type_of_booleann = False
         self.type_of_structt = False
         self.to_exponentiall = False
+        self.length_of_arrayy = False
+        self.length_of_array_dimensionn = False
         # Lista de temporales
         self.temps = []
 
@@ -726,6 +728,116 @@ class Generador:
         self.set_stack('P', t0)
         self.add_end_func()
         self.in_natives = False
+
+
+
+
+
+    def length_of_array(self):
+        # if que reconoce si ya ha sido agregada la funcion length
+        if self.length_of_arrayy:
+            return
+        self.length_of_arrayy = True
+        self.in_natives = True
+        # declaramos la nueva funcion
+        self.add_begin_func("length_of_array")
+
+        # creamos una nueva temporal
+        t2 = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(t2, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack en t2 y contendra el tamanio del array
+        t3 = self.add_temp()
+        self.get_stack(t3, t2)
+        self.add_exp(t3, t3, '2', '+')
+        #temporal t4 guarsara la referencia del heap en t3... en donde se contiene el length del array
+        t4 = self.add_temp()
+        self.get_heap(t4, t3)
+        ####################################
+        # Declaracion del final del metodo #
+        ####################################
+
+        #devolvemos t4 que contiene el numero de length del array
+        self.set_stack('P', t4)
+        self.add_end_func()
+        self.in_natives = False   
+
+    def length_of_array_dimension(self):
+        # if que reconoce si ya ha sido agregada la funcion length
+        if self.length_of_array_dimensionn:
+            return
+        self.length_of_array_dimensionn = True
+        self.in_natives = True
+        # declaramos la nueva funcion
+        self.add_begin_func("length_of_array_dimension")
+
+        # creamos una nueva temporal
+        contador_stack = self.add_temp()
+        # a la temporal asignamos la posicion actual de P
+        self.add_exp(contador_stack, 'P', '1', '+')
+        # anadir temporal que guardara la referencia del stack en t2 en donde inician los tamanios de las diferentes dimenisones
+        self.add_comment("Temporal que guarda el inicio de donde se estan guardando los tamanios de las diferentes dimenciones")
+        posiciones_tamanios = self.add_temp()
+        self.get_stack(posiciones_tamanios, contador_stack)
+        # Avanza una psocion para recuperar el contador de donde se encuentra la dimension deseada
+        self.add_comment("Avanza una psocion para recuperar el contador de donde se encuentra la dimension deseada")
+        self.add_exp(contador_stack, contador_stack, '1', '+')
+
+        #Temporal que guardara la poscion en donde se encuentra el tamanio de la psocion deseada
+        pos_deseada = self.add_temp()
+        self.get_stack(pos_deseada, contador_stack)
+
+        #Temporal contadora que servira para dicidr si seguir el bucle o no
+        contadora = self.add_temp()
+        self.add_asig(contadora, "0")
+        ############################
+        # Declaracion de labels ####
+        ############################
+
+        #bucle que inicialra el bucle que decidira si aumentar posiciones_tamanios
+        init_bucle = self.new_label()
+        #label que acaba la funcion
+        end_funcion = self.new_label()
+        # label que aumenta en uno el posiciones_tamanios
+        label_acumuladora = self.new_label()
+
+        ##############################
+        # Inicio del bucle ###########
+        ##############################
+
+        self.put_label(init_bucle)
+        self.add_ident()
+        self.add_if(contadora, pos_deseada , "<=", label_acumuladora)
+        self.add_ident()
+        self.add_if(contadora, pos_deseada , ">", end_funcion)
+
+        ####################################################
+        # Aumento de la contadora y de posiciones_tamanios #
+        ####################################################
+        self.put_label(label_acumuladora)
+        self.add_ident()
+        self.add_exp(contadora,contadora,"1", "+")
+        self.add_ident()
+        self.add_exp(posiciones_tamanios,posiciones_tamanios,"1", "+")
+        self.add_ident()
+        self.add_goto(init_bucle)
+
+        
+        ####################################
+        # Declaracion del final del metodo #
+        ####################################
+        self.put_label(end_funcion)
+        self.add_ident()
+        #temporal t4 guarsara la referencia del heap en t3... en donde se contiene el length del array
+        t20 = self.add_temp()
+        self.get_heap(t20, posiciones_tamanios)
+
+        #devolvemos t4 que contiene el numero de length del array
+        self.add_ident()
+        self.set_stack('P', t20)
+        self.add_end_func()
+        self.in_natives = False   
+
 
     # def to_string_number(self):
     #     # if que reconoce si ya ha sido agregada la funcion to_string
