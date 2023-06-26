@@ -96,7 +96,8 @@ class Generador:
 
     def get_code(self):
         if self.label_out != '':
-            self.put_label(self.label_out)
+            # self.put_label(self.label_out)
+            pass
         return f'{self.get_header()}{self.natives}{self.funcs}\nfunc main(){{\n{self.codigo}\n}}'
 
     def code_in(self, code, tab="\t"):

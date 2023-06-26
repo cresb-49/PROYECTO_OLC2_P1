@@ -98,7 +98,7 @@ class AccederArray(Abstract):
         generador.add_goto(salto_error)
         generador.put_label(false_label)
         generador.call_fun('outOfBounds')
-        generador.add_goto_out()
+        #generador.add_goto_out()
         generador.put_label(salto_error)
         generador.add_comment('Calculo de acceso al array')
         # Logica para el calculo del index
