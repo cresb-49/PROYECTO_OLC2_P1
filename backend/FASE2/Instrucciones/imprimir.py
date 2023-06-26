@@ -115,7 +115,7 @@ class Imprimir(Abstract):
                         generador, result.get_tipo_aux(), result, scope)
                 else:
                     print('Encontre variable sin clasificar ->', result)
-                    return  Excepcion("Semantico", "Variable sin clasificar", self.linea, self.columna)
+                    # return  Excepcion("Semantico", "Variable sin clasificar", self.linea, self.columna)
         generador.add_comment('Fin funcion de console log')
         generador.add_print_salto_linea()
 

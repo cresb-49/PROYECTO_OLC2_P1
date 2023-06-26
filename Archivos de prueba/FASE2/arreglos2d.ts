@@ -63,7 +63,8 @@ printMatriz(b);
 
 console.log("");
 console.log("LAS DOS MATRICES SUMADAS");
-console.log(sumarMatrices(a, b));
+let sumas = sumarMatrices(a, b);
+printMatriz(sumas);
 
 console.log("");
 console.log("COMPARAR MATRICES. SON IGUALES?");
