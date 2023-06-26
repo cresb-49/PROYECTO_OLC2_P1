@@ -70,7 +70,7 @@ class CallFuncion(Abstract):
                 param.graficar(graphviz,node_params)
 
     def asignacion_valor_funcion(self, id, scope_funcion, result_exprecion):
-        print('ASIGNACION DE VALORES: ',id)
+        # print('ASIGNACION DE VALORES: ',id)
         variable_recuperada = scope_funcion.obtener_variable(id)
         if variable_recuperada != None:
             # Verificamos una variable any ya que a esta le debemos cambiar su tipo secundario

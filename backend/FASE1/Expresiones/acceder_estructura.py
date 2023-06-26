@@ -13,7 +13,7 @@ class AccederEstructura(Abstract):
 
     def ejecutar(self, scope):
         resultado_id_acc = self.id_acceso.ejecutar(scope)
-        print('id acceso: ',self.id_acceso)
+        # print('id acceso: ',self.id_acceso)
         if resultado_id_acc['tipo'] == TipoEnum.STRUCT:
             valor_recuperado = resultado_id_acc['value']
             if self.parametro in valor_recuperado:
