@@ -22,8 +22,7 @@ class Acceder(Abstract):
         self.resultado_valor = recuperacion
         self.last_scope = scope
         if (recuperacion == None):
-            self.resultado.add_error(
-                'Semantico', f"La variable {self.id} no existe", self.linea, self.columna)
+            self.resultado.add_error('Semantico', f"La variable {self.id} no existe", self.linea, self.columna)
         else:
             if (recuperacion.tipo == TipoEnum.ANY):
                 if recuperacion.tipo_secundario == TipoEnum.NUMBER.value:
@@ -97,7 +96,8 @@ class Acceder(Abstract):
         # Recuperamos variable desde el ultimo scope generado
         result = scope.obtener_variable(self.id)
         if(result == None):
-            return Excepcion("Semantico", "No se puedo encontrar la variable", self.linea, self.columna)
+            self.resultado.add_error('Semantico', f"La variable {self.id} no existe", self.linea, self.columna)
+            return Excepcion("Semantico", f"La variable {self.id} no existe", self.linea, self.columna)
         #result = scope.obtener_variable(self.id)
         # Generamos un contenedor temporal para la variable que vamos a recuperar
         temp = generador.add_temp()

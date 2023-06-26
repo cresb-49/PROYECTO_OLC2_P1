@@ -44,13 +44,12 @@ class Length(Abstract):
 
         # mandamos ha traer el c3d de las expreciones que componen el fixed
         c3d_numero: Return = self.acceder[0].generar_c3d(scope)
-        if (isinstance(c3d_numero, Excepcion)):
-            return c3d_numero
-        elif (isinstance(self.acceder[0], AccederArray)):
+        if (isinstance(c3d_numero, Excepcion)): return c3d_numero
+        
+        if (isinstance(self.acceder[0], AccederArray)):
             return self.generar_c3d_array_de_array(scope, generador, c3d_numero)
         elif (c3d_numero.get_tipo() == TipoEnum.ARRAY):
             return self.generar_c3d_array(scope, generador, c3d_numero)
-
         else:
             # mandamos ha construir la funcion length
             generador.length()
