@@ -920,7 +920,10 @@ def p_tipo(p):
     else:
         b: dict = p[1]
         tipo_heredado = b['tipo']
-        b['tipo_secundario'] = tipo_heredado.value
+        if tipo_heredado == TipoEnum.STRUCT:
+            b['tipo_secundario'] = b['tipo_secundario']
+        else:
+            b['tipo_secundario'] = tipo_heredado.value
         b['tipo'] = TipoEnum.ARRAY
         p[0] = b
 

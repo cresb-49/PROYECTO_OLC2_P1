@@ -200,7 +200,7 @@ class Declaracion(Abstract):
         if self.tipo == TipoEnum.ANY:
             return True
         return self.get_enum() == result.get_tipo_aux()
-    
+
     def get_enum(self):
         if self.tipo_secundario == TipoEnum.ANY.value:
             return TipoEnum.ANY
@@ -216,15 +216,16 @@ class Declaracion(Abstract):
             return TipoEnum.STRUCT
         else:
             return self.tipo_secundario
-    
+
     def generar_c3d(self, scope):
         gen_aux = Generador()
         generador = gen_aux.get_instance()
+        print('Verificacion en declaracion: ', self.tipo, self.tipo_secundario)
         # generamos el codigo 3 direccines de la asignacion si es que existe
         result: Return = None
         if self.valor != None:
             result = self.valor.generar_c3d(scope)
-        #print('debuj declaracion',result)
+        # print('debuj declaracion',result)
         if (isinstance(result, Excepcion)):
             return result
 
@@ -236,17 +237,20 @@ class Declaracion(Abstract):
             else:
                 if self.tipo == TipoEnum.ARRAY:
                     error = f'No pude declrar un array de tipo {self.tipo_secundario} y asignarle un array de tipo {result.get_tipo_aux()}'
-                    self.resultado.add_error('Semantico', error, self.linea, self.columna)
+                    self.resultado.add_error(
+                        'Semantico', error, self.linea, self.columna)
                     return Excepcion('Semantico', error, self.linea, self.columna)
                 else:
                     error = f'No pude declrar un struct de tipo {self.tipo_secundario} y asignarle un struct de tipo {result.get_tipo_aux()}'
-                    self.resultado.add_error('Semantico', error, self.linea, self.columna)
+                    self.resultado.add_error(
+                        'Semantico', error, self.linea, self.columna)
                     return Excepcion('Semantico', error, self.linea, self.columna)
         else:
            # si la vaidacion de tipos no se paso entonces agregamos un error de tipo semantico
             error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno {result.get_tipo().value}'
             # error = f'No se pude declarar la variable "{self.id}" puesto que es de tipo {self.tipo.value} y se le asigno'
-            self.resultado.add_error('Semantico', error, self.linea, self.columna)
+            self.resultado.add_error(
+                'Semantico', error, self.linea, self.columna)
             print('Semantico', str(error), self.linea, self.columna)
             return Excepcion("Semantico", error, self.linea, self.columna)
 
@@ -254,9 +258,11 @@ class Declaracion(Abstract):
         # Primero obtenermos la variable desde el scope generado por ultimo
         # Verificamos si el result es none ya que puede ser una declaracion vacia
         if result == None:
-            scope.declarar_variable(self.id, None, self.tipo, self.tipo_secundario, self.tipo == TipoEnum.ANY, self.linea, self.columna)
+            scope.declarar_variable(self.id, None, self.tipo, self.tipo_secundario,
+                                    self.tipo == TipoEnum.ANY, self.linea, self.columna)
         else:
-            scope.declarar_variable(self.id, None, result.get_tipo(), result.get_tipo_aux(), self.tipo == TipoEnum.ANY, self.linea, self.columna)
+            scope.declarar_variable(self.id, None, result.get_tipo(
+            ), result.get_tipo_aux(), self.tipo == TipoEnum.ANY, self.linea, self.columna)
         # Codigo resultante
         variable_recuperada = scope.obtener_variable(self.id)
         # print('Variable -> ', variable_recuperada)
@@ -286,4 +292,4 @@ class Declaracion(Abstract):
             generador.set_stack(tempPos, 0)
         generador.add_comment(f'** fin de compilacion variable {self.id} **')
         scope.sum_size()
-        #print('last scope -> ', scope)
+        # print('last scope -> ', scope)

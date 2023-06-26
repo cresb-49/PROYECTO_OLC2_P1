@@ -118,7 +118,8 @@ class ValFuncion(Abstract):
         param_values = []
         tmps = []
         size = scope.size
-
+        if self.parametros == None:
+            self.parametros = []
         for parametro in self.parametros:
             if isinstance(parametro, ValFuncion):
                 self.guardar_temporales(generador, scope, tmps)
@@ -137,6 +138,8 @@ class ValFuncion(Abstract):
         temp = generador.add_temp()
         generador.add_exp(temp, 'P', size+1, '+')
         aux = 0
+        if funcion.parametros == None:
+            funcion.parametros = []
         if len(funcion.parametros) == len(param_values):
             for param_fun, param_send in zip(funcion.parametros, param_values):
                 if param_fun.tipo == param_send.type:

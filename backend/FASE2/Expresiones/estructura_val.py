@@ -67,7 +67,7 @@ class EstructuraVal(Abstract):
 
     def generar_c3d(self, scope: Scope):
 
-        print('Estoy generando valor de estrutura')
+        # print('Estoy generando valor de estrutura')
         gen_aux = Generador()
         generador = gen_aux.get_instance()
 
@@ -84,9 +84,9 @@ class EstructuraVal(Abstract):
         # contador y luego sumamos de uno en uno
         # Recuperamos la base del struct original
         struct_orginal = scope.obtener_estructura(self.tipo_secundario)
-        print('Tipo del struct', self.tipo_secundario)
-        print('Struct original', struct_orginal.configuracion)
-        print('Size del struct', size_struct)
+        # print('Tipo del struct', self.tipo_secundario)
+        # print('Struct original', struct_orginal.configuracion)
+        # print('Size del struct', size_struct)
         for param in struct_orginal.configuracion:
             value = self.contenido[param]
             resultado: Return = value.generar_c3d(scope)

@@ -68,6 +68,7 @@ class Funcion(Abstract):
 
     def generar_c3d(self, scope: Scope):
         print('Estoy compilando funcion ->', self.id)
+        print('Tipo ->', self.tipo, ',', self.tipo_secundario)
         try:
             scope.declarar_funcion(self.id, self)
             self.compilacion_funcion(scope)

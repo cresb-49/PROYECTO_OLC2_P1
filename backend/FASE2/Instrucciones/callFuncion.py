@@ -103,13 +103,15 @@ class CallFuncion(Abstract):
         generador = gen_aux.get_instance()
         funcion = scope.obtener_funcion(self.id)
         if funcion == None:
-            self.resultado.add_error('Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.columna, self.columna)
+            self.resultado.add_error(
+                'Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.columna, self.columna)
             return Excepcion('Semantico', f'La funcion "{self.id}" no esta definida en el programa', self.linea, self.columna)
 
         param_values = []
         tmps = []
         size = scope.size
-
+        if self.parametros == None:
+            self.parametros = []
         for parametro in self.parametros:
             if isinstance(parametro, ValFuncion):
                 self.guardar_temporales(generador, scope, tmps)
@@ -128,6 +130,8 @@ class CallFuncion(Abstract):
         temp = generador.add_temp()
         generador.add_exp(temp, 'P', size+1, '+')
         aux = 0
+        if funcion.parametros == None:
+            funcion.parametros = []
         if len(funcion.parametros) == len(param_values):
             for param_fun, param_send in zip(funcion.parametros, param_values):
                 if param_fun.tipo == param_send.type:
