@@ -384,6 +384,8 @@ def p_instrucciones_2(p):
 def p_instruccion(p):
     """instruccion : print
                    | llamar_funcion
+                   | sumador SEMICOLON
+                   | sumador
                    | declaracion
                    | asignar_array
                    | asignar_struct
