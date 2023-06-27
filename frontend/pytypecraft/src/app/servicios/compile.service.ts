@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CompileService {
-  private url = 'http://127.0.0.1:3000/';
+  private url = 'http://35.222.98.149:3000/';
 
   constructor(
     private http: HttpClient,
