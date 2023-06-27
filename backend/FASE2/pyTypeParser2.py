@@ -474,7 +474,8 @@ def p_interrupcion_funcion(p):
 
 
 def p_print(p):
-    """print : CONSOLE DOT ID LPAR parametros RPAR SEMICOLON"""
+    """print : CONSOLE DOT ID LPAR parametros RPAR SEMICOLON
+             | CONSOLE DOT ID LPAR parametros RPAR"""
     p[0] = Imprimir(resultado, p.lineno(
         1), find_column(input, p.slice[1]), p[5])
 
